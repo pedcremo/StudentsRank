@@ -1,21 +1,28 @@
-const gulp = require('gulp');
-const babel = require('gulp-babel');
-var browserify = require('gulp-browserify');
- 
-gulp.task('transpile', () =>
-    gulp.src('src/**/*.js')
-        .pipe(babel({
-            presets: ['es2015']
-        }))
-        /*.pipe(browserify({
-          insertGlobals : true,
-          debug : !gulp.env.production
-        }))*/
-        .pipe(gulp.dest('bin'))
-);
+var fs = require("fs");
+var browserify = require("browserify");
+var gulp = require('gulp');
+var webserver = require('gulp-webserver');
 
-// Gulp watch syntax
-gulp.task('watch', function(){
-  gulp.watch('src/**/*.js', ['transpile']); 
-  // Other watchers
-})
+///babelify, es6 to es5
+gulp.task('browserify', function() {
+browserify("./src/main.js")
+  .transform("babelify", {presets: ["es2015"]})
+  .bundle()
+  .pipe(fs.createWriteStream("dist/main.js"));
+});
+
+///http server live reload (html changes)
+gulp.task('webserver', function() {
+  gulp.src('./')
+  .pipe(webserver({
+    livereload: true,
+    directoryListing: false,
+    open: true
+  }));
+});
+
+// watch any change
+gulp.task('watch', ['browserify'], function () {
+    gulp.watch('./src/**/*.js', ['browserify']);
+});
+gulp.task('default', ['browserify', 'webserver', 'watch']);
