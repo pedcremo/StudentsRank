@@ -3,6 +3,10 @@ var browserify = require("browserify");
 var gulp = require('gulp');
 var webserver = require('gulp-webserver');
 
+if (!fs.existsSync("dist")){
+  fs.mkdirSync("dist");
+}
+
 ///babelify, es6 to es5
 gulp.task('browserify', function() {
 browserify("./src/main.js")

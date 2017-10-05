@@ -27,7 +27,7 @@ function getRanking(students) {
     liEl.appendChild(t);
 
     var addPointsEl = document.createElement("button");
-    var tb = document.createTextNode("+10");
+    var tb = document.createTextNode("+20");
     addPointsEl.appendChild(tb);
 
     studentsEl.appendChild(liEl);
@@ -35,7 +35,7 @@ function getRanking(students) {
 
     liEl.addEventListener("click", function () {
 
-      studentItem.addPoints(10);
+      studentItem.addPoints(20);
       setTimeout(function () {
         getRanking(students);
       }, 1000);
