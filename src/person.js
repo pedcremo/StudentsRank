@@ -14,6 +14,7 @@ class Person {
     this.name = name;
     this.surname = surname;
     this.points = points;
+    //anem a veure 
   }    
 
   addPoints(points) {

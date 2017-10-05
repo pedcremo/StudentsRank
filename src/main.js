@@ -1,7 +1,7 @@
 
 'use strict';
 import Person from './person.js';
-debugger;
+
 var students = [
   new Person("Paco", "Vañó", 5),
   new Person("Lucia", "Botella", 10),
