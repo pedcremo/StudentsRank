@@ -14,15 +14,14 @@ class Person {
     this.name = name;
     this.surname = surname;
     this.points = points;
-    this.context = context;
-    //anefds  
+    this.context = context;    
   }    
 
   addPoints(points) {
         this.points += points;
   }
 
-  addTask(taskInstance) {
+  addGradedTask(taskInstance) {
         this.tasks.push(taskInstance);
   }
   getHTMLView() {
@@ -42,6 +41,7 @@ class Person {
           setTimeout(function(){this.context.getRanking()}.bind(this),1000);
     });
     return liEl;
+  }
 }
 
 export default Person;

@@ -1,4 +1,3 @@
-
 'use strict';
 
 import Context from './context.js';

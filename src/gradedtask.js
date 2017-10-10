@@ -1,4 +1,5 @@
-class Task {
+
+class GradedTask {
   constructor(name) {
     this.name = name;    
     this.points = 0;    
@@ -10,4 +11,4 @@ class Task {
 
 }
 
-export default Task;
+export default GradedTask;

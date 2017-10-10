@@ -1,4 +1,5 @@
 import Person from './person.js';
+import GradedTask from './gradedtask.js';
 
 
 class Context {
@@ -27,6 +28,15 @@ class Context {
         this.students.forEach(function(studentItem) {
             var liEl = studentItem.getHTMLView();
             studentsEl.appendChild(liEl);
+        });
+    }
+   addGradedTask(name){
+        //let task = New Task(name);
+        var taskName = prompt("Please enter your task name");
+
+        this.students.forEach(function(studentItem) {
+            //let gTask = new GradedTask(name);
+            studentItem.addGradedTask(new GradedTask(taskName));
         });
     }
 }
