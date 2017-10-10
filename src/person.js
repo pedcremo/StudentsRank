@@ -30,20 +30,9 @@ class Person {
   getHTMLView() {
     var liEl = document.createElement("tr");
 
-    /*var tdEl = document.createElement("td");
-    var t = document.createTextNode(this.surname + ", " + this.name); // Create a text node
-    //liEl.setAttribute("id",hashcode(this.surname + ", " + this.name));     
-    tdEl.appendChild(t);*/
-
-
     liEl.appendChild(getElementTd(this.surname + ", " + this.name));
 
-    liEl.appendChild(getElementTd(this.points));
-
-    /*var td2El = document.createElement("td");
-    var t2 = document.createTextNode(this.points);
-    td2El.appendChild(t2);
-    liEl.appendChild(td2El);*/
+    liEl.appendChild(getElementTd(this.points));    
 
     
     var addPointsEl = document.createElement("button");
@@ -52,8 +41,6 @@ class Person {
 
     liEl.appendChild(getElementTd(addPointsEl));
 
-    //studentsEl.appendChild(liEl);
-    //liEl.appendChild(addPointsEl);
 
     liEl.addEventListener("click", () => {
           this.addPoints(20);
