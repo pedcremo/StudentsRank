@@ -10,12 +10,13 @@ function hashcode(str) {
 };
 
 function getElementTd(text) {
-	let tdEl = document.createElement("td");
-    let t = document.createTextNode(text); // Create a text node
-    //liEl.setAttribute("id",hashcode(this.surname + ", " + this.name)); 
-    
-    tdEl.appendChild(t);
-    return tdEl;
+  let tdEl = document.createElement("td");
+  let t = text;
+  if (typeof text === "string" || typeof text === "number"){ 
+     t = document.createTextNode(text); // Create a text node
+  }    
+  tdEl.appendChild(t);
+   return tdEl;
 }
 
 export {hashcode,getElementTd};

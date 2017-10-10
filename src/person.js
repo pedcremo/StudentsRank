@@ -24,7 +24,8 @@ class Person {
   }
 
   addGradedTask(taskInstance) {
-        this.gradedTasks.push(taskInstance);
+        this.gradedTasks.push({"task":taskInstance,"points":0});
+        this.context.getRanking();
   }
 
   getHTMLView() {
@@ -42,10 +43,23 @@ class Person {
     liEl.appendChild(getElementTd(addPointsEl));
 
 
-    liEl.addEventListener("click", () => {
+    addPointsEl.addEventListener("click", () => {
           this.addPoints(20);
           setTimeout(function(){this.context.getRanking()}.bind(this),1000);
     });
+
+    this.gradedTasks.forEach(function(gTaskItem) {      
+      let inputEl = document.createElement("input");
+      let that = this;
+      inputEl.value = gTaskItem["points"]
+      inputEl.addEventListener("change", function(event) {
+        that.addPoints(gTaskItem["points"]*(-1));
+        gTaskItem["points"] = inputEl.value;
+        that.context.getRanking();
+      });
+      liEl.appendChild(getElementTd(inputEl));
+  });
+    
     return liEl;
   }
 }

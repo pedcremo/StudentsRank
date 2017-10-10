@@ -36,11 +36,11 @@ class Context {
     }
    addGradedTask(){
         //let task = New Task(name);
-        var taskName = prompt("Please enter your task name");
-
+        let taskName = prompt("Please enter your task name");
+        let gtask = new GradedTask(taskName)
         this.students.forEach(function(studentItem) {
             //let gTask = new GradedTask(name);
-            studentItem.addGradedTask(new GradedTask(taskName));
+            studentItem.addGradedTask(gtask);
         });
     }
 }
