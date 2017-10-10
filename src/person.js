@@ -8,6 +8,7 @@
  * @tutorial pointing-criteria
  */ 
  
+ import {hashcode,getElementTd} from './utils.js';
 
 class Person {
   constructor(name,surname,points,context) {
@@ -15,6 +16,7 @@ class Person {
     this.surname = surname;
     this.points = points;
     this.context = context;    
+    this.gradedTasks = [];
   }    
 
   addPoints(points) {
@@ -22,19 +24,36 @@ class Person {
   }
 
   addGradedTask(taskInstance) {
-        this.tasks.push(taskInstance);
+        this.gradedTasks.push(taskInstance);
   }
-  getHTMLView() {
-    var liEl = document.createElement("li");
-    var t = document.createTextNode(this.surname + ", " + this.name + ", " + this.points + " "); // Create a text node
-    liEl.appendChild(t);
 
+  getHTMLView() {
+    var liEl = document.createElement("tr");
+
+    /*var tdEl = document.createElement("td");
+    var t = document.createTextNode(this.surname + ", " + this.name); // Create a text node
+    //liEl.setAttribute("id",hashcode(this.surname + ", " + this.name));     
+    tdEl.appendChild(t);*/
+
+
+    liEl.appendChild(getElementTd(this.surname + ", " + this.name));
+
+    liEl.appendChild(getElementTd(this.points));
+
+    /*var td2El = document.createElement("td");
+    var t2 = document.createTextNode(this.points);
+    td2El.appendChild(t2);
+    liEl.appendChild(td2El);*/
+
+    
     var addPointsEl = document.createElement("button");
     var tb = document.createTextNode("+20");
     addPointsEl.appendChild(tb);
 
+    liEl.appendChild(getElementTd(addPointsEl));
+
     //studentsEl.appendChild(liEl);
-    liEl.appendChild(addPointsEl);
+    //liEl.appendChild(addPointsEl);
 
     liEl.addEventListener("click", () => {
           this.addPoints(20);

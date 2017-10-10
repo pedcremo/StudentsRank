@@ -1,6 +1,7 @@
 
 class GradedTask {
-  constructor(name) {
+  constructor() {
+  	
     this.name = name;    
     this.points = 0;    
   }    

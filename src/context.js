@@ -12,6 +12,10 @@ class Context {
         new Person("Salva", "Peris", 1,this),
         new Person("Oscar", "Carrion", 40,this)
     ]; 
+    var addTask = document.getElementById("addGradedTask");
+    addTask.addEventListener("click", () => {
+          this.addGradedTask();
+    });
   }
 
   getRanking(){
@@ -30,7 +34,7 @@ class Context {
             studentsEl.appendChild(liEl);
         });
     }
-   addGradedTask(name){
+   addGradedTask(){
         //let task = New Task(name);
         var taskName = prompt("Please enter your task name");
 
