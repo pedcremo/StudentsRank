@@ -1,6 +1,6 @@
 import Person from './person.js';
 import GradedTask from './gradedtask.js';
-
+ import {hashcode,getElementTd} from './utils.js';
 
 class Context {
 
@@ -16,6 +16,7 @@ class Context {
     addTask.addEventListener("click", () => {
           this.addGradedTask();
     });
+    this.gradedTasks = [];
   }
 
   getRanking(){
@@ -24,11 +25,17 @@ class Context {
         });
 
         var studentsEl = document.getElementById("llistat");
-        //studentsEl.innerHTML = "";
+   
         while (studentsEl.firstChild) {
             studentsEl.removeChild(studentsEl.firstChild);
         }
 
+        let headerString="<tr><td colspan='3'></td>";
+        this.gradedTasks.forEach(function(taskItem){
+            //studentsEl.appendChild(getElementTd(taskItem.name));
+            headerString+="<td>"+taskItem.name+"</td>";
+        });
+        studentsEl.innerHTML= headerString;
         this.students.forEach(function(studentItem) {
             var liEl = studentItem.getHTMLView();
             studentsEl.appendChild(liEl);
@@ -37,11 +44,13 @@ class Context {
    addGradedTask(){
         //let task = New Task(name);
         let taskName = prompt("Please enter your task name");
-        let gtask = new GradedTask(taskName)
+        let gtask = new GradedTask(taskName);
+        this.gradedTasks.push(gtask);
         this.students.forEach(function(studentItem) {
             //let gTask = new GradedTask(name);
             studentItem.addGradedTask(gtask);
         });
+        this.getRanking();
     }
 }
 

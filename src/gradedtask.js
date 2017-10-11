@@ -1,6 +1,6 @@
 
 class GradedTask {  
-  constructor() {  	
+  constructor(name) {  	
     this.name = name;     
 
   }    

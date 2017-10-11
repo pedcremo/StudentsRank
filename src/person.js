@@ -48,13 +48,15 @@ class Person {
           setTimeout(function(){this.context.getRanking()}.bind(this),1000);
     });
 
+    let that = this;
+
     this.gradedTasks.forEach(function(gTaskItem) {      
-      let inputEl = document.createElement("input");
-      let that = this;
+      let inputEl = document.createElement("input");      
       inputEl.value = gTaskItem["points"]
       inputEl.addEventListener("change", function(event) {
-        that.addPoints(gTaskItem["points"]*(-1));
+        that.addPoints(parseInt(gTaskItem["points"])*(-1));
         gTaskItem["points"] = inputEl.value;
+        that.addPoints(parseInt(gTaskItem["points"]));
         that.context.getRanking();
       });
       liEl.appendChild(getElementTd(inputEl));
