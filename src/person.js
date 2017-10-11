@@ -17,6 +17,7 @@ class Person {
     this.points = points;
     this.context = context;    
     this.gradedTasks = [];
+    //this.calculatedPoints = 0;
   }    
 
   addPoints(points) {
@@ -34,7 +35,6 @@ class Person {
     liEl.appendChild(getElementTd(this.surname + ", " + this.name));
 
     liEl.appendChild(getElementTd(this.points));    
-
     
     var addPointsEl = document.createElement("button");
     var tb = document.createTextNode("+20");
@@ -42,26 +42,24 @@ class Person {
 
     liEl.appendChild(getElementTd(addPointsEl));
 
-
     addPointsEl.addEventListener("click", () => {
           this.addPoints(20);
           setTimeout(function(){this.context.getRanking()}.bind(this),1000);
     });
 
     let that = this;
-
+    this.calculatedPoints = 0;
     this.gradedTasks.forEach(function(gTaskItem) {      
-      let inputEl = document.createElement("input");      
-      inputEl.value = gTaskItem["points"]
-      inputEl.addEventListener("change", function(event) {
+        let inputEl = document.createElement("input");      
+        inputEl.value = gTaskItem["points"]
+        inputEl.addEventListener("change", function(event) {
         that.addPoints(parseInt(gTaskItem["points"])*(-1));
         gTaskItem["points"] = inputEl.value;
         that.addPoints(parseInt(gTaskItem["points"]));
-        that.context.getRanking();
+        that.context.getRanking();        
       });
       liEl.appendChild(getElementTd(inputEl));
-  });
-    
+    });
     return liEl;
   }
 }
