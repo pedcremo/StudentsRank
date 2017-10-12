@@ -1,3 +1,10 @@
+/**
+ * Context class. Devised to control every element involved in the app: students, gradedTasks ...
+ *
+ * @constructor
+ * @tutorial pointing-criteria
+ */ 
+
 import Person from './person.js';
 import GradedTask from './gradedtask.js';
 import {hashcode,getElementTd} from './utils.js';
@@ -18,7 +25,7 @@ class Context {
     });
     this.gradedTasks = [];
   }
-
+  /** Draw Students rank table in descendent order using points as a criteria */
   getRanking(){
         this.students.sort(function(a, b) {
             return (b.points - a.points);
@@ -40,6 +47,7 @@ class Context {
             studentsEl.appendChild(liEl);
         });
     }
+    /** Create a form to create a GradedTask that will be added to every student */
    addGradedTask(){        
         let taskName = prompt("Please enter your task name");
         let gtask = new GradedTask(taskName);

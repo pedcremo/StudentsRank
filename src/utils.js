@@ -1,3 +1,4 @@
+/** Hash code funtion usefull for getting an unique id based on a large text */
 function hashcode(str) {
   var hash = 0, i, chr;
   if (str.length === 0) return hash;
@@ -9,6 +10,8 @@ function hashcode(str) {
   return hash;
 };
 
+
+/** Pass a text or an element ang get a td table element wrapping it. */ 
 function getElementTd(text) {
   let tdEl = document.createElement("td");
   let t = text;
