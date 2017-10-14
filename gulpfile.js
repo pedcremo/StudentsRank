@@ -18,7 +18,7 @@ browserify("./src/main.js")
 ///http server live reload (html changes)
 gulp.task('webserver', function() {
   gulp.src('./')
-  .pipe(webserver({
+  .pipe(webserver({    
     livereload: true,
     directoryListing: false,
     open: true

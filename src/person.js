@@ -4,19 +4,19 @@
  * @constructor
  * @param {string} name - Person name
  * @param {string} surname - Person surname
- * @param {number} points - Person total points 
+ * @param {number} points - Person total points  
  * @tutorial pointing-criteria
  */ 
  
- import {hashcode,getElementTd} from './utils.js';
+import {hashcode,getElementTd} from './utils.js';
+import {context} from './context.js';
 
 class Person {
-  constructor(name,surname,points,context) {
+  constructor(name,surname,points,gradedTasks) {
     this.name = name;
     this.surname = surname;
-    this.points = points;
-    this.context = context;    
-    this.gradedTasks = [];    
+    this.points = points;      
+    this.gradedTasks = gradedTasks;      
   }    
   
   /** Add points to persons we should carefully use it. */
@@ -25,8 +25,7 @@ class Person {
   }
   /** Add a gradded task linked to person with its own mark. */
   addGradedTask(taskInstance) {
-        this.gradedTasks.push({"task":taskInstance,"points":0});
-        this.context.getRanking();
+        this.gradedTasks.push({"task":taskInstance,"points":0});          
   }
   /** Renders HTML person view Create a table row (tr) with all name, points , add button and one input for every gradded task binded for that person. */
   getHTMLView() {
@@ -44,7 +43,9 @@ class Person {
 
     addPointsEl.addEventListener("click", () => {
           this.addPoints(20);
-          setTimeout(function(){this.context.getRanking()}.bind(this),1000);
+          setTimeout(function(){            
+            context.getRanking();          
+          }.bind(this),1000);
     });
 
     let that = this;
@@ -56,8 +57,8 @@ class Person {
         inputEl.addEventListener("change", function(event) {
         that.addPoints(parseInt(gTaskItem["points"])*(-1));
         gTaskItem["points"] = inputEl.value;
-        that.addPoints(parseInt(gTaskItem["points"]));
-        that.context.getRanking();        
+        that.addPoints(parseInt(gTaskItem["points"]));         
+        context.getRanking();        
       });
       liEl.appendChild(getElementTd(inputEl));
     });

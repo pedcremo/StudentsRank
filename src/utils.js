@@ -22,5 +22,26 @@ function getElementTd(text) {
    return tdEl;
 }
 
-export {hashcode,getElementTd};
+function deleteContent() {
+  let contentEl = document.getElementById("content");
+   
+  while (contentEl.firstChild) {
+            contentEl.removeChild(contentEl.firstChild);
+  }
+}
+
+function loadTemplate(urlTemplate,callback) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("content").innerHTML =
+      this.responseText;
+      callback();
+    }
+  };
+  xhttp.open("GET", urlTemplate, true);
+  xhttp.send();
+}
+
+export {hashcode,getElementTd,deleteContent,loadTemplate};
 
