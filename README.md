@@ -21,10 +21,15 @@ Install dependencies and modules used for development purposes
 We wait until node_modules folder has been filled with all development modules needed for our app
 
 # For continous development 
+Main gulp task
 <pre>./node_modules/gulp/bin/gulp.js</pre> 
 or 
 <pre>gulp</pre> 
 if has been installed globally.
+
+Other interesting gukp tasks
+
+*vet. For syntax and quality checking
 
 # Key points about the development stack  we have chosen for this app
 
