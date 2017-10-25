@@ -16,6 +16,7 @@ class Context {
   constructor() {
     this.students = [];
     this.gradedTasks = [];
+    this.showNumGradedTasks = 1;
 
     if (localStorage.getItem('students')) {
       let students_ = JSON.parse(localStorage.getItem('students'));
