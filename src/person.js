@@ -41,6 +41,11 @@ class Person {
     }
   }
 
+  /** Get person id  based on a 5 character hash with name+surname */
+  getId() {
+    return hashcode(this.name + this.surname);
+  }
+
   /** Read person _totalPoints. A private property only modicable inside person instance */
   getTotalPoints() {
     return this[_totalPoints];
@@ -64,26 +69,9 @@ class Person {
   getHTMLView() {
     let liEl = document.createElement('tr');
 
-    let esEL = getElementTd(this.surname + ', ' + this.name);
-    esEL.addEventListener('click', () => {
-      loadTemplate('templates/detailStudent.html',function(responseText) {
-        let STUDENT = this;
-        let ATTITUDE_TASKS = '';
-        this.attitudeTasks.reverse().forEach(function(atItem) {
-          ATTITUDE_TASKS += '<li>' + atItem.task.points + '->' +
-                        atItem.task.description + '->' + formatDate(new Date(atItem.task.datetime)) + '</li>';
-        });
-        let GRADED_TASKS = '';
-        this.gradedTasks.forEach(function(gtItem) {
-          GRADED_TASKS += '<li>' + gtItem.points + '->' +
-                        gtItem.task.name + '->' + formatDate(new Date(gtItem.task.datetime)) + '</li>';
-        });
-        document.getElementById('content').innerHTML = eval('`' + responseText + '`');
-      }.bind(this));
-    });
+    let esEL = getElementTd("<a href='#student/" + this.getId() + "'>" + this.surname + ", " + this.name + "</a>");
 
     liEl.appendChild(esEL);
-
     liEl.appendChild(getElementTd(this[_totalPoints]));
 
     let addAttitudeTaskEl = document.createElement('button');
@@ -112,21 +100,40 @@ class Person {
 
     let that = this;
 
-    this.gradedTasks.forEach(function(gTaskItem) {
+    if (context.showNumGradedTasks <= this.gradedTasks.length) {
+      for (let i = this.gradedTasks.length - 1;i > ((this.gradedTasks.length - 1) - context.showNumGradedTasks);i--) {
         let inputEl = document.createElement('input');
         inputEl.type = 'number';
         inputEl.min = 0;
         inputEl.max = 100;
-        inputEl.value = gTaskItem['points'];
-        inputEl.addEventListener('change', function(event) {
-            that[privateAddTotalPoints](parseInt(gTaskItem['points'] * (-1)));
-            gTaskItem['points'] = inputEl.value;
-            that[privateAddTotalPoints](parseInt(gTaskItem['points']));
+        inputEl.value = this.gradedTasks[i]['points'];
+        inputEl.addEventListener('change', function(event) {            
+            that[_totalPoints] += parseInt(that.gradedTasks[i]['points'] * (-1));
+            that.gradedTasks[i]['points'] = inputEl.value;
+            that[privateAddTotalPoints](parseInt(that.gradedTasks[i]['points']));
           });
         liEl.appendChild(getElementTd(inputEl));
-      });
-
+      }
+    }
     return liEl;
+  }
+
+  /** Renders person detail view */
+  getHTMLDetail() {
+    loadTemplate('templates/detailStudent.html',function(responseText) {
+        let STUDENT = this;
+        let ATTITUDE_TASKS = '';
+        this.attitudeTasks.reverse().forEach(function(atItem) {
+          ATTITUDE_TASKS += '<li>' + atItem.task.points + '->' +
+                        atItem.task.description + '->' + formatDate(new Date(atItem.task.datetime)) + '</li>';
+        });
+        let GRADED_TASKS = '';
+        this.gradedTasks.forEach(function(gtItem) {
+          GRADED_TASKS += '<li>' + gtItem.points + '->' +
+                        gtItem.task.name + '->' + formatDate(new Date(gtItem.task.datetime)) + '</li>';
+        });
+        document.getElementById('content').innerHTML = eval('`' + responseText + '`');
+      }.bind(this));
   }
 }
 

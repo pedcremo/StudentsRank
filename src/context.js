@@ -14,17 +14,25 @@ import {hashcode,getElementTd,deleteContent,loadTemplate} from './utils.js';
 class Context {
 
   constructor() {
-    this.students = [];
+    //this.students = [];
+    this.students = new Map();
     this.gradedTasks = [];
     this.showNumGradedTasks = 1;
 
     if (localStorage.getItem('students')) {
-      let students_ = JSON.parse(localStorage.getItem('students'));
-      for (let i = 0;i < students_.length;i++) {
+      let students_ = new Map(JSON.parse(localStorage.getItem('students')));
+      //this.students = students_;
+      students_.forEach(function(value_,key_,students_) {
+        let p = new Person(value_.name,value_.surname,
+          value_.attitudeTasks,value_.gradedTasks);
+        students_.set(key_,p);
+      });
+      this.students = students_;
+      /*for (let i = 0;i < students_.length;i++) {
         let p = new Person(students_[i].name,students_[i].surname,
           students_[i].attitudeTasks,students_[i].gradedTasks);
         this.students.push(p);
-      }
+      }*/
     }
     if (localStorage.getItem('gradedTasks')) {
       this.gradedTasks = JSON.parse(localStorage.getItem('gradedTasks'));
@@ -42,24 +50,45 @@ class Context {
     });
   }
 
+  /** Get a Person instance based on its ID */
+  getPersonById(idHash) {
+    return this.students.get(parseInt(idHash));
+  }
+
   /** Draw Students rank table in descendent order using points as a criteria */
   getTemplateRanking() {
-
-    if (this.students && this.students.length > 0) {
+    window.alert('GI');
+    if (this.students && this.students.size > 0) {
       /* We sort students descending from max number of points to min */
-      this.students.sort(function(a, b) {
-        return (b.getTotalPoints() - a.getTotalPoints());
+      let arrayFromMap = [...this.students.entries()];
+      arrayFromMap.sort(function(a,b) {
+        return (b[1].getTotalPoints() - a[1].getTotalPoints());
       });
-      localStorage.setItem('students',JSON.stringify(this.students));
+      this.students = new Map(arrayFromMap);
+
+      localStorage.setItem('students',JSON.stringify([...this.students])); //Use of spread operator to convert a Map to an array of pairs
       let GRADED_TASKS = '';
-      this.gradedTasks.forEach(function(taskItem) {
-        GRADED_TASKS += '<td>' + taskItem.name + '</td>';
-      });
+
+      if (this.showNumGradedTasks >= this.gradedTasks.length) {
+        this.showNumGradedTasks = this.gradedTasks.length;
+      }
+      for (let i = this.gradedTasks.length - 1;i > ((this.gradedTasks.length - 1) - this.showNumGradedTasks);i--) {
+        if (i === this.gradedTasks.length - this.showNumGradedTasks) {
+          GRADED_TASKS += '<td>' + this.gradedTasks[i].name + '&nbsp;<button id="more_gt">-></button></td>';
+        } else {
+          GRADED_TASKS += '<td>' + this.gradedTasks[i].name + '</td>';
+        }
+      }
 
       loadTemplate('templates/rankingList.html',function(responseText) {
               document.getElementById('content').innerHTML = eval('`' + responseText + '`');
               let tableBody = document.getElementById('idTableRankingBody');
-              this.students.forEach(function(studentItem) {
+              let btMoreGt = document.getElementById('more_gt');
+              btMoreGt.onclick = function() {
+                this.showNumGradedTasks++;
+                this.getTemplateRanking();
+              }.bind(this);
+              this.students.forEach(function(studentItem,key,map) {
                 let liEl = studentItem.getHTMLView();
                 tableBody.appendChild(liEl);
               });
@@ -80,10 +109,12 @@ class Context {
               let gtask = new GradedTask(name,description,weight);
               this.gradedTasks.push(gtask);
               localStorage.setItem('gradedTasks',JSON.stringify(this.gradedTasks));
-              this.students.forEach(function(studentItem) {
+              let studentsRef = this.students;
+              studentsRef.forEach(function(studentItem,studentKey,studentsRef) {
                 studentItem.addGradedTask(gtask);
               });
               this.getTemplateRanking();
+              return false; //Avoid form submit
             });
           }.bind(this);
 
@@ -102,8 +133,8 @@ class Context {
               this.gradedTasks.forEach(function(iGradedTask) {
                     student.addGradedTask(new GradedTask(iGradedTask.name));
                   });
-              this.students.push(student);
-              localStorage.setItem('students',JSON.stringify(this.students));
+              this.students.set(student.getId(),student);
+              localStorage.setItem('students',JSON.stringify([...this.students])); //Use of spread operator to convert a Map to an array of pairs
             });
           }.bind(this);
 

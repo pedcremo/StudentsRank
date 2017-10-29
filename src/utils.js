@@ -12,14 +12,16 @@ function hashcode(str) {
   return hash;
 }
 
-/** Pass a text or an element ang get a td table element wrapping it. */ 
+/** Pass a text or an element ang get a td table element wrapping it. */
 function getElementTd(text) {
   let tdEl = document.createElement('td');
   let t = text;
   if (typeof text === 'string' || typeof text === 'number') {
-    t = document.createTextNode(text); // Create a text node
+    //t = document.createTextNode(text); // Create a text node
+    tdEl.innerHTML = text;
+  }else {
+    tdEl.appendChild(t);
   }
-  tdEl.appendChild(t);
   return tdEl;
 }
 
