@@ -1,0 +1,21 @@
+<tr ng-repeat="person in PERSONS">
+    <td>
+        <a href='#student/${TPL_PERSON.getId()}'>${TPL_PERSON.surname}, ${TPL_PERSON.name}</a>
+    </td>
+    <td>
+        <a href='#editStudent/${TPL_PERSON.getId()}'><button class='btnS btn btn-success'>
+        <i class='fa fa-pencil fa-1x'></i></button></a><a href='#deleteStudent/${TPL_PERSON.getId()}'>
+        <button class='btnS btn btn-danger'><i class='fa fa-trash-o fa-1x'></i></button></a>
+    </td>
+    
+    <td>
+        <strong>${TPL_PERSON.getTotalPoints()}</strong>
+    </td>
+
+    <td>
+        <a href='#addXP/${TPL_PERSON.getId()}'><button class="btnS btn btn-primary">+XP</button></a>
+    </td>
+
+    ${TPL_REPEATED_GRADED_TASKS}
+
+</tr>
