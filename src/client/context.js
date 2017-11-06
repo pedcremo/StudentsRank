@@ -64,6 +64,7 @@ class Context {
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
         let arrayGradedTasks = [...this.gradedTasks.entries()].reverse();
+        //TPL_GRADED_TASKS = arrayGradedTasks.slice(this.showNumGradedTasks);
         for (let i = 0;i < this.showNumGradedTasks;i++) {
           if (i === (this.showNumGradedTasks - 1)) {
             TPL_GRADED_TASKS += '<th><a href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' +
@@ -98,6 +99,9 @@ class Context {
                 }
               });
             }.bind(this));
+    }else {
+      localStorage.setItem('students',[]);
+      document.getElementById('content').innerHTML ='';
     }
   }
 
