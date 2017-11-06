@@ -2,17 +2,49 @@
 <html>
 
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <script src="dist/main.js" ></script>      
+    
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    <script src="lib/bootstrap.min.js"></script> -->
+
     <link rel="stylesheet" href="style.css"> 
-    <script src="dist/main.js" ></script>          
+    
   </head>
 
   <body>
+
+    <div class="container-fluid">
+     <nav class="navbar navbar-expand-md navbar-light bg-faded">             
+        <a class="navbar-brand" href="#home"><h2><i class="fa fa-cubes fa-2x"></i>&nbsp;run<strong>KING</strong></h2></a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">                    
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"><a class="nav-link" href="#addStudent"><button class="btn btn-secondary"> + Student</button></a></li>
+              <li class="nav-item"><a class="nav-link" href="#addGradedTask"><button class="btn btn-secondary"> + Graded task</button></a></li>
+            </ul>
+        </div>
+      </nav>
   	
-    	<header><a href=""><h1>Ranking list</h1></a>&nbsp;<button id="addStudent">Add new Student</button><button id="addGradedTask">Add graded task</button></h1></header>
-      <div id="content"> 
+    	<div id="content"> 
     	 
       </div>
-      <div id ="notify" style="position:absolute;bottom:0">Notification area</div>
+      <footer>
+        
+          <div class="alert alert-danger" id ="notify" >Notification area</div>
+          <!-- <img src="images/ies-logo.png" /> -->
+        
+      </footer>
+      
+    </div>
+     
   </body>
 
 </html>

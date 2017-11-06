@@ -54,3 +54,17 @@ ES6 template literals
 * CALLBACKS patterns in javascript
 * Template system | ES6 template literals
 
+gradedtasks branch
+==================
+
+2 points context.students conversion and app adaptation from array to Map
+2 points basic routing mechanism
+2 points CRUD student 
+1 points CRUD gradedtasks
+1 point jsdoc3 documentation up to date according to changes
+1 point worthy css
+1 More visible graded tasks feature implemented. A button to show one mode gradedtasks. We are able to see the last one when we create ranking list 
+
+Optional -> 2 points Remove any createElement present in code (All tag generation templated based) 
+
+SUPER GREAT: Implement a ng-repeat attribute inside basic template system (2 points more in the 1st term final mark)

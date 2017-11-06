@@ -17,7 +17,7 @@ if (!fs.existsSync('dist')){
 gulp.task('vet', function() {
   //log('Analyzing source with JSHint and JSCS');
   return gulp
-    .src('./src/*')
+    .src('./src/client/*')
     //.pipe($.if(args.verbose, $.print()))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish', { verbose: true }))
@@ -39,7 +39,7 @@ gulp.task('doc', function (cb) {
 
 ///babelify, es6 to es5
 gulp.task('browserify', function() {
-  browserify('./src/main.js')
+  browserify('./src/client/main.js')
   .transform('babelify', {presets: ['es2015']})
   .bundle()
   .pipe(fs.createWriteStream('dist/main.js'));
@@ -49,6 +49,7 @@ gulp.task('browserify', function() {
 gulp.task('webserver', function() {
   gulp.src('./')
   .pipe(webserver({
+    //host:'192.168.27.144',
     livereload: true,
     directoryListing: false,
     open: true
@@ -57,6 +58,6 @@ gulp.task('webserver', function() {
 
 // watch any change
 gulp.task('watch', ['browserify'], function () {
-  gulp.watch('./src/**/*.js', ['browserify']);
+  gulp.watch('./src/client/**/*.js', ['browserify']);
 });
 gulp.task('default', ['browserify', 'webserver', 'watch']);

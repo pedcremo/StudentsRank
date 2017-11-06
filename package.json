@@ -8,6 +8,19 @@
   },
   "author": "Pere Crespo",
   "license": "ISC",
+  "dependencies": { 
+    "body-parser": "^1.8.2",
+    "express": "^4.9.3",  
+    "express-force-ssl": "^0.3.2",
+    "morgan": "^1.1.1",
+    "serve-favicon": "^2.0.1",
+    "express-session":"*",
+    "passport": "*",
+    "passport-local": "*",
+    "passport-twitter":"~1.0.4",
+    "passport-facebook":"~2.1.1",
+    "passport-google-oauth":"1.0.0"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
