@@ -30,7 +30,7 @@ class Context {
           value_.attitudeTasks,value_.id));
       });
       this.students = students_;
-    }
+    }*/
     if (localStorage.getItem('gradedTasks')) {
       let gradedTasks_ = new Map(JSON.parse(localStorage.getItem('gradedTasks')));
       gradedTasks_.forEach(function(value_,key_,gradedTasks_) {
@@ -38,7 +38,7 @@ class Context {
           value_.studentsMark,value_.id));
       });
       this.gradedTasks = gradedTasks_;
-    } */
+    } 
   }
   /** Check if user is logged */
   isLogged() {

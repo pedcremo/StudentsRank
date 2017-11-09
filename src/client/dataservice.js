@@ -9,10 +9,11 @@ function updateFromServer() {
                           localStorage.setItem('students',response);
                           loadStudentsToLocalStorage();
                         },'GET','',false);
-  loadTemplate('api/getGradedTasks',function(response) {
+  /*loadTemplate('api/getGradedTasks',function(response) {
                         localStorage.setItem('gradedTasks',response);
                         loadGradedTasksToLocalStorage();
                       },'GET','',false);
+  loadGradedTasksToLocalStorage();*/
 
 }
 
