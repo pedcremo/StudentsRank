@@ -4,12 +4,15 @@ var data = require('./data');
 
 var auth = require('./authentication');
 var passport = require('passport');
+var fs = require('fs');
+//router.get('/people', getPeople);
+//router.get('/person/:id', getPerson);
 
-router.get('/people', getPeople);
-
-router.get('/person/:id', getPerson);
 
 //===== NEW PERE ===========================================================
+router.get('/getStudents', getStudents);
+router.get('/getGradedTasks', getGradedTasks);
+
 // route to test if the user is logged in or not
 router.get('/loggedin', function(req, res) {
   console.log('Logged in EXPRESS' + JSON.stringify(req.user));
@@ -17,7 +20,7 @@ router.get('/loggedin', function(req, res) {
 });
 
 // route to log in
-router.post('/login', passport.authenticate('local'), function(req, res) {
+router.post('/login', passport.authenticate('local'), function (req, res) {
   console.log('login ' + JSON.stringify(req.user));
   console.log('session ' + JSON.stringify(req.session));
   res.send(req.user);
@@ -69,6 +72,24 @@ module.exports = router;
 
 function getPeople(req, res, next) {
   res.status(200).send(data.people);
+}
+function getStudents(req, res, next) {
+  console.log('ttt');
+  let ff = function() {
+    fs.readFile('students.json', 'utf8', function readFileCallback(err, data) {
+      if (err) {
+        console.log('hola err');
+        console.log(err);
+        return err;
+      } else {
+        console.log(data);
+        return data;
+      }});
+  };
+  res.status(200).send(ff());
+}
+function getGradedTasks(req, res, next) {
+  res.status(200).send(data.getGradedTasks);
 }
 
 function getPerson(req, res, next) {

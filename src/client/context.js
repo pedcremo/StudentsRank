@@ -9,7 +9,8 @@
 
 import Person from './person.js';
 import GradedTask from './gradedtask.js';
-import {hashcode,deleteContent,loadTemplate} from './utils.js';
+import {hashcode,loadTemplate,setCookie,getCookie} from './utils.js';
+import {generateMenu} from './menu.js';
 
 class Context {
 
@@ -17,6 +18,9 @@ class Context {
     this.students = new Map();
     this.gradedTasks = new Map();
     this.showNumGradedTasks = 1;//Max visible graded tasks in ranking list table
+    if (getCookie('user')) {
+      this.user = JSON.parse(getCookie('user'));
+    }
 
     if (localStorage.getItem('students')) {
       let students_ = new Map(JSON.parse(localStorage.getItem('students')));
@@ -34,6 +38,50 @@ class Context {
       });
       this.gradedTasks = gradedTasks_;
     }
+  }
+  /** Check if user is logged */
+  isLogged() {
+    if (this.user) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+  /** Show login form template when not authenticated */
+  login() {
+    let that = this;
+    if (!this.user) {
+      loadTemplate('templates/login.html',function(responseText) {
+        that.hideMenu();
+        document.getElementById('content').innerHTML = eval('`' + responseText + '`');
+        let loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          let username = document.getElementsByName('username')[0].value;
+          let password = document.getElementsByName('password')[0].value;
+          loadTemplate('api/login',function(userData) {
+            that.user = JSON.parse(userData);
+            setCookie('user',userData,7);
+            generateMenu();
+            that.getTemplateRanking();
+            that.showMenu();
+          },'POST','username=' + username + '&password=' + password,false);
+          return false; //Avoid form submit
+        });
+      });
+    }else {
+      generateMenu();
+      that.getTemplateRanking();
+    }
+  }
+
+  showMenu() {
+    document.getElementById('navbarNav').style.visibility = 'visible';
+  }
+
+  hideMenu() {
+    document.getElementById('navbarNav').style.visibility = 'hidden';
   }
 
   /** Get a Person instance by its ID */

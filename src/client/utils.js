@@ -16,43 +16,63 @@ function hashcode(str) {
   return hash;
 }
 
-/** Pass a text or an element ang get a td table element wrapping it. */
-/*function getElementTd(text) {
-  let tdEl = document.createElement('td');
-  let t = text;
-  if (typeof text === 'string' || typeof text === 'number') {
-    //t = document.createTextNode(text); // Create a text node
-    tdEl.innerHTML = text;
-  }else {
-    tdEl.appendChild(t);
-  }
-  return tdEl;
-}*/
-
-function deleteContent() {
+/*function deleteContent() {
   let contentEl = document.getElementById('content');
 
   while (contentEl.firstChild) {
     contentEl.removeChild(contentEl.firstChild);
   }
+}*/
+function setCookie(cname, cvalue, exdays) {
+  if (cvalue && cvalue !== '') {
+    let d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = 'expires=' + d.toUTCString();
+    document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
+  }
+}
+function getCookie(cname) {
+  let name = cname + '=';
+  let ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return '';
 }
 
-function loadTemplate(urlTemplate,callback) {
+function deleteCookie(name) {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
   if (CACHE_TEMPLATES.has(urlTemplate)) {
-    //alert('popi ' + urlTemplate);
     return callback(CACHE_TEMPLATES.get(urlTemplate));
   }else {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
-        /*document.getElementById('content').innerHTML =
-        this.responseText;*/
-        CACHE_TEMPLATES.set(urlTemplate,this.responseText);
+        if (cached) {
+          CACHE_TEMPLATES.set(urlTemplate,this.responseText);
+        }
         callback(this.responseText);
       }
+      if (this.status === 401) {
+        if (urlTemplate === 'api/login') {
+          document.getElementById('loginAlert').style.visibility = 'visible';
+        }
+      }
     };
-    xhttp.open('GET', urlTemplate, true);
-    xhttp.send();
+    xhttp.open(method, urlTemplate, true);
+    if (method === 'POST') {
+      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    }
+    xhttp.send(params);
   }
 }
 
@@ -63,7 +83,6 @@ function popupwindow(url, title, w, h) {
                     'status=no, menubar=no,scrollbars=no, resizable=no, copyhistory=no,' +
                     ' width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 }
-
 
 function formatDate(date) {
   var monthNames = [
@@ -81,5 +100,10 @@ function formatDate(date) {
 
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' ' + hour + ':' + minute;
 }
+function getIdFromURL(url) {
+  let reg = /([0-9,-]*)$/gi;
+  let matchResults = url.match(reg);
+  return matchResults[0];
+}
 
-export {formatDate,popupwindow,hashcode,deleteContent,loadTemplate};
+export {formatDate,popupwindow,hashcode,deleteCookie,setCookie,getCookie,loadTemplate,getIdFromURL};

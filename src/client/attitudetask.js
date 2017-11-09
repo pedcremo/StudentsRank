@@ -12,7 +12,7 @@ import Task from './task.js';
  * @param {string} points - task points associated to that behaviour
  * @tutorial pointing-criteria
  */
-
+ 
 class AttitudeTask extends Task {
   constructor(name,description,points) {
     super(name,description);

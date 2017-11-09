@@ -65,8 +65,6 @@ class Person {
   getHTMLView(targetElement) {
     loadTemplate('templates/lineStudent.html',function(responseText) {
       let TPL_PERSON = this;
-      //let dom_virtual = document.createElement('html');
-      //dom_virtual.innerHTML = responseText;
       let TPL_REPEATED_GRADED_TASKS = '';
       let gradedTasks = GradedTask.getStudentMarks(this.getId()).reverse();
 
