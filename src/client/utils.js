@@ -16,13 +16,6 @@ function hashcode(str) {
   return hash;
 }
 
-/*function deleteContent() {
-  let contentEl = document.getElementById('content');
-
-  while (contentEl.firstChild) {
-    contentEl.removeChild(contentEl.firstChild);
-  }
-}*/
 function setCookie(cname, cvalue, exdays) {
   if (cvalue && cvalue !== '') {
     let d = new Date();

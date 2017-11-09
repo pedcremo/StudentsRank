@@ -73,23 +73,13 @@ module.exports = router;
 function getPeople(req, res, next) {
   res.status(200).send(data.people);
 }
-function getStudents(req, res, next) {
-  console.log('ttt');
-  let ff = function() {
-    fs.readFile('students.json', 'utf8', function readFileCallback(err, data) {
-      if (err) {
-        console.log('hola err');
-        console.log(err);
-        return err;
-      } else {
-        console.log(data);
-        return data;
-      }});
-  };
-  res.status(200).send(ff());
+function getStudents(req, res, next) {  
+  var myObj = require('./data/students');
+  res.status(200).send(myObj);
 }
 function getGradedTasks(req, res, next) {
-  res.status(200).send(data.getGradedTasks);
+  var myObj = require('./data/gradedtasks');
+  res.status(200).send(myObj);
 }
 
 function getPerson(req, res, next) {

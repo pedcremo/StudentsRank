@@ -9,6 +9,7 @@
 
 import Person from './person.js';
 import GradedTask from './gradedtask.js';
+import {updateFromServer} from './dataservice.js';
 import {hashcode,loadTemplate,setCookie,getCookie} from './utils.js';
 import {generateMenu} from './menu.js';
 
@@ -21,8 +22,8 @@ class Context {
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
-
-    if (localStorage.getItem('students')) {
+    updateFromServer();
+    /* if (localStorage.getItem('students')) {
       let students_ = new Map(JSON.parse(localStorage.getItem('students')));
       students_.forEach(function(value_,key_,students_) {
         students_.set(key_,new Person(value_.name,value_.surname,
@@ -37,7 +38,7 @@ class Context {
           value_.studentsMark,value_.id));
       });
       this.gradedTasks = gradedTasks_;
-    }
+    } */
   }
   /** Check if user is logged */
   isLogged() {

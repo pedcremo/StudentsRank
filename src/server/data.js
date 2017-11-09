@@ -22,15 +22,17 @@ function saveStudents(studentsJSON) {
 }
 
 function students() {
-  console.log('hola-popo');
-  fs.readFile('src/server/data/students.json', 'utf8', function readFileCallback(err, data) {
-    if (err) {
-      console.log('hola err');
-      console.log(err);
-    } else {
-      console.log('hola');
-      return data;
-    }});
+    console.log('hola-popo');
+    fs.readFile('src/server/data/students.json', 'utf8', function readFileCallback(err, data) {
+      if (err) {
+        console.log('hola err');
+        console.log(err);
+        return err;
+      }else {
+        console.log(data);
+        return data;
+      }
+    });
 }
 
 function saveGradedTasks(gradedTasksJSON) {
