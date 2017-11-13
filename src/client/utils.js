@@ -63,7 +63,11 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
     };
     xhttp.open(method, urlTemplate, true);
     if (method === 'POST') {
-      xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      if (urlTemplate === 'api/saveStudents' || urlTemplate === 'api/saveGradedTasks') {
+        xhttp.setRequestHeader('Content-Type', 'application/json');
+      }else {
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      }
     }
     xhttp.send(params);
   }

@@ -18,6 +18,7 @@ function generateMenu() {
 function logout() {
   context.user = '';
   deleteCookie('user');
+  deleteCookie('connect.sid');
   loadTemplate('api/logout',function(response) {
                 context.login();
               },'GET','',false);

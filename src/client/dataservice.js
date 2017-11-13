@@ -5,17 +5,32 @@ import GradedTask from './gradedtask.js';
 
 function updateFromServer() {
 
-  loadTemplate('api/getStudents',function(response) {
-                          localStorage.setItem('students',response);
-                          loadStudentsToLocalStorage();
+  if (context.user.id) {
+    loadTemplate('api/getStudents',function(response) {
+                            localStorage.setItem('students',response);
+                            loadStudentsToLocalStorage();
+                          },'GET','',false);
+    loadTemplate('api/getGradedTasks',function(response) {
+                          localStorage.setItem('gradedTasks',response);
+                          loadGradedTasksToLocalStorage();
+                          context.getTemplateRanking();
                         },'GET','',false);
-  loadTemplate('api/getGradedTasks',function(response) {
-                        localStorage.setItem('gradedTasks',response);
-                        loadGradedTasksToLocalStorage();
-                      },'GET','',false);
-
+  }
 }
 
+function saveStudents(arrayStudents) {
+  localStorage.setItem('students',arrayStudents);
+  loadTemplate('api/saveStudents',function(response) {
+                          console.log('SAVE STUDENTS ' + response);
+                        },'POST',localStorage.getItem('students'),false);
+}
+
+function saveGradedTasks(arrayGT) {
+  localStorage.setItem('gradedTasks',arrayGT);
+  loadTemplate('api/saveGradedTasks',function(response) {
+                          console.log('SAVE GRADED TASKS ' + response);
+                        },'POST',localStorage.getItem('gradedTasks'),false);
+}
 function loadStudentsToLocalStorage() {
   if (localStorage.getItem('students')) {
     let students_ = new Map(JSON.parse(localStorage.getItem('students')));
@@ -38,4 +53,4 @@ function loadGradedTasksToLocalStorage() {
   }
 }
 
-export {updateFromServer};
+export {updateFromServer,saveStudents,saveGradedTasks};

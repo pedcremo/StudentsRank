@@ -8,12 +8,13 @@ var fs = require('fs');
 };*/
 
 module.exports = {
-  getStudents: students,
-  getGradedTasks: getGradedTasks
+  saveGradedTasks: saveGradedTasks,
+  saveStudents: saveStudents
 };
 
 function saveStudents(studentsJSON) {
-  fs.writeFile('src/server/data/students.json', studentsJSON, 'utf8', (err) => {
+  console.log(JSON.stringify(studentsJSON));
+  fs.writeFile('src/server/data/students.json', JSON.stringify(studentsJSON), 'utf8', (err) => {
     if (err) {
       throw err;
     }
@@ -21,7 +22,7 @@ function saveStudents(studentsJSON) {
   });
 }
 
-function students() {
+/*function students() {
     console.log('hola-popo');
     fs.readFile('src/server/data/students.json', 'utf8', function readFileCallback(err, data) {
       if (err) {
@@ -33,9 +34,10 @@ function students() {
         return data;
       }
     });
-}
+}*/
 
 function saveGradedTasks(gradedTasksJSON) {
+  console.log('LLLLL ->' + JSON.stringify(gradedTasksJSON));
   fs.writeFile('src/server/data/gradedtasks.json', gradedTasksJSON, 'utf8', (err) => {
     if (err) {
       throw err;
@@ -44,11 +46,11 @@ function saveGradedTasks(gradedTasksJSON) {
   });
 }
 
-function  getGradedTasks() {
+/*function  getGradedTasks() {
   fs.readFile('src/server/data/gradedtasks.json', 'utf8', function readFileCallback(err, data) {
     if (err) {
       console.log(err);
     } else {
       return data;
     }});
-}
+}*/

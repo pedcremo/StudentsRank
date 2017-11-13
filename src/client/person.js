@@ -13,6 +13,7 @@ import {formatDate,popupwindow,hashcode,loadTemplate} from './utils.js';
 import {context} from './context.js';
 import AttitudeTask from './attitudetask.js';
 import GradedTask from './gradedtask.js';
+import {saveStudents} from './dataservice.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
 const _totalPoints = Symbol('TOTAL_POINTS'); /** To acomplish private property */
@@ -67,6 +68,7 @@ class Person {
       let TPL_PERSON = this;
       let TPL_REPEATED_GRADED_TASKS = '';
       let gradedTasks = GradedTask.getStudentMarks(this.getId()).reverse();
+      let TPL_GRADED_TASKS_POINTS = GradedTask.getStudentGradedTasksPoints(this.getId());
 
       if (context.showNumGradedTasks <= gradedTasks.length) {
         for (let i = 0;i < context.showNumGradedTasks;i++) {
@@ -90,7 +92,7 @@ class Person {
         this.surname = document.getElementById('idSurnames').value;
         let student = new Person(this.name,this.surname,this.attitudeTasks,this.id);
         context.students.set(student.getId(),student);
-        localStorage.setItem('students',JSON.stringify([...context.students])); //Use of spread operator to convert a Map to an array of pairs
+        saveStudents(JSON.stringify([...context.students]));
       });
     }.bind(this);
 

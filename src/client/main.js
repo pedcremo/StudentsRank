@@ -7,8 +7,7 @@ import AttitudeTask from './attitudetask.js';
 
 /** Once the page is loaded we get a context app object an generate students rank view. */
 window.onload = function() {
-  //context.getTemplateRanking();
-  context.login();
+  context.isLogged();
 };
 
 /** Primitive routing mechanism we hope in future will be brave enought to  implement a ng-repeat feature at least*/
@@ -61,9 +60,7 @@ window.onclick = function(e) {
         gtInstance.getHTMLEdit();
         break;
       default:
-        if (context.isLogged()) {
-          context.getTemplateRanking();
-        }
+        context.isLogged();
     }
   }
 };

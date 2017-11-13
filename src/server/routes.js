@@ -13,6 +13,31 @@ var fs = require('fs');
 router.get('/getStudents', getStudents);
 router.get('/getGradedTasks', getGradedTasks);
 
+router.post('/saveStudents',function(req, res) {
+  if (req.isAuthenticated()) {
+    fs.writeFile('src/server/data/' + req.user.id + '/students.json', JSON.stringify(req.body), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file has been saved!');
+    });
+      res.send('OK');
+    }
+});
+
+router.post('/saveGradedTasks',function(req, res) {
+  if (req.isAuthenticated()) {
+    //data.saveGradedTasks(req.body);
+    fs.writeFile('src/server/data/' + req.user.id + '/gradedtasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file has been saved!');
+    });
+      res.send('OK');
+    }
+});
+
 // route to test if the user is logged in or not
 router.get('/loggedin', function(req, res) {
   console.log('Logged in EXPRESS' + JSON.stringify(req.user));
@@ -70,19 +95,19 @@ module.exports = router;
 
 //////////////
 
-function getPeople(req, res, next) {
+/*function getPeople(req, res, next) {
   res.status(200).send(data.people);
-}
+}*/
 function getStudents(req, res, next) {  
-  var myObj = require('./data/students');
+  var myObj = require('./data/' + req.user.id + '/students.json');
   res.status(200).send(myObj);
 }
 function getGradedTasks(req, res, next) {
-  var myObj = require('./data/gradedtasks');
+  var myObj = require('./data/' + req.user.id + '/gradedtasks.json');
   res.status(200).send(myObj);
 }
 
-function getPerson(req, res, next) {
+/*function getPerson(req, res, next) {
   var id = +req.params.id;
   var person = data.people.filter(function(p) {
     return p.id === id;
@@ -93,4 +118,4 @@ function getPerson(req, res, next) {
   } else {
     four0four.send404(req, res, 'person ' + id + ' not found');
   }
-}
+}*/
