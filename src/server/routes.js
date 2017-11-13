@@ -99,12 +99,26 @@ module.exports = router;
   res.status(200).send(data.people);
 }*/
 function getStudents(req, res, next) {  
-  var myObj = require('./data/' + req.user.id + '/students.json');
-  res.status(200).send(myObj);
+  //var myObj = require('./data/' + req.user.id + '/students.json');
+  fs.readFile('src/server/data/' + req.user.id + '/students.json',function(err, data) {
+         if(err) {
+            console.log(err);
+         }
+         console.log(data);
+         res.status(200).send(data);
+  });
+  //res.status(200).send(myObj);
 }
 function getGradedTasks(req, res, next) {
-  var myObj = require('./data/' + req.user.id + '/gradedtasks.json');
-  res.status(200).send(myObj);
+  //var myObj = require('./data/' + req.user.id + '/gradedtasks.json');
+  //res.status(200).send(myObj);
+  fs.readFile('src/server/data/' + req.user.id + '/gradedtasks.json',function(err, data) {
+         if(err) {
+            console.log(err);
+         }
+         console.log(data);
+         res.status(200).send(data);
+  });
 }
 
 /*function getPerson(req, res, next) {
