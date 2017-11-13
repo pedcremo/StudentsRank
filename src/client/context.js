@@ -22,8 +22,8 @@ class Context {
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
-    //updateFromServer();
   }
+
   /** Check if user is logged */
   isLogged() {
     loadTemplate('api/loggedin',function(response) {
@@ -91,10 +91,9 @@ class Context {
   getTemplateRanking() {
     generateMenu();
     this.showMenu();
-    
+
     if (this.students && this.students.size > 0) {
       //alert('SI STUDENTS');
-      
       /* We sort students descending from max number of points to min */
       let arrayFromMap = [...this.students.entries()];
       arrayFromMap.sort(function(a,b) {

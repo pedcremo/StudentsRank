@@ -4,7 +4,6 @@ import Person from './person.js';
 import GradedTask from './gradedtask.js';
 
 function updateFromServer() {
-
   if (context.user.id) {
     loadTemplate('api/getStudents',function(response) {
                             localStorage.setItem('students',response);
