@@ -8,6 +8,7 @@ function updateFromServer() {
     loadTemplate('api/getStudents',function(response) {
                             localStorage.setItem('students',response);
                             loadStudentsToLocalStorage();
+                            context.getTemplateRanking();
                           },'GET','',false);
     loadTemplate('api/getGradedTasks',function(response) {
                           localStorage.setItem('gradedTasks',response);
