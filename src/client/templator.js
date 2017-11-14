@@ -6,7 +6,7 @@ String.prototype.replaceAll = function(search, replacement) {
   };
 
 
-function template(responseTPL) {
+function template(responseTPL,scope) {
   let virt = document.createElement('html');
   virt.innerHTML = responseTPL;
   let elements = virt.querySelectorAll('[ng-repeat]');
@@ -14,10 +14,18 @@ function template(responseTPL) {
   while (elements && elements[0]) {
     let repeatExpr = elements[0].getAttribute('ng-repeat');
     let words = /(\S*) in (\S*)/.exec(repeatExpr);
-    explodeNode(virt,elements[0],scope[words[2]],words[1],words[2]);
+    if (words[2].startsWith('scope')) {
+      let arrayIt = eval(words[2]);
+      words[2] = words[2].substring(6, words[2].lenght); //Remove scope word from beginning
+      explodeNode(virt,elements[0],arrayIt,words[1],words[2]);
+    }else {
+      explodeNode(virt,elements[0],scope[words[2]],words[1],words[2]);
+    }
     elements = virt.querySelectorAll('[ng-repeat]');
   }
-  return eval('`' + virt.getElementsByTagName('body')[0].innerHTML + '`');
+  //console.log(virt.getElementsByTagName('body')[0].innerHTML);
+  //let output = eval('`' + virt.getElementsByTagName('body')[0].innerHTML + '`');
+  return virt.getElementsByTagName('body')[0].innerHTML;
 }
 
 function explodeNode(virtDom,element,arrayItems,strReplace,strBase) {

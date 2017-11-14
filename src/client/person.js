@@ -14,6 +14,7 @@ import {context} from './context.js';
 import AttitudeTask from './attitudetask.js';
 import GradedTask from './gradedtask.js';
 import {saveStudents} from './dataservice.js';
+import {template} from './templator.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
 const _totalPoints = Symbol('TOTAL_POINTS'); /** To acomplish private property */
@@ -59,24 +60,14 @@ class Person {
     this[privateAddTotalPoints](parseInt(taskInstance.points));
     context.notify('Added ' + taskInstance.description + ' to ' + this.name + ',' + this.surname);
   }
+  /** Get students Marks sliced by showNumGradedTasks from context*/
+  getStudentMarks() {
+    let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
+    return gtArray.slice(0,context.showNumGradedTasks);
+  }
 
-  /** Renders HTML person table row (tr) with
-   *  complete name, attitudePoints , add button and one input for 
-   * every gradded task binded for that person. */
-  getHTMLView(targetElement) {
-    loadTemplate('templates/lineStudent.html',function(responseText) {
-      let TPL_PERSON = this;
-      let TPL_REPEATED_GRADED_TASKS = '';
-      let gradedTasks = GradedTask.getStudentMarks(this.getId()).reverse();
-      let TPL_GRADED_TASKS_POINTS = GradedTask.getStudentGradedTasksPoints(this.getId());
-
-      if (context.showNumGradedTasks <= gradedTasks.length) {
-        for (let i = 0;i < context.showNumGradedTasks;i++) {
-          TPL_REPEATED_GRADED_TASKS += '<td><input type="number" class="gradedTaskInput" idPerson="' + TPL_PERSON.getId() + '" idGradedTask="' + gradedTasks[i][0] + '" min=0 max=100 value="' + gradedTasks[i][1] + '"/></td>';
-        }
-      }
-      targetElement.innerHTML += eval('`' + responseText + '`');
-    }.bind(this));
+  getGTtotalPoints() {
+    return GradedTask.getStudentGradedTasksPoints(this.getId());
   }
 
   /** Renders person edit form */
@@ -103,17 +94,22 @@ class Person {
     loadTemplate('templates/detailStudent.html',function(responseText) {
         document.getElementById('content').innerHTML = responseText;
         let TPL_STUDENT = this;
-        let TPL_ATTITUDE_TASKS = '';
+        let scope = {};
+        scope.TPL_ATTITUDE_TASKS = this.attitudeTasks.reverse();
+        /*scope.TPL_GRADED_TASKS = [...context.gradedTasks.entries()];
         this.attitudeTasks.reverse().forEach(function(atItem) {
           TPL_ATTITUDE_TASKS += '<li class="list-group-item">' + atItem.task.points + '->' +
                         atItem.task.description + '->' + formatDate(new Date(atItem.task.datetime)) + '</li>';
         });
+        */
         let TPL_GRADED_TASKS = '';
         context.gradedTasks.forEach(function(gtItem) {
           TPL_GRADED_TASKS += '<li class="list-group-item">' + gtItem.getStudentMark(TPL_STUDENT.getId()) + '->' +
                         gtItem.name + '->' + formatDate(new Date(gtItem.datetime)) + '</li>';
         });
-        document.getElementById('content').innerHTML = eval('`' + responseText + '`');
+        let out = template(responseText,scope);
+        console.log(out);
+        document.getElementById('content').innerHTML = eval('`' + out + '`');
       }.bind(this));
   }
 }

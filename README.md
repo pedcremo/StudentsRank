@@ -68,3 +68,13 @@ gradedtasks branch
 Optional -> 2 points Remove any createElement present in code (All tag generation templated based) 
 
 SUPER GREAT: Implement a ng-repeat attribute inside basic template system (2 points more in the 1st term final mark)
+
+
+templator branch
+================
+2 points. New settings menu button to fine tune % assigned to XP tasks and % Assigned to graded tasks. Save in localstorage at the moment 
+1 point. Sort Students ranking taking into account new finalGrade() method aimed to calculate final grade using GT% and XP%
+2 points. Enhance student form adding new field to upload an image profile to server using as name student id 
+2 deploy inside docker container our app
+1 updated documentation able to generate with jsdoc3
+2 points custom css from scratch  

@@ -12,6 +12,7 @@ import GradedTask from './gradedtask.js';
 import {updateFromServer,saveStudents,saveGradedTasks} from './dataservice.js';
 import {hashcode,loadTemplate,setCookie,getCookie} from './utils.js';
 import {generateMenu} from './menu.js';
+import {template} from './templator.js';
 
 class Context {
 
@@ -60,7 +61,6 @@ class Context {
             setCookie('user',userData,7);
             updateFromServer();
             that.getTemplateRanking();
-            //that.showMenu();
           },'POST','username=' + username + '&password=' + password,false);
           return false; //Avoid form submit
         });
@@ -101,15 +101,13 @@ class Context {
       });
       this.students = new Map(arrayFromMap);
 
-      //localStorage.setItem('students',JSON.stringify([...this.students])); //Use of spread operator to convert a Map to an array of pairs
       saveStudents(JSON.stringify([...this.students]));
       let TPL_GRADED_TASKS = '';
-      /* Maximum visible graded tasks could not be greater than actually existing graded tasks */
-      if (this.showNumGradedTasks >= this.gradedTasks.length) {
-        this.showNumGradedTasks = this.gradedTasks.length;
-      }
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
+        if (this.showNumGradedTasks >= this.gradedTasks.size) {
+          this.showNumGradedTasks = this.gradedTasks.size;
+        }
         let arrayGradedTasks = [...this.gradedTasks.entries()].reverse();
         for (let i = 0;i < this.showNumGradedTasks;i++) {
           if (i === (this.showNumGradedTasks - 1)) {
@@ -120,16 +118,20 @@ class Context {
           }
         }
       }
+      let scope = {};
+      scope.TPL_GRADED_TASKS = TPL_GRADED_TASKS;
+      scope.TPL_PERSONS = arrayFromMap;
 
       loadTemplate('templates/rankingList.html',function(responseText) {
-              document.getElementById('content').innerHTML = eval('`' + responseText + '`');
-              let tableBody = document.getElementById('idTableRankingBody');
+              let out = template(responseText,scope);
+              //console.log(out);
+              document.getElementById('content').innerHTML = eval('`' + out + '`');
               let that = this;
               let callback = function() {
                   let gtInputs = document.getElementsByClassName('gradedTaskInput');
                   Array.prototype.forEach.call(gtInputs,function(gtInputItem) {
                         gtInputItem.addEventListener('change', () => {
-                          let idPerson = gtInputItem.getAttribute('idPerson');
+                          let idPerson = gtInputItem.getAttribute('idStudent');
                           let idGradedTask = gtInputItem.getAttribute('idGradedTask');
                           let gt = that.gradedTasks.get(parseInt(idGradedTask));
                           gt.addStudentMark(idPerson,gtInputItem.value);
@@ -137,14 +139,7 @@ class Context {
                         });
                       });
                 };
-              let itemsProcessed = 0;
-              this.students.forEach(function(studentItem,key,map) {
-                studentItem.getHTMLView(tableBody);
-                itemsProcessed++;
-                if (itemsProcessed === map.size) {
-                  setTimeout(callback,300); //FAULTY 
-                }
-              });
+              callback();
             }.bind(this));
     }else {
       //alert('NO STUDENTS');

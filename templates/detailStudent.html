@@ -2,11 +2,11 @@
 <h3>Attitude tasks</h3>
 
 <ul class="list-group">
- ${TPL_ATTITUDE_TASKS}
+ <li ng-repeat="atItem in TPL_ATTITUDE_TASKS" class="list-group-item">${atItem.task.points} -> ${atItem.task.description} ->  ${atItem.task.datetime}</li>
 </ul>
 
 <h3>Graded tasks</h3>
 <ul class="list-group">
-    ${TPL_GRADED_TASKS}
-</ul>
+ ${TPL_GRADED_TASKS}
+ </ul>
    
