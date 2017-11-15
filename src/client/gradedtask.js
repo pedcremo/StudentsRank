@@ -50,6 +50,14 @@ class GradedTask extends Task {
       });
     return Math.round((points * 100) / 100);
   }
+  /** CAlculate total aggregated GT weight */
+  static getGradedTasksTotalWeight() {
+    let points = 0;
+    context.gradedTasks.forEach(function(itemTask) {
+        points += parseInt(itemTask.weight);
+      });
+    return points;
+  }
 
   /** Get student mark by their person ID */
   getStudentMark(idStudent) {
@@ -62,7 +70,11 @@ class GradedTask extends Task {
       let saveGradedTask = document.getElementById('newGradedTask');
       document.getElementById('idTaskName').value = this.name;
       document.getElementById('idTaskDescription').value = this.description;
-      document.getElementById('idTaskWeight').value = this.weight;
+      let totalGTweight = GradedTask.getGradedTasksTotalWeight();
+      let weightIput = document.getElementById('idTaskWeight');
+      document.getElementById('labelWeight').innerHTML = 'Weight (0-' + (100 - (totalGTweight - this.weight)) + '%)';
+      weightIput.value = this.weight;
+      weightIput.setAttribute('max', 100 - (totalGTweight - this.weight));
 
       saveGradedTask.addEventListener('submit', () => {
         let oldId = this.getId();

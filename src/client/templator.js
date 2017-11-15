@@ -30,20 +30,24 @@ function template(responseTPL,scope) {
 
 function explodeNode(virtDom,element,arrayItems,strReplace,strBase) {
   element.removeAttribute('ng-repeat');
-  let str = '';
-  let lastSibling = element;
-  for (let i = 0;i < (arrayItems.length - 1);i++) {
-    let cloned = element.cloneNode(true);
-    str = cloned.innerHTML;
-    str = str.replaceAll(strReplace,'scope.' + strBase + '[' + (i + 1) + ']');
-    cloned.innerHTML = str;
-    let parent = element.parentNode;
-    parent.insertBefore(cloned,lastSibling.nextSibling);
-    lastSibling = cloned;
+  if (arrayItems && arrayItems.length > 0) {
+    let str = '';
+    let lastSibling = element;
+    for (let i = 0;i < (arrayItems.length - 1);i++) {
+      let cloned = element.cloneNode(true);
+      str = cloned.innerHTML;
+      str = str.replaceAll(strReplace,'scope.' + strBase + '[' + (i + 1) + ']');
+      cloned.innerHTML = str;
+      let parent = element.parentNode;
+      parent.insertBefore(cloned,lastSibling.nextSibling);
+      lastSibling = cloned;
+    }
+    str = element.innerHTML;
+    str = str.replaceAll(strReplace,'scope.' + strBase + '[0]');
+    element.innerHTML = str;
+  }else {
+    element.innerHTML = '';
   }
-  str = element.innerHTML;
-  str = str.replaceAll(strReplace,'scope.' + strBase + '[0]');
-  element.innerHTML = str;
 }
 
 export {template};

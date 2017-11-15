@@ -153,6 +153,10 @@ class Context {
     let callback = function(responseText) {
             document.getElementById('content').innerHTML = responseText;
             let saveGradedTask = document.getElementById('newGradedTask');
+            let totalGTweight = GradedTask.getGradedTasksTotalWeight();
+            document.getElementById('labelWeight').innerHTML = 'Task Weight (0-' + (100 - totalGTweight) + '%)';
+            let weightIput = document.getElementById('idTaskWeight');
+            weightIput.setAttribute('max', 100 - totalGTweight);
 
             saveGradedTask.addEventListener('submit', () => {
               let name = document.getElementById('idTaskName').value;
