@@ -7,8 +7,11 @@ String.prototype.replaceAll = function(search, replacement) {
 
 
 function template(responseTPL,scope) {
-  let virt = document.createElement('html');
-  virt.innerHTML = responseTPL;
+  //let virt = document.createElement('html');
+  //virt.innerHTML = responseTPL;
+  let parser = new DOMParser();
+  let virt = parser.parseFromString(responseTPL, 'text/html');
+
   let elements = virt.querySelectorAll('[ng-repeat]');
 
   while (elements && elements[0]) {

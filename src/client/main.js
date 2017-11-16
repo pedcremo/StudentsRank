@@ -42,6 +42,9 @@ window.onclick = function(e) {
       case /#addStudent/.test(isLink.href):
         context.addPerson();
         break;
+      case /#settings/.test(isLink.href):
+        context.settings();
+        break;
       /** logout */
       case /#logout/.test(isLink.href):
         logout();

@@ -17,11 +17,11 @@ import {saveStudents} from './dataservice.js';
 import {template} from './templator.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
-const _totalPoints = Symbol('TOTAL_POINTS'); /** To acomplish private property */
+const _totalXPpoints = Symbol('TOTAL_XP_POINTS'); /** To acomplish private property */
 
 class Person {
   constructor(name,surname,attitudeTasks,id=null) {
-    this[_totalPoints] = 0;
+    this[_totalXPpoints] = 0;
     this.name = name;
     this.surname = surname;
     if (!id) {
@@ -32,14 +32,14 @@ class Person {
     this.attitudeTasks = attitudeTasks;
 
     this.attitudeTasks.forEach(function (itemAT) {
-      this[_totalPoints] += parseInt(itemAT['task'].points);
+      this[_totalXPpoints] += parseInt(itemAT['task'].points);
     }.bind(this));
   }
 
   /** Add points to person. we should use it carefully . */
   [privateAddTotalPoints] (points) {
     if (!isNaN(points)) {
-      this[_totalPoints] += points;
+      this[_totalXPpoints] += points;
       context.getTemplateRanking();
     }
   }
@@ -49,11 +49,21 @@ class Person {
     return this.id;
   }
 
-  /** Read person _totalPoints. A private property only modicable inside person instance */
-  getTotalPoints() {
-    return this[_totalPoints];
+  /** Read person _totalXPpoints. A private property only modicable inside person instance */
+  getXPtotalPoints() {
+    return this[_totalXPpoints];
   }
 
+  /** returns max XP grade used to calculate XP mark for each student */
+  static getMaxXPmark() {
+    let max = 0;
+    context.students.forEach(function(studentItem,studentKey,studentsRef) {
+      if (studentItem.getXPtotalPoints() > max) {
+        max = studentItem.getXPtotalPoints();
+      }
+    });
+    return max;
+  }
   /** Add a Attitude task linked to person with its own mark. */
   addAttitudeTask(taskInstance) {
     this.attitudeTasks.push({'task':taskInstance});
@@ -65,9 +75,19 @@ class Person {
     let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
     return gtArray.slice(0,context.showNumGradedTasks);
   }
-
+  /** Get total points over 100 taking into account different graded tasks weights */
   getGTtotalPoints() {
     return GradedTask.getStudentGradedTasksPoints(this.getId());
+  }
+
+  /** XP mark relative to highest XP mark and XP weight and GT grade */
+  getFinalGrade() {
+
+    let xpGrade = this.getXPtotalPoints() * (context.weightXP) / Person.getMaxXPmark();
+    if (isNaN(xpGrade)) {
+      xpGrade = 0;
+    }
+    return Math.round(xpGrade + (this.getGTtotalPoints() * (context.weightGP / 100)));
   }
 
   /** Renders person edit form */

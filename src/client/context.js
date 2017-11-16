@@ -20,6 +20,8 @@ class Context {
     this.students = new Map();
     this.gradedTasks = new Map();
     this.showNumGradedTasks = 1;//Max visible graded tasks in ranking list table
+    this.weightXP = parseInt(getCookie('weightXP')) || 25;
+    this.weightGP = parseInt(getCookie('weightGP')) || 75;
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
@@ -97,7 +99,7 @@ class Context {
       /* We sort students descending from max number of points to min */
       let arrayFromMap = [...this.students.entries()];
       arrayFromMap.sort(function(a,b) {
-        return (b[1].getTotalPoints() - a[1].getTotalPoints());
+        return (b[1].getFinalGrade() - a[1].getFinalGrade());
       });
       this.students = new Map(arrayFromMap);
 
@@ -111,16 +113,18 @@ class Context {
         let arrayGradedTasks = [...this.gradedTasks.entries()].reverse();
         for (let i = 0;i < this.showNumGradedTasks;i++) {
           if (i === (this.showNumGradedTasks - 1)) {
-            TPL_GRADED_TASKS += '<th><a href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' +
+            TPL_GRADED_TASKS += '<th><a class="text-warning" href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' +
                   arrayGradedTasks[i][1].name + '(' + arrayGradedTasks[i][1].weight + '%)&nbsp;</a><a href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>';
           } else {
-            TPL_GRADED_TASKS += '<th><a href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' + arrayGradedTasks[i][1].name + '(' + arrayGradedTasks[i][1].weight + '%)</a></th>';
+            TPL_GRADED_TASKS += '<th><a class="text-warning" href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' + arrayGradedTasks[i][1].name + '(' + arrayGradedTasks[i][1].weight + '%)</a></th>';
           }
         }
       }
       let scope = {};
       scope.TPL_GRADED_TASKS = TPL_GRADED_TASKS;
       scope.TPL_PERSONS = arrayFromMap;
+      let TPL_XP_WEIGHT = this.weightXP;
+      let TPL_GT_WEIGHT = this.weightGP;
 
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
@@ -143,10 +147,31 @@ class Context {
             }.bind(this));
     }else {
       //alert('NO STUDENTS');
-      document.getElementById('content').innerHTML ='';
+      document.getElementById('content').innerHTML = '';
     }
   }
-
+  /** Settings */
+  settings() {
+    let callback = function(responseText) {
+      document.getElementById('content').innerHTML = responseText;
+      let itemWeightChanger = document.getElementById('weightChanger');
+      itemWeightChanger.value = this.weightXP;
+      let labelXPWeight = document.getElementById('idXPweight');
+      labelXPWeight.innerHTML = this.weightXP + '% XP weight';
+      let labelGPWeight = document.getElementById('idGPweight');
+      labelGPWeight.innerHTML = this.weightGP + '% GP weight';
+      itemWeightChanger.addEventListener('change', () => {
+          labelXPWeight.innerHTML = itemWeightChanger.value + '% XP weight';
+          this.weightXP = itemWeightChanger.value;
+          setCookie('weightXP',this.weightXP,300);
+          labelGPWeight.innerHTML = (100 - itemWeightChanger.value) + '% GP weight';
+          this.weightGP = (100 - itemWeightChanger.value);
+          setCookie('weightGP',this.weightGP,300);
+        });
+      console.log('Settings: To implement');
+    }.bind(this);
+    loadTemplate('templates/settings.html',callback);
+  }
   /** Create a form to create a GradedTask that will be added to every student */
   addGradedTask() {
 

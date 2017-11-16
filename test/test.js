@@ -13,7 +13,7 @@ var text = '<table class="table table-striped table-hover"> ' +
 '              <button class="btnS btn btn-danger"><i class="fa fa-trash-o fa-1x"></i></button></a> ' +
 '          </td> ' +
 '            <td> ' +
-'                <strong>${person.getTotalPoints()}</strong> ' +
+'                <strong>${person.getXPtotalPoints()}</strong> ' +
 '            </td> ' +
 '            <td> ' +
 '                <a href="#addXP/${person.getId()}"><button class="btnS btn btn-primary">+XP</button></a> ' +
@@ -30,9 +30,9 @@ virt.innerHTML = text;
 var elements = virt.querySelectorAll('[ng-repeat]');
 let scope = {};
 
-let josep = {name:'Josep', surname:'Borrol',getId: function() {return 4;},getTotalPoints: function() {return 6}};
-let pere = {name:'Pere', surname:'Cresp',getId: function() {return 4;},getTotalPoints: function() {return 6}};
-let joan = {name:'Joan', surname:'Giner',getId: function() {return 4;},getTotalPoints: function() {return 6}};
+let josep = {name:'Josep', surname:'Borrol',getId: function() {return 4;},getXPtotalPoints: function() {return 6}};
+let pere = {name:'Pere', surname:'Cresp',getId: function() {return 4;},getXPtotalPoints: function() {return 6}};
+let joan = {name:'Joan', surname:'Giner',getId: function() {return 4;},getXPtotalPoints: function() {return 6}};
 
 scope.TPL_PERSONS = [josep,pere,joan];
 scope.GradedTasks = ['first','second'];
