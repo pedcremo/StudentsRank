@@ -4,16 +4,16 @@
  * @constructor
  * @tutorial pointing-criteria
  */
-
+ 
 /*jshint -W061 */
 
 import Person from './person.js';
 import GradedTask from './gradedtask.js';
 import {updateFromServer,saveStudents,saveGradedTasks} from './dataservice.js';
-import {hashcode,loadTemplate,setCookie,getCookie} from './utils.js';
+import {hashcode,loadTemplate,setCookie,deleteCookie,getCookie} from './utils.js';
 import {generateMenu} from './menu.js';
 import {template} from './templator.js';
-
+ 
 class Context {
 
   constructor() {
@@ -27,12 +27,19 @@ class Context {
     }
   }
 
+  /** Clear context  */
+  clear() {
+    this.students = new Map();
+    this.gradedTasks = new Map();
+    this.showNumGradedTasks = 1;
+    this.user = undefined;
+  }
   /** Check if user is logged */
   isLogged() {
     loadTemplate('api/loggedin',function(response) {
       if (response === '0') {
         //alert('LOGGED IN 0');
-        this.user = undefined;
+        this.clear();
         this.login();
         return false;
       }else {
@@ -49,6 +56,7 @@ class Context {
   login() {
     let that = this;
     if (!this.user) {
+      this.clear();
       loadTemplate('templates/login.html',function(responseText) {
         that.hideMenu();
         document.getElementById('content').innerHTML = eval('`' + responseText + '`');
@@ -56,6 +64,7 @@ class Context {
 
         loginForm.addEventListener('submit', (event) => {
           event.preventDefault();
+          deleteCookie('connect.sid');
           let username = document.getElementsByName('username')[0].value;
           let password = document.getElementsByName('password')[0].value;
           loadTemplate('api/login',function(userData) {
@@ -80,7 +89,7 @@ class Context {
   hideMenu() {
     document.getElementById('navbarNav').style.visibility = 'hidden';
   }
-
+ 
   /** Get a Person instance by its ID */
   getPersonById(idHash) {
     return this.students.get(parseInt(idHash));
@@ -93,7 +102,7 @@ class Context {
   getTemplateRanking() {
     generateMenu();
     this.showMenu();
-
+ 
     if (this.students && this.students.size > 0) {
       //alert('SI STUDENTS');
       /* We sort students descending from max number of points to min */
@@ -102,10 +111,10 @@ class Context {
         return (b[1].getFinalGrade() - a[1].getFinalGrade());
       });
       this.students = new Map(arrayFromMap);
-
+ 
       saveStudents(JSON.stringify([...this.students]));
       let TPL_GRADED_TASKS = '';
-
+ 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
         if (this.showNumGradedTasks >= this.gradedTasks.size) {
           this.showNumGradedTasks = this.gradedTasks.size;
@@ -121,11 +130,11 @@ class Context {
         }
       }
       let scope = {};
-      scope.TPL_GRADED_TASKS = TPL_GRADED_TASKS;
+      //scope.TPL_GRADED_TASKS = TPL_GRADED_TASKS;
       scope.TPL_PERSONS = arrayFromMap;
       let TPL_XP_WEIGHT = this.weightXP;
       let TPL_GT_WEIGHT = this.weightGP;
-
+ 
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
               //console.log(out);
@@ -174,7 +183,7 @@ class Context {
   }
   /** Create a form to create a GradedTask that will be added to every student */
   addGradedTask() {
-
+ 
     let callback = function(responseText) {
             document.getElementById('content').innerHTML = responseText;
             let saveGradedTask = document.getElementById('newGradedTask');
@@ -182,7 +191,7 @@ class Context {
             document.getElementById('labelWeight').innerHTML = 'Task Weight (0-' + (100 - totalGTweight) + '%)';
             let weightIput = document.getElementById('idTaskWeight');
             weightIput.setAttribute('max', 100 - totalGTweight);
-
+ 
             saveGradedTask.addEventListener('submit', () => {
               let name = document.getElementById('idTaskName').value;
               let description = document.getElementById('idTaskDescription').value;
@@ -198,21 +207,25 @@ class Context {
               return false; //Avoid form submit
             });
           }.bind(this);
-
+ 
     loadTemplate('templates/addGradedTask.html',callback);
   }
   /** Add a new person to the context app */
   addPerson() {
-
+ 
     let callback = function(responseText) {
             document.getElementById('content').innerHTML = responseText;
             let saveStudent = document.getElementById('newStudent');
-
+ 
             saveStudent.addEventListener('submit', (event) => {
               event.preventDefault();
               let name = document.getElementById('idFirstName').value;
               let surnames = document.getElementById('idSurnames').value;
               let student = new Person(name,surnames,[]);
+              loadTemplate('api/uploadImage',function(response) {
+                console.log(response);
+              },'POST','id=' + student.getId() + '&','false');
+ 
               this.gradedTasks.forEach(function(iGradedTask) {
                     iGradedTask.addStudentMark(student.getId(),0);
                   });
@@ -221,7 +234,7 @@ class Context {
               return false; //Avoid form submit
             });
           }.bind(this);
-
+ 
     loadTemplate('templates/addStudent.html',callback);
   }
   /** Add last action performed to lower information layer in main app */
@@ -229,5 +242,5 @@ class Context {
     document.getElementById('notify').innerHTML = text;
   }
 }
-
+ 
 export let context = new Context(); //Singleton export

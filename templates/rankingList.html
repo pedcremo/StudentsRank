@@ -1,7 +1,11 @@
 
 <table class="table table-striped table-hover">
 <thead class="thead-dark">
-<tr><th>Name</th><th>Actions</th><th>FG</th><th>XP ${TPL_XP_WEIGHT}%</th><th>GT ${TPL_GT_WEIGHT}%</th>
+<tr>
+    <th colspan="4" >The harder you work, the luckier you get</th>
+    <th>FG</th>
+    <th>XP ${TPL_XP_WEIGHT}%</th>
+    <th>GT ${TPL_GT_WEIGHT}%</th>
     <th>${TPL_GRADED_TASKS}</th>
 </tr>
 </thead>
@@ -13,12 +17,18 @@
         <a class="text-info" href='#student/${person[1].getId()}'>${person[1].surname}, ${person[1].name}</a>
     </td>
     <td>
-        <a href='#editStudent/${person[1].getId()}'><button class='btnS btn btn-success'>
-        <i class='fa fa-pencil fa-1x'></i></button></a><a href='#deleteStudent/${person[1].getId()}'>
+        <a href='#addXP/${person[1].getId()}'><button class="btnS btn btn-primary">+XP</button></a>
+    </td>
+    <td>
+        <a href='#editStudent/${person[1].getId()}'>
+        <button class='btnS btn btn-success'><i class='fa fa-pencil fa-1x'></i></button></a>
+    </td>
+    <td>
+        <a href='#deleteStudent/${person[1].getId()}'>
         <button class='btnS btn btn-danger'><i class='fa fa-trash-o fa-1x'></i></button></a>
     </td>
     <td>
-        <strong>${person[1].getFinalGrade()}</strong>
+        ${person[1].getFinalGrade()}
     </td>
     <td>
         <strong>${person[1].getXPtotalPoints()}</strong>
@@ -26,11 +36,7 @@
      <td>
         <strong>${person[1].getGTtotalPoints()}</strong>
     </td>
-
-    <td>
-        <a href='#addXP/${person[1].getId()}'><button class="btnS btn btn-primary">+XP</button></a>
-    </td>
-    
+    <td></td>
      <td ng-repeat='GT in person[1].getStudentMarks()'>
         <input type='number' class='gradedTaskInput' idStudent='${person[1].getId()}' idGradedTask='${GT[0]}' min=0 max=100 value='${GT[1]}'/>
     </td>

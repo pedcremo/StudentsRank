@@ -1,7 +1,7 @@
 'use strict';
-
+ 
 let CACHE_TEMPLATES = new Map();
-
+ 
 /** Hash code funtion usefull for getting an unique id based on a large text */
 function hashcode(str) {
   let hash = 0, i, chr;
@@ -15,7 +15,7 @@ function hashcode(str) {
   }
   return hash;
 }
-
+ 
 function setCookie(cname, cvalue, exdays) {
   if (cvalue && cvalue !== '') {
     let d = new Date();
@@ -38,12 +38,13 @@ function getCookie(cname) {
   }
   return '';
 }
-
+ 
 function deleteCookie(name) {
   document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
-
+ 
 function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
+  cached = false;
   if (CACHE_TEMPLATES.has(urlTemplate)) {
     return callback(CACHE_TEMPLATES.get(urlTemplate));
   }else {
@@ -72,7 +73,7 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
     xhttp.send(params);
   }
 }
-
+ 
 function popupwindow(url, title, w, h) {
   let left = (screen.width / 2) - (w / 2);
   let top = (screen.height / 2) - (h / 2);
@@ -80,7 +81,7 @@ function popupwindow(url, title, w, h) {
                     'status=no, menubar=no,scrollbars=no, resizable=no, copyhistory=no,' +
                     ' width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
 }
-
+ 
 function formatDate(date) {
   var monthNames = [
     'January', 'February', 'March',
@@ -88,13 +89,13 @@ function formatDate(date) {
     'August', 'September', 'October',
     'November', 'December'
   ];
-
+ 
   var day = date.getDate();
   var monthIndex = date.getMonth();
   var year = date.getFullYear();
   var minute = date.getMinutes();
   var hour = date.getHours();
-
+ 
   return day + ' ' + monthNames[monthIndex] + ' ' + year + ' ' + hour + ':' + minute;
 }
 function getIdFromURL(url) {
@@ -102,5 +103,5 @@ function getIdFromURL(url) {
   let matchResults = url.match(reg);
   return matchResults[0];
 }
-
+ 
 export {formatDate,popupwindow,hashcode,deleteCookie,setCookie,getCookie,loadTemplate,getIdFromURL};
