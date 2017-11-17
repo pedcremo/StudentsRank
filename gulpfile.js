@@ -5,11 +5,25 @@ var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 var $ = require('gulp-load-plugins')({ lazy: true });
 var jsdoc = require('gulp-jsdoc3');
+var Server = require('karma').Server;
 //var jshint = require('gulp-jshint');
 
 if (!fs.existsSync('dist')){
   fs.mkdirSync('dist');
 }
+
+
+/**
+ * $ gulp
+ * description: Launch tests once
+ */
+
+gulp.task('test', function (done) {
+  return new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
 
 /**
  * vet the code and create coverage report
