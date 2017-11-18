@@ -20,7 +20,6 @@
     "passport-google-oauth": "1.0.0",
     "passport-local": "*",
     "passport-twitter": "~1.0.4",
-    "path": "^0.12.7",
     "serve-favicon": "^2.0.1"
   },
   "devDependencies": {

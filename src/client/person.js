@@ -97,11 +97,34 @@ class Person {
       let saveStudent = document.getElementById('newStudent');
       document.getElementById('idFirstName').value = this.name;
       document.getElementById('idSurnames').value = this.surname;
+      let studentProfile = document.getElementById('myProfile');
+      let output = document.getElementById('output');
+      output.src = 'src/server/data/fotos/' + this.getId() + '.jpg';
+
+      studentProfile.addEventListener('change', (event) => {
+        let input = event.target;
+        let reader = new FileReader();
+        reader.onload = function() {
+          let dataURL = reader.result;
+          output = document.getElementById('output');
+          output.src = dataURL;
+        };
+        reader.readAsDataURL(input.files[0]);
+      });
+
       saveStudent.addEventListener('submit', () => {
         let oldId = this.getId();
         this.name = document.getElementById('idFirstName').value;
         this.surname = document.getElementById('idSurnames').value;
         let student = new Person(this.name,this.surname,this.attitudeTasks,this.id);
+        let formData = new FormData(saveStudent);
+        let file = studentProfile.files[0];
+        formData.append('idStudent',student.getId());
+
+        loadTemplate('api/uploadImage',function(response) {
+          console.log(response);
+        },'POST',formData,'false');
+
         context.students.set(student.getId(),student);
         saveStudents(JSON.stringify([...context.students]));
       });
@@ -112,7 +135,7 @@ class Person {
   /** Renders person detail view */
   getHTMLDetail() {
     loadTemplate('templates/detailStudent.html',function(responseText) {
-        document.getElementById('content').innerHTML = responseText;
+        //document.getElementById('content').innerHTML = responseText;
         let TPL_STUDENT = this;
         let scope = {};
         scope.TPL_ATTITUDE_TASKS = this.attitudeTasks.reverse();

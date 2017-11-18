@@ -6,7 +6,7 @@ var auth = require('./authentication');
 var passport = require('passport');
 var fs = require('fs');
 var formidable = require('formidable');
-var path = require('path');
+//var path = require('path');
  
 //===== NEW PERE ===========================================================
 router.get('/getStudents', getStudents);
@@ -114,26 +114,34 @@ function uploadImage(req, res) {
     var form = new formidable.IncomingForm();
     form.parse(req, function(err, fields, files) {
         // `file` is the name of the <input> field of type `file`
-        var old_path = files.myImage.path,
-            file_size = files.myImage.size,
-            file_ext = files.myImage.name.split('.').pop(),
-            index = old_path.lastIndexOf('/') + 1,
-            file_name = old_path.substr(index),
-            new_path = path.join(process.env.PWD, '/src/server/data/fotos/', file_name + '.' + file_ext);
+        var oldPath = files.myImage.path,
+            fileSize = files.myImage.size,
+            fileExt = files.myImage.name.split('.').pop(),
+            index = oldPath.lastIndexOf('/') + 1,
+            fileName = oldPath.substr(index);
 
-        fs.readFile(old_path, function(err, data) {
-            fs.writeFile(new_path, data, function(err) {
-                fs.unlink(old_path, function(err) {
-                    if (err) {
+        //empty_file
+        if (fileSize == 0) {
+          //If we are editing the student and don't send a new profile because we don't want to change it
+          if (!fs.existsSync('src/server/data/fotos/' + fields.idStudent + '.jpg')) {
+            fs.createReadStream('src/server/data/fotos/huevon.jpg').pipe(fs.createWriteStream('src/server/data/fotos/' + fields.idStudent + '.jpg'));
+          }
+        //Profile file real with size greater than 0
+        }else {
+          fs.readFile(oldPath, function(err, data) {
+              fs.writeFile('src/server/data/fotos/' + fields.idStudent + '.jpg', data, function(err) {
+                  fs.unlink(oldPath, function(err) {
+                      if (err) {
                         res.status(500);
-                        res.json({'success': false});
-                    } else {
+                        res.send(err);
+                      } else {
                         res.status(200);
                         res.json({'success': true});
-                    }
+                      }
+                    });
                 });
             });
-        });
+        }
     });
   }
 }

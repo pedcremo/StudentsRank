@@ -237,7 +237,6 @@ class Context {
               var formData = new FormData(saveStudent);
               var file = studentProfile.files[0];
               formData.append('idStudent',student.getId());
-              formData.append('file', file);
 
               loadTemplate('api/uploadImage',function(response) {
                 console.log(response);
