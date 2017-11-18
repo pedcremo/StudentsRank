@@ -216,15 +216,32 @@ class Context {
     let callback = function(responseText) {
             document.getElementById('content').innerHTML = responseText;
             let saveStudent = document.getElementById('newStudent');
- 
+            let studentProfile = document.getElementById('myProfile');
+
+            studentProfile.addEventListener('change', (event) => {
+              let input = event.target;
+              let reader = new FileReader();
+              reader.onload = function() {
+                let dataURL = reader.result;
+                let output = document.getElementById('output');
+                output.src = dataURL;
+              };
+              reader.readAsDataURL(input.files[0]);
+            });
+
             saveStudent.addEventListener('submit', (event) => {
               event.preventDefault();
               let name = document.getElementById('idFirstName').value;
               let surnames = document.getElementById('idSurnames').value;
               let student = new Person(name,surnames,[]);
+              var formData = new FormData(saveStudent);
+              var file = studentProfile.files[0];
+              formData.append('idStudent',student.getId());
+              formData.append('file', file);
+
               loadTemplate('api/uploadImage',function(response) {
                 console.log(response);
-              },'POST','id=' + student.getId() + '&','false');
+              },'POST',formData,'false');
  
               this.gradedTasks.forEach(function(iGradedTask) {
                     iGradedTask.addStudentMark(student.getId(),0);

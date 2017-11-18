@@ -5,6 +5,8 @@ var data = require('./data');
 var auth = require('./authentication');
 var passport = require('passport');
 var fs = require('fs');
+var formidable = require('formidable');
+var path = require('path');
  
 //===== NEW PERE ===========================================================
 router.get('/getStudents', getStudents);
@@ -109,9 +111,30 @@ function getStudents(req, res, next) {
  
 function uploadImage(req, res) {
   if (req.isAuthenticated()) {
-    console.log('login ' + JSON.stringify(req.user));
-    console.log('session ' + JSON.stringify(req.session));
-    res.send(req.user);
+    var form = new formidable.IncomingForm();
+    form.parse(req, function(err, fields, files) {
+        // `file` is the name of the <input> field of type `file`
+        var old_path = files.myImage.path,
+            file_size = files.myImage.size,
+            file_ext = files.myImage.name.split('.').pop(),
+            index = old_path.lastIndexOf('/') + 1,
+            file_name = old_path.substr(index),
+            new_path = path.join(process.env.PWD, '/src/server/data/fotos/', file_name + '.' + file_ext);
+
+        fs.readFile(old_path, function(err, data) {
+            fs.writeFile(new_path, data, function(err) {
+                fs.unlink(old_path, function(err) {
+                    if (err) {
+                        res.status(500);
+                        res.json({'success': false});
+                    } else {
+                        res.status(200);
+                        res.json({'success': true});
+                    }
+                });
+            });
+        });
+    });
   }
 }
  

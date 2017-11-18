@@ -66,6 +66,8 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
     if (method === 'POST') {
       if (urlTemplate === 'api/saveStudents' || urlTemplate === 'api/saveGradedTasks') {
         xhttp.setRequestHeader('Content-Type', 'application/json');
+      //}else if (urlTemplate === 'api/uploadImage') { 
+      //  xhttp.setRequestHeader('Content-Type', 'application/form-data');
       }else {
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
       }
