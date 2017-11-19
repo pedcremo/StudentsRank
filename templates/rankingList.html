@@ -2,18 +2,21 @@
 <table class="table table-striped table-hover">
 <thead class="thead-dark">
 <tr>
-    <th colspan="4" >The harder you work, the luckier you get</th>
+    <th colspan="5" >The harder you work, the luckier you get</th>
     <th>FG</th>
     <th>XP ${TPL_XP_WEIGHT}%</th>
     <th>GT ${TPL_GT_WEIGHT}%</th>
-    <th>${TPL_GRADED_TASKS}</th>
+    
+    <th ng-repeat="GT in TPL_GRADED_TASKS"><a class="text-warning" href="#detailGradedTask/${GT[0]}"> ${GT[1].name}(${GT[1].weight}%)</a></th>
+    <th><a href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>
 </tr>
 </thead>
 <tbody id="idTableRankingBody">
     <!-- FILLED WITH REPEATED lineStudent template, once for student -->
     <tr ng-repeat="person in TPL_PERSONS">
+    <td id="sorting">#COUNTER</td>
     <td>
-        <img src="src/server/data/fotos/${person[1].getId()}.jpg" height="60" width="48"/>
+        <img class="profile" src="src/server/data/fotos/${person[1].getId()}.jpg" height="60" width="48"/>
         <a class="text-info" href='#student/${person[1].getId()}'>${person[1].surname}, ${person[1].name}</a>
     </td>
     <td>
@@ -36,11 +39,11 @@
      <td>
         <strong>${person[1].getGTtotalPoints()}</strong>
     </td>
-    <td></td>
+    
      <td ng-repeat='GT in person[1].getStudentMarks()'>
         <input type='number' class='gradedTaskInput' idStudent='${person[1].getId()}' idGradedTask='${GT[0]}' min=0 max=100 value='${GT[1]}'/>
     </td>
-   
+    <td></td>
 </tr>
     
 </tbody>

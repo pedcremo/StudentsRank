@@ -40,6 +40,7 @@ function explodeNode(virtDom,element,arrayItems,strReplace,strBase) {
       let cloned = element.cloneNode(true);
       str = cloned.innerHTML;
       str = str.replaceAll(strReplace,'scope.' + strBase + '[' + (i + 1) + ']');
+      str = str.replaceAll('#COUNTER',(i + 2)); //TEST
       cloned.innerHTML = str;
       let parent = element.parentNode;
       parent.insertBefore(cloned,lastSibling.nextSibling);
@@ -47,6 +48,7 @@ function explodeNode(virtDom,element,arrayItems,strReplace,strBase) {
     }
     str = element.innerHTML;
     str = str.replaceAll(strReplace,'scope.' + strBase + '[0]');
+    str = str.replaceAll('#COUNTER',1); //TEST
     element.innerHTML = str;
   }else {
     element.innerHTML = '';

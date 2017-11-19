@@ -113,31 +113,32 @@ class Context {
       this.students = new Map(arrayFromMap);
  
       saveStudents(JSON.stringify([...this.students]));
-      let TPL_GRADED_TASKS = '';
- 
+      //let TPL_GRADED_TASKS = '';
+      let scope = {};
       if (this.gradedTasks && this.gradedTasks.size > 0) {
         if (this.showNumGradedTasks >= this.gradedTasks.size) {
           this.showNumGradedTasks = this.gradedTasks.size;
         }
         let arrayGradedTasks = [...this.gradedTasks.entries()].reverse();
-        for (let i = 0;i < this.showNumGradedTasks;i++) {
+        scope.TPL_GRADED_TASKS = arrayGradedTasks.slice(0,this.showNumGradedTasks);
+        /*for (let i = 0;i < this.showNumGradedTasks;i++) {
           if (i === (this.showNumGradedTasks - 1)) {
             TPL_GRADED_TASKS += '<th><a class="text-warning" href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' +
                   arrayGradedTasks[i][1].name + '(' + arrayGradedTasks[i][1].weight + '%)&nbsp;</a><a href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>';
           } else {
             TPL_GRADED_TASKS += '<th><a class="text-warning" href="#detailGradedTask/' + arrayGradedTasks[i][0] + '">' + arrayGradedTasks[i][1].name + '(' + arrayGradedTasks[i][1].weight + '%)</a></th>';
           }
-        }
+        }*/
       }
-      let scope = {};
+      
       //scope.TPL_GRADED_TASKS = TPL_GRADED_TASKS;
       scope.TPL_PERSONS = arrayFromMap;
       let TPL_XP_WEIGHT = this.weightXP;
       let TPL_GT_WEIGHT = this.weightGP;
- 
+
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
-              //console.log(out);
+              console.log(out);
               document.getElementById('content').innerHTML = eval('`' + out + '`');
               let that = this;
               let callback = function() {
@@ -151,6 +152,17 @@ class Context {
                           that.getTemplateRanking();
                         });
                       });
+                  let profileImages = document.getElementsByClassName('profile'); //Image profiles TEST
+                  Array.prototype.forEach.call(profileImages,function(profileItem) { //TEST
+                    profileItem.addEventListener('mouseenter', () => { //TEST
+                      profileItem.removeAttribute('width'); //TEST
+                      profileItem.removeAttribute('height'); //TEST
+                    });
+                    profileItem.addEventListener('mouseout', () => { //TEST
+                      profileItem.setAttribute('width',48); //TEST
+                      profileItem.setAttribute('height',60); //TEST
+                    });
+                  });
                 };
               callback();
             }.bind(this));
