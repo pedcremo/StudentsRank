@@ -1,9 +1,9 @@
 'use strict';
 
 import Task from './task.js';
-import {loadTemplate,hashcode} from './utils.js';
-import {saveGradedTasks} from './dataservice.js';
-import {context} from './context.js';
+import {loadTemplate,hashcode} from '../lib/utils.js';
+import {saveGradedTasks} from '../dataservice.js';
+import {context} from '../context.js';
 
 /**
  * GradedTask class. Create a graded task in order to be evaluated 
@@ -26,14 +26,12 @@ class GradedTask extends Task {
     this.studentsMark = studentsMark;
     this[STUDENT_MARKS] = new Map(studentsMark); //We need a private map to make it easier to access student marks using its id. The problem is that a Map inside other map can be converted to a pair array
   }
-
   /** Add student mark using his/her person ID   */
   addStudentMark(idStudent,markPoints) {
     this[STUDENT_MARKS].set(parseInt(idStudent),markPoints);
     this.studentsMark = [...this[STUDENT_MARKS].entries()];
     saveGradedTasks(JSON.stringify([...context.gradedTasks]));
   }
-
   /** Static method to get list marks associated with one student */
   static getStudentMarks(idStudent) {
     let marks = [];
@@ -58,7 +56,6 @@ class GradedTask extends Task {
       });
     return points;
   }
-
   /** Get student mark by their person ID */
   getStudentMark(idStudent) {
     return this[STUDENT_MARKS].get(idStudent);
@@ -86,6 +83,36 @@ class GradedTask extends Task {
         saveGradedTasks(JSON.stringify([...context.gradedTasks]));
       });
     }.bind(this);
+
+    loadTemplate('templates/addGradedTask.html',callback);
+  }
+  /** Create a form to create a GradedTask that will be added to every student */
+  static addGradedTask() {
+    let callback = function(responseText) {
+            document.getElementById('content').innerHTML = responseText;
+            let saveGradedTask = document.getElementById('newGradedTask');
+            let totalGTweight = GradedTask.getGradedTasksTotalWeight();
+            document.getElementById('labelWeight').innerHTML = 'Task Weight (0-' + (100 - totalGTweight) + '%)';
+            let weightIput = document.getElementById('idTaskWeight');
+            weightIput.setAttribute('max', 100 - totalGTweight);
+
+            saveGradedTask.addEventListener('submit', () => {
+              let name = document.getElementById('idTaskName').value;
+              let description = document.getElementById('idTaskDescription').value;
+              let weight = document.getElementById('idTaskWeight').value;
+              let gtask = new GradedTask(name,description,weight,[]);
+              let gtaskId = gtask.getId();
+              if (context) {
+                context.students.forEach(function(studentItem,studentKey,studentsRef) {
+                  gtask.addStudentMark(studentKey,0);
+                });
+                context.gradedTasks.set(gtaskId,gtask);
+                saveGradedTasks(JSON.stringify([...context.gradedTasks]));
+                context.getTemplateRanking();
+              }
+              return false; //Avoid form submit
+            });
+          }.bind(this);
 
     loadTemplate('templates/addGradedTask.html',callback);
   }

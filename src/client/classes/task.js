@@ -7,7 +7,7 @@
  * @tutorial pointing-criteria
  */
 
-import {hashcode} from './utils.js';
+import {hashcode} from '../lib/utils.js';
 
 class Task {
   constructor(name,description,id=null) {

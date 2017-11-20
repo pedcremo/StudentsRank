@@ -1,7 +1,7 @@
-import {loadTemplate} from './utils.js';
+import {loadTemplate} from './lib/utils.js';
 import {context} from './context.js'; //Singleton
-import Person from './person.js';
-import GradedTask from './gradedtask.js';
+import Person from './classes/person.js';
+import GradedTask from './classes/gradedtask.js';
 
 function updateFromServer() {
   if (context.user.id) {

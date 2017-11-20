@@ -9,12 +9,12 @@
  * @tutorial pointing-criteria
  */
 
-import {formatDate,popupwindow,hashcode,loadTemplate} from './utils.js';
-import {context} from './context.js';
+import {formatDate,popupwindow,hashcode,loadTemplate} from '../lib/utils.js';
+import {context} from '../context.js';
 import AttitudeTask from './attitudetask.js';
 import GradedTask from './gradedtask.js';
-import {saveStudents} from './dataservice.js';
-import {template} from './templator.js';
+import {saveStudents} from '../dataservice.js';
+import {template} from '../lib/templator.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
 const _totalXPpoints = Symbol('TOTAL_XP_POINTS'); /** To acomplish private property */
@@ -79,7 +79,6 @@ class Person {
   getGTtotalPoints() {
     return GradedTask.getStudentGradedTasksPoints(this.getId());
   }
-
   /** XP mark relative to highest XP mark and XP weight and GT grade */
   getFinalGrade() {
 
@@ -89,7 +88,6 @@ class Person {
     }
     return Math.round(xpGrade + (this.getGTtotalPoints() * (context.weightGP / 100)));
   }
-
   /** Renders person edit form */
   getHTMLEdit() {
     let callback = function(responseText) {
@@ -135,16 +133,9 @@ class Person {
   /** Renders person detail view */
   getHTMLDetail() {
     loadTemplate('templates/detailStudent.html',function(responseText) {
-        //document.getElementById('content').innerHTML = responseText;
         let TPL_STUDENT = this;
         let scope = {};
         scope.TPL_ATTITUDE_TASKS = this.attitudeTasks.reverse();
-        /*scope.TPL_GRADED_TASKS = [...context.gradedTasks.entries()];
-        this.attitudeTasks.reverse().forEach(function(atItem) {
-          TPL_ATTITUDE_TASKS += '<li class="list-group-item">' + atItem.task.points + '->' +
-                        atItem.task.description + '->' + formatDate(new Date(atItem.task.datetime)) + '</li>';
-        });
-        */
         let TPL_GRADED_TASKS = '';
         context.gradedTasks.forEach(function(gtItem) {
           TPL_GRADED_TASKS += '<li class="list-group-item">' + gtItem.getStudentMark(TPL_STUDENT.getId()) + '->' +
@@ -154,6 +145,50 @@ class Person {
         console.log(out);
         document.getElementById('content').innerHTML = eval('`' + out + '`');
       }.bind(this));
+  }
+  /** Add a new person to the context app */
+  static addPerson() {
+    let callback = function(responseText) {
+            document.getElementById('content').innerHTML = responseText;
+            let saveStudent = document.getElementById('newStudent');
+            let studentProfile = document.getElementById('myProfile');
+
+            studentProfile.addEventListener('change', (event) => {
+              let input = event.target;
+              let reader = new FileReader();
+              reader.onload = function() {
+                let dataURL = reader.result;
+                let output = document.getElementById('output');
+                output.src = dataURL;
+              };
+              reader.readAsDataURL(input.files[0]);
+            });
+
+            saveStudent.addEventListener('submit', (event) => {
+              event.preventDefault();
+              let name = document.getElementById('idFirstName').value;
+              let surnames = document.getElementById('idSurnames').value;
+              let student = new Person(name,surnames,[]);
+              var formData = new FormData(saveStudent);
+              var file = studentProfile.files[0];
+              formData.append('idStudent',student.getId());
+
+              loadTemplate('api/uploadImage',function(response) {
+                console.log(response);
+              },'POST',formData,'false');
+
+              if (context) {
+                context.gradedTasks.forEach(function(iGradedTask) {
+                      iGradedTask.addStudentMark(student.getId(),0);
+                    });
+                context.students.set(student.getId(),student);
+                context.getTemplateRanking();
+                return false; //Avoid form submit
+              }
+            });
+          };
+
+    loadTemplate('templates/addStudent.html',callback);
   }
 }
 
