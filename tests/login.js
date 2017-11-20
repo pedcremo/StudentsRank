@@ -15,8 +15,6 @@ describe('Login app', () => {
                 var tableRanking = element(by.id('idTableRankingBody'));
                 expect(tableRanking.isDisplayed()).toBeTruthy();
                 let profileImages = element(by.className('profile')); //Image profiles TEST
-                //Array.prototype.forEach.call(profileImages,function(profileItem) 
-        });
-
-    });
-});
+              });
+      });
+  });
