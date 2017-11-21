@@ -4,7 +4,8 @@
   "description": "Proves de transpilacio amb babel",
   "main": "main.js",
   "scripts": {
-    "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
+    "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
+    "start": "node src/server/app.js"
   },
   "author": "Pere Crespo",
   "license": "ISC",

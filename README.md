@@ -78,3 +78,16 @@ templator branch
 # 2 deploy inside docker container our app
 # 1 updated documentation able to generate with jsdoc3
 # 2 points custom css from scratch  
+
+#docker. We want to create a container for our app
+
+1. Install docker
+2. docker run node:latest node --version //Try to find docker containers with latest node and npm packages installed
+3. docker run -d -p 8000:8000 -v $(pwd):/src -w /src node:latest npm start
+4. ckeck if running docker ps
+
+Save docker container into a file -> docker save -o {path_dest_tar} {name_image} 
+Ex. docker save -o /tmp/runking gifted_goldberg
+Load docker container -> docker load -i runking.tar 
+
+READ: getting started with docker blogs.msdn.microsoft.com
