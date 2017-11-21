@@ -10,7 +10,7 @@ function showMenu() {
 function hideMenu() {
   document.getElementById('navbarNav').style.visibility = 'hidden';
 }
-
+/** Generate menu options taking into account logged in user */
 function generateMenu() {
   let output = '';
   if (context.user.displayName) {
@@ -25,7 +25,7 @@ function generateMenu() {
   }
   document.getElementById('menuButtons').innerHTML = output;
 }
-
+/** Logout. Delete session in server side and credentials in client side */
 function logout() {
   context.user = '';
   deleteCookie('user');

@@ -3,35 +3,37 @@ import {context} from './context.js'; //Singleton
 import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
 
+/** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
     loadTemplate('api/getStudents',function(response) {
                             localStorage.setItem('students',response);
-                            loadStudentsToLocalStorage();
+                            loadStudentsFromLocalStorage();
                             context.getTemplateRanking();
                           },'GET','',false);
     loadTemplate('api/getGradedTasks',function(response) {
                           localStorage.setItem('gradedTasks',response);
-                          loadGradedTasksToLocalStorage();
+                          loadGradedTasksFromLocalStorage();
                           context.getTemplateRanking();
                         },'GET','',false);
   }
 }
-
+/** Save students in localstorage and in server side */
 function saveStudents(arrayStudents) {
   localStorage.setItem('students',arrayStudents);
   loadTemplate('api/saveStudents',function(response) {
                           console.log('SAVE STUDENTS ' + response);
                         },'POST',localStorage.getItem('students'),false);
 }
-
+/** Save grades in localstorage and in server side */
 function saveGradedTasks(arrayGT) {
   localStorage.setItem('gradedTasks',arrayGT);
   loadTemplate('api/saveGradedTasks',function(response) {
                           console.log('SAVE GRADED TASKS ' + response);
                         },'POST',localStorage.getItem('gradedTasks'),false);
 }
-function loadStudentsToLocalStorage() {
+/** Load students from localStorage and map to Person instances in context */
+function loadStudentsFromLocalStorage() {
   if (localStorage.getItem('students')) {
     let students_ = new Map(JSON.parse(localStorage.getItem('students')));
     students_.forEach(function(value_,key_,students_) {
@@ -42,7 +44,8 @@ function loadStudentsToLocalStorage() {
   }
 
 }
-function loadGradedTasksToLocalStorage() {
+/** Load graded tasks from localStorage and map to GradedTasks instances in context */
+function loadGradedTasksFromLocalStorage() {
   if (localStorage.getItem('gradedTasks')) {
     let gradedTasks_ = new Map(JSON.parse(localStorage.getItem('gradedTasks')));
     gradedTasks_.forEach(function(value_,key_,gradedTasks_) {
