@@ -8,7 +8,7 @@
     <th>GT ${TPL_GT_WEIGHT}%</th>
     
     <th ng-repeat="GT in TPL_GRADED_TASKS"><a class="text-warning" href="#detailGradedTask/${GT[0]}"> ${GT[1].name}(${GT[1].weight}%)</a></th>
-    <th><a href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>
+    <a style="float:right;" href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a>
 </tr>
 </thead>
 <tbody id="idTableRankingBody">
@@ -43,7 +43,6 @@
      <td ng-repeat='GT in person[1].getStudentMarks()'>
         <input type='number' class='gradedTaskInput' idStudent='${person[1].getId()}' idGradedTask='${GT[0]}' min=0 max=100 value='${GT[1]}'/>
     </td>
-    <td></td>
 </tr>
     
 </tbody>
