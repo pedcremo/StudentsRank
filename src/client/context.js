@@ -117,7 +117,7 @@ class Context {
 
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
-              console.log(out);
+              //console.log(out);
               document.getElementById('content').innerHTML = eval('`' + out + '`');
               let that = this;
               let callback = function() {
