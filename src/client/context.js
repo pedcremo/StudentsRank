@@ -19,7 +19,7 @@ class Context {
   constructor() {
     this.students = new Map();
     this.gradedTasks = new Map();
-    this.showNumGradedTasks = 1;//Max visible graded tasks in ranking list table
+    //this.showNumGradedTasks = 1;//Max visible graded tasks in ranking list table
     this.weightXP = parseInt(getCookie('weightXP')) || 25;
     this.weightGP = parseInt(getCookie('weightGP')) || 75;
     if (getCookie('user')) {
@@ -30,7 +30,7 @@ class Context {
   clear() {
     this.students = new Map();
     this.gradedTasks = new Map();
-    this.showNumGradedTasks = 1;
+    //this.showNumGradedTasks = 1;
     this.user = undefined;
   }
   /** Check if user is logged */
@@ -104,11 +104,11 @@ class Context {
       let scope = {};
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
-        if (this.showNumGradedTasks >= this.gradedTasks.size) {
+        /*if (this.showNumGradedTasks >= this.gradedTasks.size) {
           this.showNumGradedTasks = this.gradedTasks.size;
-        }
-        let arrayGradedTasks = [...this.gradedTasks.entries()].reverse();
-        scope.TPL_GRADED_TASKS = arrayGradedTasks.slice(0,this.showNumGradedTasks);
+        }*/
+        scope.TPL_GRADED_TASKS = [...this.gradedTasks.entries()].reverse();
+        //scope.TPL_GRADED_TASKS = arrayGradedTasks.slice(0,this.showNumGradedTasks);
       }
 
       scope.TPL_PERSONS = arrayFromMap;

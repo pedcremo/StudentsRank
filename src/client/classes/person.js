@@ -73,7 +73,8 @@ class Person {
   /** Get students Marks sliced by showNumGradedTasks from context*/
   getStudentMarks() {
     let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
-    return gtArray.slice(0,context.showNumGradedTasks);
+    //return gtArray.slice(0,context.showNumGradedTasks);
+    return gtArray;
   }
   /** Get total points over 100 taking into account different graded tasks weights */
   getGTtotalPoints() {
