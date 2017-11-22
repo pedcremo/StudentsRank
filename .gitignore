@@ -13,6 +13,5 @@ npm-debug*
 #############################
 doc/
 dist/
-src/server/data/*
 node_modules/
 

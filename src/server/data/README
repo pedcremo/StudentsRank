@@ -1,0 +1,3 @@
+In this directory we store user json data for students and tasks
+The name of the folder is the id of the authenticated user and inside we save
+students.json and gradedtasks.json
