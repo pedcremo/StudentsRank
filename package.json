@@ -4,7 +4,8 @@
   "description": "Proves de transpilacio amb babel",
   "main": "main.js",
   "scripts": {
-    "test": "test"
+    "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
+    "start": "node src/server/app.js"
   },
   "author": "Pere Crespo",
   "license": "ISC",
@@ -12,14 +13,15 @@
     "body-parser": "^1.8.2",
     "express": "^4.9.3",
     "express-force-ssl": "^0.3.2",
-    "morgan": "^1.1.1",
-    "serve-favicon": "^2.0.1",
     "express-session": "*",
+    "formidable": "^1.1.1",
+    "morgan": "^1.1.1",
     "passport": "*",
+    "passport-facebook": "~2.1.1",
+    "passport-google-oauth": "1.0.0",
     "passport-local": "*",
     "passport-twitter": "~1.0.4",
-    "passport-facebook": "~2.1.1",
-    "passport-google-oauth": "1.0.0"
+    "serve-favicon": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -35,9 +37,12 @@
     "gulp-jsdoc3": "^1.0.1",
     "gulp-jshint": "^2.0.4",
     "gulp-load-plugins": "^1.5.0",
-    "gulp-nodemon": "^2.2.1",    
+    "gulp-nodemon": "^2.2.1",
+    "jasmine-core": "2.5.2",
     "jsdoc": "^3.5.5",
     "jshint": "^2.9.5",
-    "jshint-stylish": "^2.2.1"
+    "jshint-stylish": "^2.2.1",
+    "karma": "^1.7.1",
+    "protractor": "^5.2.0"
   }
 }

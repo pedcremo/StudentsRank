@@ -5,11 +5,26 @@ var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 var $ = require('gulp-load-plugins')({ lazy: true });
 var jsdoc = require('gulp-jsdoc3');
+var Server = require('karma').Server;
+var babel = require('gulp-babel');
 //var jshint = require('gulp-jshint');
 
 if (!fs.existsSync('dist')){
   fs.mkdirSync('dist');
 }
+
+
+/**
+ * $ gulp
+ * description: Launch tests once
+ */
+
+gulp.task('test', function (done) {
+  return new Server({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true
+  }, done).start();
+});
 
 /**
  * vet the code and create coverage report
@@ -38,7 +53,17 @@ gulp.task('doc', function (cb) {
     .pipe(jsdoc(config, cb));
 });
 
-///babelify, es6 to es5
+
+/** Babe */
+gulp.task('babel', () =>
+gulp.src('src/client/**/*.js')
+    .pipe(babel({
+        presets: ['env']
+      }))
+    .pipe(gulp.dest('dist/babel'))
+);
+
+/** babelify, es6 to es5. First babel, then browserify */
 gulp.task('browserify', function() {
   browserify('./src/client/main.js')
   .transform('babelify', {presets: ['env']})

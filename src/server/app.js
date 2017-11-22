@@ -10,12 +10,12 @@ var app = express();
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 3000;
 var four0four = require('./utils/404')();
 
 var environment = process.env.NODE_ENV;
 
-function rawBody(req, res, next) {
+/*function rawBody(req, res, next) {
   req.setEncoding('utf8');
   req.rawBody = '';
   req.on('data', function(chunk) {
@@ -24,7 +24,7 @@ function rawBody(req, res, next) {
   req.on('end', function(){
     next();
   });
-}
+}*/
 
 app.use(favicon(__dirname + '/favicon.ico'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -84,7 +84,7 @@ switch (environment) {
       four0four.send404(req, res);
     });
     // Any deep link calls should return index.html
-    app.use('/*', express.static('./src/client/index.html'));
+    //app.use('/*', express.static('./src/client/index.html'));
     app.listen(port, function() {
       console.log('Express server listening on port ' + port);
       console.log('env = ' + app.get('env') +
