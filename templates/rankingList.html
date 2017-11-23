@@ -2,14 +2,14 @@
 <table class="table table-striped table-hover">
 <thead class="thead-dark">
 <tr>
-    <th><a style="float:left;" href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>
+    <th><a style="float:left;" href="#expandedView"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>
     <th>The harder you work, the luckier you get</th>    
     <th>FG 100% = XP ${TPL_XP_WEIGHT}% + GT ${TPL_GT_WEIGHT}%</th>
 </tr>
 </thead>
 <tbody id="idTableRankingBody">
     <!-- FILLED WITH REPEATED lineStudent template, once for student -->
-<tr ng-repeat="person in TPL_PERSONS">
+<tr class="js-rowStudent" ng-repeat="person in TPL_PERSONS">
     <td id="sorting">#COUNTER</td>
     <td>
         <img class="profile" src="src/server/data/fotos/${person[1].getId()}.jpg" height="60" width="48"/>
