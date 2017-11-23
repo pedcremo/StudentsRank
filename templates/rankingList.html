@@ -3,7 +3,7 @@
 <thead class="thead-dark">
 <tr>
     <th><a style="float:left;" href="#MoreGradedTasks"><button id="more_gt"><i class="fa fa-hand-o-right fa-1x"></i></button></a></th>
-    <th>&nbsp;The harder you work, the luckier you get</th>    
+    <th>The harder you work, the luckier you get</th>    
     <th>FG 100% = XP ${TPL_XP_WEIGHT}% + GT ${TPL_GT_WEIGHT}%</th>
 </tr>
 </thead>
@@ -42,7 +42,7 @@
         </tr>
         <tr>
             <table class="tableGradedTasks" style="display:none">
-            <tr><td ng-repeat="GT in TPL_GRADED_TASKS"><a class="text-warning" href="#detailGradedTask/${GT[0]}"> ${GT[1].name}(${GT[1].weight}%)</a></td>
+            <tr><td ng-repeat="GT in TPL_GRADED_TASKS"><a class="text-info" href="#detailGradedTask/${GT[0]}"> ${GT[1].name}(${GT[1].weight}%)</a></td>
             </tr>                
             <tr>    <td ng-repeat='GT in person[1].getStudentMarks()'>
                         <input type='number' class='gradedTaskInput' idStudent='${person[1].getId()}' idGradedTask='${GT[0]}' min=0 max=100 value='${GT[1]}'/>
