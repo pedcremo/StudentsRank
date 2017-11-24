@@ -91,3 +91,9 @@ Ex. docker save -o /tmp/runking gifted_goldberg
 Load docker container -> docker load -i runking.tar 
 
 READ: getting started with docker blogs.msdn.microsoft.com
+
+
+Apache + node
+sudo a2enmod proxy.load
+sudo a2enmod proxy_html.load
+sudo a2ensite runking.conf

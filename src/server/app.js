@@ -10,7 +10,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 var four0four = require('./utils/404')();
 
 var environment = process.env.NODE_ENV;
