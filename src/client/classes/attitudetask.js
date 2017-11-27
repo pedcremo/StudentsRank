@@ -29,11 +29,11 @@ class AttitudeTask extends Task {
       popUpXP.document.title = personInstance.name + ' ' +
                           personInstance.surname + ' XP points';
 
-      $('.xp').each(function(xpBItem) {
-          xpBItem.click(function() {
+      $(popUpXP.document.body).find('.xp').each(function(index) {
+          $(this).click(function() {
             popUpXP.close();
             personInstance.addAttitudeTask(new AttitudeTask('XP task',
-                                  xpBItem.innerHTML,xpBItem.value));
+                                  $(this).val(),$(this).attr('value')));
           });
         });
     };
