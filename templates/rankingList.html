@@ -10,7 +10,7 @@
 <tbody id="idTableRankingBody">
     <!-- FILLED WITH REPEATED lineStudent template, once for student -->
 <tr class="js-rowStudent" ng-repeat="person in TPL_PERSONS">
-    <td class="w-5" id="sorting">#COUNTER</td>
+    <td class="w-5" id="sorting"><h3>#COUNTER</h3></td>
     <td class="w-25">
         <img class="profile" src="src/server/data/fotos/${person[1].getId()}.jpg" height="60" width="48"/>
         <a class="text-info" href='#student/${person[1].getId()}'>${person[1].surname}, ${person[1].name}</a>
