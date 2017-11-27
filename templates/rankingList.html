@@ -10,32 +10,32 @@
 <tbody id="idTableRankingBody">
     <!-- FILLED WITH REPEATED lineStudent template, once for student -->
 <tr class="js-rowStudent" ng-repeat="person in TPL_PERSONS">
-    <td id="sorting">#COUNTER</td>
-    <td>
+    <td class="w-5" id="sorting">#COUNTER</td>
+    <td class="w-25">
         <img class="profile" src="src/server/data/fotos/${person[1].getId()}.jpg" height="60" width="48"/>
         <a class="text-info" href='#student/${person[1].getId()}'>${person[1].surname}, ${person[1].name}</a>
     </td>
-    <td>
+    <td class="w-70">
       <table id="scoreTable" class="table-condensed" width="100%">
        
         <tr> 
             <td>        
-                        <strong>${person[1].getFinalGrade()}</strong>
-                    </td>
-                    <td>
-                        ${person[1].getXPtotalPoints()}
-                    </td>
-                    <td>
-                        ${person[1].getGTtotalPoints()}
-                    </td>
+                <strong>${person[1].getFinalGrade()}</strong>
+            </td>
             <td>
-                    <a href='#addXP/${person[1].getId()}'><button class="btnS btn btn-primary">+XP</button></a>
+                ${person[1].getXPtotalPoints()}
+            </td>
+            <td>
+                ${person[1].getGTtotalPoints()}
+            </td>
+            <td>
+                <a href='#addXP/${person[1].getId()}'><button class="btnS btn btn-primary">+XP</button></a>
                     
-                        <a href='#editStudent/${person[1].getId()}'>
-                        <button class='btnS btn btn-success'><i class='fa fa-pencil fa-1x'></i></button></a>
+                <a href='#editStudent/${person[1].getId()}'>
+               <button class='btnS btn btn-success'><i class='fa fa-pencil fa-1x'></i></button></a>
         
-                        <a href='#deleteStudent/${person[1].getId()}'>
-                        <button class='btnS btn btn-danger'><i class='fa fa-trash-o fa-1x'></i></button></a>
+               <a href='#deleteStudent/${person[1].getId()}'>
+               <button class='btnS btn btn-danger'><i class='fa fa-trash-o fa-1x'></i></button></a>
                 
             </td>
             
