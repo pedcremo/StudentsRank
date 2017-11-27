@@ -15,7 +15,7 @@ import Task from './task.js';
 
 import {popupwindow} from '../lib/utils.js';
 
-class AttitudeTask extends Task {
+class AttitudeTask extends Task { 
   constructor(name,description,points) {
     super(name,description);
     this.points = points;
@@ -28,14 +28,14 @@ class AttitudeTask extends Task {
     popUpXP.onload = function() {
       popUpXP.document.title = personInstance.name + ' ' +
                           personInstance.surname + ' XP points';
-      let xpButtons = popUpXP.document.getElementsByClassName('xp');
-      Array.prototype.forEach.call(xpButtons,function(xpBItem) {
-        xpBItem.addEventListener('click', () => {
-          popUpXP.close();
-          personInstance.addAttitudeTask(new AttitudeTask('XP task',
+
+      $('.xp').each(function(xpBItem) {
+          xpBItem.click(function() {
+            popUpXP.close();
+            personInstance.addAttitudeTask(new AttitudeTask('XP task',
                                   xpBItem.innerHTML,xpBItem.value));
+          });
         });
-      });
     };
   }
 }

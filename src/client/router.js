@@ -1,5 +1,5 @@
 import {context} from './context.js'; //Singleton
-import {popupwindow,getIdFromURL} from './lib/utils.js';
+import {popupwindow,getIdFromURL,setCookie} from './lib/utils.js';
 import {logout} from './menu.js';
 import AttitudeTask from './classes/attitudetask.js';
 import GradedTask from './classes/gradedtask.js';
@@ -47,7 +47,12 @@ function initRouter() {
               break;
             /** Button to show a one more graded task on ranking table list */
             case /#expandedView/.test(isLink.href):
-                $('.tableGradedTasks').toggle();             
+              $('.tableGradedTasks').toggle();
+              if ($('.tableGradedTasks').is(':visible')) {
+                setCookie('expandedView','visible',345);
+              }else {
+                setCookie('expandedView','hidden',345);
+              }          
               break;
             /** Add new Graded Task form */
             case /#addGradedTask/.test(isLink.href):

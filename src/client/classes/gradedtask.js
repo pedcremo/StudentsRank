@@ -64,7 +64,7 @@ class GradedTask extends Task {
   getHTMLEdit() {
     let callback = function(responseText) {
       document.getElementById('content').innerHTML = responseText;
-      let saveGradedTask = document.getElementById('newGradedTask');
+      //let saveGradedTask = document.getElementById('newGradedTask');
       document.getElementById('idTaskName').value = this.name;
       document.getElementById('idTaskDescription').value = this.description;
       let totalGTweight = GradedTask.getGradedTasksTotalWeight();
@@ -73,7 +73,7 @@ class GradedTask extends Task {
       weightIput.value = this.weight;
       weightIput.setAttribute('max', 100 - (totalGTweight - this.weight));
 
-      saveGradedTask.addEventListener('submit', () => {
+      $('#newGradedTask').submit(function() {
         let oldId = this.getId();
         this.name = document.getElementById('idTaskName').value;
         this.description = document.getElementById('idTaskDescription').value;
@@ -90,13 +90,13 @@ class GradedTask extends Task {
   static addGradedTask() {
     let callback = function(responseText) {
             document.getElementById('content').innerHTML = responseText;
-            let saveGradedTask = document.getElementById('newGradedTask');
+            //let saveGradedTask = document.getElementById('newGradedTask');
             let totalGTweight = GradedTask.getGradedTasksTotalWeight();
             document.getElementById('labelWeight').innerHTML = 'Task Weight (0-' + (100 - totalGTweight) + '%)';
             let weightIput = document.getElementById('idTaskWeight');
             weightIput.setAttribute('max', 100 - totalGTweight);
 
-            saveGradedTask.addEventListener('submit', () => {
+            $('#newGradedTask').submit(function() {
               let name = document.getElementById('idTaskName').value;
               let description = document.getElementById('idTaskDescription').value;
               let weight = document.getElementById('idTaskWeight').value;
