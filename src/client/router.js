@@ -46,17 +46,8 @@ function initRouter() {
               logout();
               break;
             /** Button to show a one more graded task on ranking table list */
-            case /#MoreGradedTasks/.test(isLink.href):
-              //context.showNumGradedTasks++;
-              let idTGT = document.getElementsByClassName('tableGradedTasks');
-              Array.prototype.forEach.call(idTGT,function(item) {
-                if (item.getAttribute('style') == 'display:none') {
-                  item.setAttribute('style','display:block'); 
-                }else {
-                  item.setAttribute('style','display:none');
-                }
-              });
-              //context.getTemplateRanking();
+            case /#expandedView/.test(isLink.href):
+                $('.tableGradedTasks').toggle();             
               break;
             /** Add new Graded Task form */
             case /#addGradedTask/.test(isLink.href):
