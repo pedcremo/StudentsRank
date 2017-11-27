@@ -48,10 +48,13 @@ function initRouter() {
             /** Button to show a one more graded task on ranking table list */
             case /#expandedView/.test(isLink.href):
               $('.tableGradedTasks').toggle();
+
               if ($('.tableGradedTasks').is(':visible')) {
                 setCookie('expandedView','visible',345);
+                $('.fa-hand-o-right').addClass('fa-hand-o-down').removeClass('fa-hand-o-right');
               }else {
                 setCookie('expandedView','hidden',345);
+                $('.fa-hand-o-down').addClass('fa-hand-o-right').removeClass('fa-hand-o-down');
               }          
               break;
             /** Add new Graded Task form */

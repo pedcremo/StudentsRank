@@ -116,8 +116,10 @@ class Context {
               document.getElementById('content').innerHTML = eval('`' + out + '`');
               if (getCookie('expandedView') === 'visible') {
                 $('.tableGradedTasks').show();  
+                $('.fa-hand-o-right').addClass('fa-hand-o-down').removeClass('fa-hand-o-right');
               }else {
                 $('.tableGradedTasks').hide();
+                $('.fa-hand-o-down').addClass('fa-hand-o-right').removeClass('fa-hand-o-down');
               }
               let that = this;
               let callback = function() {
