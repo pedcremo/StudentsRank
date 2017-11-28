@@ -92,22 +92,22 @@ class Person {
   /** Renders person edit form */
   getHTMLEdit() {
     let callback = function(responseText) {
-      document.getElementById('content').innerHTML = responseText;
+      $('#content').html(responseText);
       let saveStudent = $('#newStudent');
-      document.getElementById('idFirstName').value = this.name;
-      document.getElementById('idSurnames').value = this.surname;
+      $('#idFirstName').val(this.name);
+      $('#idSurnames').val(this.surname);
       let studentProfile = $('#myProfile');
-      let output = document.getElementById('output');
-      output.src = 'src/server/data/fotos/' + this.getId() + '.jpg';
+      let outputImg = $('#output');
+      outputImg.attr('src','src/server/data/fotos/' + this.getId() + '.jpg');
       let studentThis = this;
 
-      studentProfile.change(function(event) {
+      studentProfile.change(() => {
         let input = event.target;
         let reader = new FileReader();
         reader.onload = function() {
           let dataURL = reader.result;
-          output = document.getElementById('output');
-          output.src = dataURL;
+          //output = document.getElementById('output');
+          outputImg('src',dataURL);
         };
         reader.readAsDataURL(input.files[0]);
       });

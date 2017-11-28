@@ -62,22 +62,22 @@ class GradedTask extends Task {
   }
 
   getHTMLEdit() {
-    let callback = function(responseText) {
-      document.getElementById('content').innerHTML = responseText;
-      //let saveGradedTask = document.getElementById('newGradedTask');
-      document.getElementById('idTaskName').value = this.name;
-      document.getElementById('idTaskDescription').value = this.description;
-      let totalGTweight = GradedTask.getGradedTasksTotalWeight();
-      let weightIput = document.getElementById('idTaskWeight');
-      document.getElementById('labelWeight').innerHTML = 'Weight (0-' + (100 - (totalGTweight - this.weight)) + '%)';
-      weightIput.value = this.weight;
-      weightIput.setAttribute('max', 100 - (totalGTweight - this.weight));
 
-      $('#newGradedTask').submit(function() {
+    let callback = function(responseText) {
+      $('#content').html(responseText);
+      $('#idTaskName').val(this.name);
+      $('#idTaskDescription').val(this.description);
+      let totalGTweight = GradedTask.getGradedTasksTotalWeight();
+      let weightInput = $('#idTaskWeight');
+      $('#labelWeight').html('Weight (0-' + (100 - (totalGTweight - this.weight)) + '%)');
+      weightInput.val(this.weight);
+      weightInput.attr('max', 100 - (totalGTweight - this.weight));
+
+      $('#newGradedTask').submit(() => {
         let oldId = this.getId();
-        this.name = document.getElementById('idTaskName').value;
-        this.description = document.getElementById('idTaskDescription').value;
-        this.weight = document.getElementById('idTaskWeight').value;
+        this.name = $('#idTaskName').val();
+        this.description = $('#idTaskDescription').val();
+        this.weight = weightInput.val();
         let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,this.id);
         context.gradedTasks.set(this.id,gradedTask);
         saveGradedTasks(JSON.stringify([...context.gradedTasks]));
@@ -89,17 +89,16 @@ class GradedTask extends Task {
   /** Create a form to create a GradedTask that will be added to every student */
   static addGradedTask() {
     let callback = function(responseText) {
-            document.getElementById('content').innerHTML = responseText;
-            //let saveGradedTask = document.getElementById('newGradedTask');
+            $('#content').html(responseText);
             let totalGTweight = GradedTask.getGradedTasksTotalWeight();
-            document.getElementById('labelWeight').innerHTML = 'Task Weight (0-' + (100 - totalGTweight) + '%)';
-            let weightIput = document.getElementById('idTaskWeight');
-            weightIput.setAttribute('max', 100 - totalGTweight);
+            $('#labelWeight').html('Task Weight (0-' + (100 - totalGTweight) + '%)');
+            let weightInput = $('#idTaskWeight');
+            weightInput.attr('max', 100 - totalGTweight);
 
-            $('#newGradedTask').submit(function() {
-              let name = document.getElementById('idTaskName').value;
-              let description = document.getElementById('idTaskDescription').value;
-              let weight = document.getElementById('idTaskWeight').value;
+            $('#newGradedTask').submit(() => {
+              let name = $('#idTaskName').val();
+              let description = $('#idTaskDescription').val();
+              let weight = weightInput.val();
               let gtask = new GradedTask(name,description,weight,[]);
               let gtaskId = gtask.getId();
               if (context) {
