@@ -119,6 +119,7 @@ function getStudents(req, res, next) {
       if (err) {
         throw err;
       }
+      res.status(200).send('[]');
       console.log('The file has been saved empty!');
     });
   }  
@@ -163,13 +164,27 @@ function uploadImage(req, res) {
 }
  
 function getGradedTasks(req, res, next) {
- fs.readFile('src/server/data/' + req.user.id + '/gradedtasks.json',function(err, data) {
-         if(err) {
-            console.log(err);
-         }
-         console.log(data);
-         res.status(200).send(data);
-  });
+  if (fs.existsSync('src/server/data/' + req.user.id + '/gradedtasks.json')) {    
+    fs.readFile('src/server/data/' + req.user.id + '/gradedtasks.json',function(err, data) {
+            if(err) {
+                console.log(err);
+            }
+            console.log(data);
+            res.status(200).send(data);
+      });
+    }else {
+      mkdirp('src/server/data/' + req.user.id, function (err) {
+        if (err) console.error(err);
+        else console.log('dir created');
+      });
+      fs.writeFile('src/server/data/' + req.user.id + '/gradedtasks.json', JSON.stringify([]), 'utf8', (err) => {
+        if (err) {
+          throw err;
+        }
+       res.status(200).send('[]');
+       console.log('The file has been saved empty!');
+    });
+  }
 }
  
 /*function getPerson(req, res, next) {
