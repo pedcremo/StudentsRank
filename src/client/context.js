@@ -51,7 +51,7 @@ class Context {
     }.bind(this),'GET','',false);
   }
   /** Show login form template when not authenticated */
-  login() {
+  login() {    
     let that = this;
     if (!this.user) {
       this.clear();
@@ -174,8 +174,11 @@ class Context {
     loadTemplate('templates/settings.html',callback);
   }
   /** Add last action performed to lower information layer in main app */
-  notify(text) {
-    document.getElementById('notify').innerHTML = text;
+  notify(text,title) {
+    toastr.options.timeOut = 4500;
+    toastr.options.hideDuration = 250;
+    toastr.options.showDuration = 250;
+    toastr.success(text, title);   
   }
 }
 export let context = new Context(); //Singleton export

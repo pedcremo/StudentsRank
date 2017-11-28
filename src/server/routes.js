@@ -6,6 +6,7 @@ var auth = require('./authentication');
 var passport = require('passport');
 var fs = require('fs');
 var formidable = require('formidable');
+var mkdirp = require('mkdirp');
 //var path = require('path');
  
 //===== NEW PERE ===========================================================
@@ -99,14 +100,29 @@ module.exports = router;
 /*function getPeople(req, res, next) {
   res.status(200).send(data.people);
 }*/
-function getStudents(req, res, next) {  
- fs.readFile('src/server/data/' + req.user.id + '/students.json',function(err, data) {
-         if(err) {
-            console.log(err);
-         }
-         console.log(data);
-         res.status(200).send(data);
-  });
+function getStudents(req, res, next) { 
+  if (fs.existsSync('src/server/data/' + req.user.id + '/students.json')) {
+    // Do something
+    fs.readFile('src/server/data/' + req.user.id + '/students.json',function(err, data) {
+      if(err) {
+        console.log(err);
+      }
+      console.log(data);
+      res.status(200).send(data);
+    });
+  }else{
+    mkdirp('src/server/data/' + req.user.id, function (err) {
+      if (err) console.error(err)
+      else console.log('dir created')
+     });
+     fs.writeFile('src/server/data/' + req.user.id + '/students.json', JSON.stringify([]), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file has been saved empty!');
+    });
+  }  
+ 
 }
  
 function uploadImage(req, res) {

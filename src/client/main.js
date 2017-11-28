@@ -7,4 +7,5 @@ import {initRouter} from './router.js'; //Knows what to do for every single URL
 $(document).ready(function(){
   context.isLogged();
   initRouter();
+  
 });

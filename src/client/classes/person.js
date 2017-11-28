@@ -68,7 +68,7 @@ class Person {
   addAttitudeTask(taskInstance) {
     this.attitudeTasks.push({'task':taskInstance});
     this[privateAddTotalPoints](parseInt(taskInstance.points));
-    context.notify('Added ' + taskInstance.description + ' to ' + this.name + ',' + this.surname);
+    context.notify('Added ' + taskInstance.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name);
   }
   /** Get students Marks sliced by showNumGradedTasks from context*/
   getStudentMarks() {

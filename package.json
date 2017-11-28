@@ -21,7 +21,8 @@
     "passport-google-oauth": "1.0.0",
     "passport-local": "*",
     "passport-twitter": "~1.0.4",
-    "serve-favicon": "^2.0.1"
+    "serve-favicon": "^2.0.1",
+    "toastr": "^2.1.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -43,6 +44,7 @@
     "jshint": "^2.9.5",
     "jshint-stylish": "^2.2.1",
     "karma": "^1.7.1",
+    "mkdirp": "^0.5.1",
     "protractor": "^5.2.0"
   }
 }
