@@ -25,7 +25,7 @@ class AttitudeTask extends Task {
     let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
                                       personInstance.name,600,600);
 
-    popUpXP.onload = function() {
+    popUpXP.onload = function() { 
       popUpXP.document.title = personInstance.name + ' ' +
                           personInstance.surname + ' XP points';
 

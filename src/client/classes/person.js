@@ -107,15 +107,15 @@ class Person {
         reader.onload = function() {
           let dataURL = reader.result;
           //output = document.getElementById('output');
-          outputImg('src',dataURL);
+          outputImg.attr('src',dataURL);
         };
         reader.readAsDataURL(input.files[0]);
       });
 
       saveStudent.submit(function() {
         let oldId = studentThis.getId();
-        studentThis.name = document.getElementById('idFirstName').value;
-        studentThis.surname = document.getElementById('idSurnames').value;
+        studentThis.name = $('#idFirstName').val();
+        studentThis.surname = $('#idSurnames').val();
         let student = new Person(studentThis.name,studentThis.surname,studentThis.attitudeTasks,studentThis.id);
         let formData = new FormData(saveStudent[0]);
         let file = studentProfile[0].files[0];
@@ -145,13 +145,13 @@ class Person {
         });
         let out = template(responseText,scope);
         console.log(out);
-        document.getElementById('content').innerHTML = eval('`' + out + '`');
+        $('#content').html(eval('`' + out + '`'));
       }.bind(this));
   }
   /** Add a new person to the context app */
   static addPerson() {
     let callback = function(responseText) {
-            document.getElementById('content').innerHTML = responseText;
+            $('#content').html(responseText);
             let saveStudent = $('#newStudent');
             let studentProfile = $('#myProfile');
 
@@ -160,7 +160,7 @@ class Person {
               let reader = new FileReader();
               reader.onload = function() {
                 let dataURL = reader.result;
-                let output = document.getElementById('output');
+                let output = $('#output');
                 output.src = dataURL;
               };
               reader.readAsDataURL(input.files[0]);
@@ -168,8 +168,8 @@ class Person {
 
             saveStudent.submit(function(event) {
               event.preventDefault();
-              let name = document.getElementById('idFirstName').value;
-              let surnames = document.getElementById('idSurnames').value;
+              let name = $('#idFirstName').val();
+              let surnames = $('#idSurnames').val();
               let student = new Person(name,surnames,[]);
               var formData = new FormData(saveStudent[0]);
               var file = studentProfile[0].files[0];

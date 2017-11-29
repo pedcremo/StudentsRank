@@ -28,6 +28,7 @@
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babelify": "^7.3.0",
+    "bower": "^1.8.2",
     "browser-sync": "^2.18.13",
     "browserify": "^14.4.0",
     "fs": "0.0.1-security",

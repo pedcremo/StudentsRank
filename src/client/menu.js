@@ -4,11 +4,11 @@ import {deleteCookie,loadTemplate} from './lib/utils.js';
 
 /** Show Menu  */
 function showMenu() {
-  document.getElementById('navbarNav').style.visibility = 'visible';
+  $('#navbarNav').show();
 }
 /** Hide Menu */
 function hideMenu() {
-  document.getElementById('navbarNav').style.visibility = 'hidden';
+  $('navbarNav').hide();
 }
 /** Generate menu options taking into account logged in user */
 function generateMenu() {
@@ -23,7 +23,7 @@ function generateMenu() {
   if (context.user.displayName) {
     output += '<li class="nav-item"><a class="nav-link" href="#logout"><button class="btn btn-danger"> LOGOUT</button></a></li>';
   }
-  document.getElementById('menuButtons').innerHTML = output;
+  $('#menuButtons').html(output);
 }
 /** Logout. Delete session in server side and credentials in client side */
 function logout() {

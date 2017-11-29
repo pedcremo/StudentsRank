@@ -51,20 +51,21 @@ class Context {
     }.bind(this),'GET','',false);
   }
   /** Show login form template when not authenticated */
-  login() {    
+  login() {
     let that = this;
     if (!this.user) {
       this.clear();
       loadTemplate('templates/login.html',function(responseText) {
         hideMenu();
-        document.getElementById('content').innerHTML = eval('`' + responseText + '`');
+        $('#content').html(eval('`' + responseText + '`'));
+        $('#loginAlert').hide();
         let loginForm = $('#loginForm');
 
         loginForm.submit(function(event) {
           event.preventDefault();
           deleteCookie('connect.sid');
-          let username = document.getElementsByName('username')[0].value;
-          let password = document.getElementsByName('password')[0].value;
+          let username = $('input[name=username]').val();
+          let password = $('input[name=password]').val();
           loadTemplate('api/login',function(userData) {
             that.user = JSON.parse(userData);
             setCookie('user',userData,7);
@@ -113,9 +114,9 @@ class Context {
 
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
-              document.getElementById('content').innerHTML = eval('`' + out + '`');
+              $('#content').html(eval('`' + out + '`'));
               if (getCookie('expandedView') === 'visible') {
-                $('.tableGradedTasks').show();  
+                $('.tableGradedTasks').show();
                 $('.fa-hand-o-right').addClass('fa-hand-o-down').removeClass('fa-hand-o-right');
               }else {
                 $('.tableGradedTasks').hide();
@@ -147,19 +148,19 @@ class Context {
             }.bind(this));
     }else {
       //alert('NO STUDENTS');
-      document.getElementById('content').innerHTML = '';
+      $('#content').innerHTML = '';
     }
   }
   /** Settings */
   settings() {
     let thisContext = this;
     let callback = function(responseText) {
-      document.getElementById('content').innerHTML = responseText;
+      $('#content').html(responseText);
       let itemWeightChanger = $('#weightChanger');
       itemWeightChanger.val(thisContext.weightXP);
-      let labelXPWeight = document.getElementById('idXPweight');
+      let labelXPWeight = $('#idXPweight');
       labelXPWeight.innerHTML = thisContext.weightXP + '% XP weight';
-      let labelGPWeight = document.getElementById('idGPweight');
+      let labelGPWeight = $('#idGPweight');
       labelGPWeight.innerHTML = thisContext.weightGP + '% GP weight';
       itemWeightChanger.change(function() {
           labelXPWeight.innerHTML = itemWeightChanger.val() + '% XP weight';

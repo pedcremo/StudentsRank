@@ -58,7 +58,7 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
       }
       if (this.status === 401) {
         if (urlTemplate === 'api/login') {
-          document.getElementById('loginAlert').style.visibility = 'visible';
+          $('#loginAlert').show().fadeOut(8000);
         }
       }
     };

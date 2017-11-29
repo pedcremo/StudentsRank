@@ -10,15 +10,19 @@ npm and node should be installed on your system
 recommended npm version 3.5.0 or greater 
 recommended node version 4.2.5 or greater 
 
-Recommended but not mandatory to install gulp as a global package
+Recommended but not mandatory to install gulp and bower as a global package
 <pre>
 npm install -g gulp
+</pre>
+<pre>
+npm install -g bower
 </pre>
 
 # First time we clone or download the project 
 Install dependencies and modules used for development purposes
 <pre>nmp install </pre>
 We wait until node_modules folder has been filled with all development modules needed for our app
+<pre>bower install </pre>
 
 # For continous development 
 Main gulp task
