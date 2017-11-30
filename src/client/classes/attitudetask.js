@@ -15,7 +15,7 @@ import Task from './task.js';
 
 import {popupwindow,loadTemplate} from '../lib/utils.js';
 
-class AttitudeTask extends Task { 
+class AttitudeTask extends Task {
   constructor(name,description,points) {
     super(name,description);
     this.points = points;
@@ -38,14 +38,14 @@ class AttitudeTask extends Task {
         });
     };*/
     let callback = function(responseText) {
-      $('#content').html($('#content').html() + responseText);
+      $('#content').html($('#content').html() + eval('`' + responseText + '`'));
       let dialog = $('#dialog-form').dialog({
         autoOpen: false,
-        height: 400,
-        width: 350,
+        //height: 7,
+        width: 550,
         modal: true,
         buttons: {
-          'Create an account': addTask,
+          //'Create an account': addTask,
           Cancel: function() {
             dialog.dialog('close');
           }
