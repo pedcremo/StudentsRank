@@ -10,43 +10,43 @@
           </button>
         </div>
         <div class="modal-body">
+          <div class="container-fluid">
             <div class="row">
-                <div class="col">
+                <div class="col-md-12">
                   <strong>Positive behaviours</strong>
-                  <div class="btn-group-vertical">
+                   <!-- <div class="btn-group-vertical"> -->
                     <button class="xp btn btn-success" value="20"> +20 Correctly answer a question in class using English </button>
                     <button class="xp btn btn-success" value="20" > +20 Present your solution in front of class </button>
                     <button class="xp btn btn-success" value="100" > +100 Finish a proposed task before class ends </button>
                     <button class="xp btn btn-success" value="50" > +50 Asking insightful questions about the lesson </button>
-                  </div>
+                   <!-- </div> -->
                  
-                <strong>Negative behaviours</strong>
-                  <div class="btn-group-vertical">
+                  <strong>Negative behaviours</strong>
+                  <!-- <div class="btn-group-vertical"> -->
                     <button class="xp btn btn-danger" value="-20" > -20 Arriving late to class </button>
                     <button class="xp btn btn-danger" value="-30" > -30 Not answer in english when you have been asked in english </button>
                     <button class="xp btn btn-danger" value="-100"> -100 Delayed homework delivery </button>
-                  </div>
+                  <!-- </div> -->
                 </div>
               
-                <div class="col">
-                  <form class="form-inline">
-                    <div class="form-group">
-                      <label for="points">Points</label>
-                      <input type="text" name="points" id="points" value="20" class="text ui-widget-content ui-corner-all">
-                    </div>
-                    <div class="form-group">
-                      <label for="text">Text</label>
-                      <input type="text" name="text" id="text" value="" class="text ui-widget-content ui-corner-all">
-                    </div>
-                    <!-- Allow form submission with keyboard without duplicating the dialog button -->
-                    <!-- <input type="submit" tabindex="-1" style="position:absolute; top:-1000px"> -->
-                    <input type="submit" value="New XP task" >
-                  
-                  </form>
-                </div>
-              </div>
+                
+            </div>
+          </div>   
         </div>
         <div class="modal-footer">
+            
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="points">Points</label>
+                    <input type="text" name="points" id="points" value="20" class="text ui-widget-content ui-corner-all">
+                  </div>
+                  <div class="form-group">
+                    <label for="text">Text</label>
+                    <input type="text" name="text" id="text" value="" class="text ui-widget-content ui-corner-all">
+                  </div>
+                  <input type="submit" value="New XP task" >                  
+                </form>
+              
           <button type="button" class="btn btn-secondary" id="closeModal" data-dismiss="modal">Close</button>          
         </div>
       </div>
