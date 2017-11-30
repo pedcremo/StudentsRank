@@ -13,7 +13,7 @@ import Task from './task.js';
  * @tutorial pointing-criteria
  */
 
-import {popupwindow} from '../lib/utils.js';
+import {popupwindow,loadTemplate} from '../lib/utils.js';
 
 class AttitudeTask extends Task { 
   constructor(name,description,points) {
@@ -22,7 +22,7 @@ class AttitudeTask extends Task {
   }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {
-    let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
+    /*let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
                                       personInstance.name,600,600);
 
     popUpXP.onload = function() { 
@@ -36,8 +36,36 @@ class AttitudeTask extends Task {
                                   $(this).val(),$(this).attr('value')));
           });
         });
-    };
+    };*/
+    let callback = function(responseText) {
+      $('#content').html($('#content').html() + responseText);
+      let dialog = $('#dialog-form').dialog({
+        autoOpen: false,
+        height: 400,
+        width: 350,
+        modal: true,
+        buttons: {
+          'Create an account': addTask,
+          Cancel: function() {
+            dialog.dialog('close');
+          }
+        },
+        close: function() {
+          form[ 0 ].reset();
+          allFields.removeClass('ui-state-error');
+        }
+      });
+      dialog.dialog('open');
+      let form = dialog.find('form').on('submit', function(event) {
+        event.preventDefault();
+        addTask();
+      });
+    }
+    loadTemplate('templates/listAttitudeTasks.1.html',callback);
   }
 }
 
+function addTask() {
+
+}
 export default AttitudeTask;

@@ -148,7 +148,7 @@ class Context {
             }.bind(this));
     }else {
       //alert('NO STUDENTS');
-      $('#content').innerHTML = '';
+      $('#content').html('');
     }
   }
   /** Settings */
@@ -159,14 +159,15 @@ class Context {
       let itemWeightChanger = $('#weightChanger');
       itemWeightChanger.val(thisContext.weightXP);
       let labelXPWeight = $('#idXPweight');
-      labelXPWeight.innerHTML = thisContext.weightXP + '% XP weight';
+      labelXPWeight.text(thisContext.weightXP + '% XP weight');
       let labelGPWeight = $('#idGPweight');
-      labelGPWeight.innerHTML = thisContext.weightGP + '% GP weight';
+      labelGPWeight.text(thisContext.weightGP + '% GP weight');
+
       itemWeightChanger.change(function() {
-          labelXPWeight.innerHTML = itemWeightChanger.val() + '% XP weight';
+          $('#idXPweight').text(itemWeightChanger.val() + '% XP weight');
           thisContext.weightXP = itemWeightChanger.val();
           setCookie('weightXP',thisContext.weightXP,300);
-          labelGPWeight.innerHTML = (100 - itemWeightChanger.val()) + '% GP weight';
+          $('#idGPweight').text((100 - itemWeightChanger.val()) + '% GP weight');
           thisContext.weightGP = (100 - itemWeightChanger.val());
           setCookie('weightGP',thisContext.weightGP,300);
         });
