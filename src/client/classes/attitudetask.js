@@ -39,29 +39,18 @@ class AttitudeTask extends Task {
     };*/
     let callback = function(responseText) {
       $('#content').html($('#content').html() + eval('`' + responseText + '`'));
-      let dialog = $('#dialog-form').dialog({
-        autoOpen: false,
-        //height: 7,
-        width: 550,
-        modal: true,
-        buttons: {
-          //'Create an account': addTask,
-          Cancel: function() {
-            dialog.dialog('close');
-          }
-        },
-        close: function() {
-          form[ 0 ].reset();
-          allFields.removeClass('ui-state-error');
-        }
-      });
-      dialog.dialog('open');
-      let form = dialog.find('form').on('submit', function(event) {
-        event.preventDefault();
-        addTask();
+      $('#XPModal').modal('toggle');
+      $('.xp').each(function(index) {
+        $(this).click(function() { 
+          $('#XPModal').modal('toggle');
+          $('.modal-backdrop').remove();
+          personInstance.addAttitudeTask(new AttitudeTask('XP task',
+            $(this).val(),$(this).attr('value')));
+                    
+        });
       });
     }
-    loadTemplate('templates/listAttitudeTasks.1.html',callback);
+    loadTemplate('templates/listAttitudeTasks.2.html',callback);
   }
 }
 
