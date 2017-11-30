@@ -13,16 +13,16 @@ import Task from './task.js';
  * @tutorial pointing-criteria
  */
 
-import {popupwindow} from '../lib/utils.js';
+import {popupwindow,loadTemplate} from '../lib/utils.js';
 
-class AttitudeTask extends Task { 
+class AttitudeTask extends Task {
   constructor(name,description,points) {
     super(name,description);
     this.points = points;
   }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {
-    let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
+    /*let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
                                       personInstance.name,600,600);
 
     popUpXP.onload = function() { 
@@ -36,8 +36,25 @@ class AttitudeTask extends Task {
                                   $(this).val(),$(this).attr('value')));
           });
         });
-    };
+    };*/
+    let callback = function(responseText) {
+      $('#content').html($('#content').html() + eval('`' + responseText + '`'));
+      $('#XPModal').modal('toggle');
+      $('.xp').each(function(index) {
+        $(this).click(function() { 
+          $('#XPModal').modal('toggle');
+          $('.modal-backdrop').remove();
+          personInstance.addAttitudeTask(new AttitudeTask('XP task',
+            $(this).val(),$(this).attr('value')));
+                    
+        });
+      });
+    }
+    loadTemplate('templates/listAttitudeTasks.2.html',callback);
   }
 }
 
+function addTask() {
+
+}
 export default AttitudeTask;

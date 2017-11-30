@@ -2,15 +2,19 @@
 .navbar-right li a {
     text-align: right;
 }
-.table td, .table th {
-  vertical-align: middle;
-}
+
 tr {
    line-height: 15px;
    min-height: 15px;
    height: 15px;
 }
-
+.table td, .table th {
+  vertical-align: middle;
+ 
+}
+button.xp {
+  width:100%;
+}
 
 @media (max-width: 768px) {
     .btnS {
@@ -18,7 +22,7 @@ tr {
       padding:4px 6px;
     }
   }
-  
+       
 @media (min-width: 768px) {
     .btnS {
       font-size:12px;
