@@ -13,8 +13,10 @@ npm-debug*
 #############################
 doc/
 dist/
+lib/
 src/server/data/333342/
 src/server/data/343242/
-
+src/server/data/fotos/
+!huevon.jpg
 node_modules/
-bower_components/
+

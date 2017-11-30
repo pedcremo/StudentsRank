@@ -5,23 +5,30 @@
   "main": "main.js",
   "scripts": {
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "start": "node src/server/app.js"
+    "start": "forever start src/server/app.js",
+    "stop": "forever stopall",
+    "postinstall": "./node_modules/.bin/frontend-dependencies"
   },
   "author": "Pere Crespo",
   "license": "ISC",
   "dependencies": {
+    "fs": "0.0.1-security",
     "body-parser": "^1.8.2",
     "bootstrap": "^4.0.0-beta.2",
     "express": "^4.9.3",
     "express-force-ssl": "^0.3.2",
     "express-session": "*",
+    "font-awesome": "^4.7.0",
+    "forever": "^0.15.3",
     "formidable": "^1.1.1",
+    "jquery": "^3.2.1",
     "morgan": "^1.1.1",
     "passport": "*",
     "passport-facebook": "~2.1.1",
     "passport-google-oauth": "1.0.0",
     "passport-local": "*",
     "passport-twitter": "~1.0.4",
+    "popper.js": "^1.12.9",
     "serve-favicon": "^2.0.1",
     "toastr": "^2.1.2"
   },
@@ -29,10 +36,9 @@
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "babelify": "^7.3.0",
-    "bower": "^1.8.2",
     "browser-sync": "^2.18.13",
     "browserify": "^14.4.0",
-    "fs": "0.0.1-security",
+    "frontend-dependencies": "^0.2.1",    
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-browserify": "^0.5.1",
@@ -48,5 +54,18 @@
     "karma": "^1.7.1",
     "mkdirp": "^0.5.1",
     "protractor": "^5.2.0"
+  },
+  "frontendDependencies": {
+    "target": "lib",
+    "packages": [
+      "jquery/dist/jquery.min.js",
+      "bootstrap/dist/css/bootstrap.min.css",
+      "bootstrap/dist/css/bootstrap.min.css.map",
+      "bootstrap/dist/js/bootstrap.min.js",
+      "popper.js/dist/umd/popper.min.js",
+      "toastr/build/toastr.min.css",
+      "toastr/build/toastr.min.js",
+      "font-awesome"
+    ]
   }
 }
