@@ -1,7 +1,7 @@
 #!/bin/bash
 git checkout experimental
-git pull
+git pull origin experimental
 npm install
 npm stop
 npm start
-forever src/server/hook.js
+node_modules/forever/bin/forever start src/server/hook.js
