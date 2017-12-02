@@ -1,4 +1,5 @@
 #!/bin/bash
+cd /home/pedcremo/StudentsRank
 git checkout experimental
 git pull origin experimental
 npm install
