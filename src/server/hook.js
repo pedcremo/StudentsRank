@@ -12,11 +12,11 @@ http.createServer(function(req, res) {
  
 handler.on('push', function (event) {
         var comps = event.payload.ref.split('/');
-        if(comps[2] != 'experimental') {
+        if(comps[2] != 'master') {
               console.log('Received a push on %s and no build has is triggered', comps[2]);
               return;
         }
-        console.log('Received a push on production, build started...');
+        console.log('Received a push on master, build started...');
         exec('./src/server/scripts/deploy.sh', function(error, stdout, stderr) {
                 console.log(stdout);
                 if(error != null) {
