@@ -148,7 +148,7 @@ class Context {
             }.bind(this));
     }else {
       //alert('NO STUDENTS');
-      $('#content').html('');
+      $('#content').html('NO STUDENTS YET');
     }
   }
   /** Settings */
