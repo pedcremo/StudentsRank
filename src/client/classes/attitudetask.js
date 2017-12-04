@@ -16,37 +16,21 @@ import Task from './task.js';
 import {popupwindow,loadTemplate} from '../lib/utils.js';
 
 class AttitudeTask extends Task {
-  constructor(name,description,points) {
-    super(name,description);
+  constructor(name,description,points,id=null) {
+    super(name,description,id);
     this.points = points;
   }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {
-    /*let popUpXP = popupwindow('templates/listAttitudeTasks.html','XP points to ' +
-                                      personInstance.name,600,600);
-
-    popUpXP.onload = function() { 
-      popUpXP.document.title = personInstance.name + ' ' +
-                          personInstance.surname + ' XP points';
-
-      $(popUpXP.document.body).find('.xp').each(function(index) {
-          $(this).click(function() {
-            popUpXP.close();
-            personInstance.addAttitudeTask(new AttitudeTask('XP task',
-                                  $(this).val(),$(this).attr('value')));
-          });
-        });
-    };*/
     let callback = function(responseText) {
       $('#content').html($('#content').html() + eval('`' + responseText + '`'));
       $('#XPModal').modal('toggle');
       $('.xp').each(function(index) {
-        $(this).click(function() { 
+        $(this).click(function() {
           $('#XPModal').modal('toggle');
           $('.modal-backdrop').remove();
           personInstance.addAttitudeTask(new AttitudeTask('XP task',
             $(this).val(),$(this).attr('value')));
-                    
         });
       });
     }
@@ -54,7 +38,13 @@ class AttitudeTask extends Task {
   }
 }
 
+/** TODO */
 function addTask() {
 
 }
+
+function addTaskToPerson() {
+
+}
+
 export default AttitudeTask;

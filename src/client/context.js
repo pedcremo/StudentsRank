@@ -19,6 +19,7 @@ class Context {
   constructor() {
     this.students = new Map();
     this.gradedTasks = new Map();
+    this.attitudeTasks = new Map();
     //this.showNumGradedTasks = 1;//Max visible graded tasks in ranking list table
     this.weightXP = parseInt(getCookie('weightXP')) || 25;
     this.weightGP = parseInt(getCookie('weightGP')) || 75;
@@ -30,6 +31,7 @@ class Context {
   clear() {
     this.students = new Map();
     this.gradedTasks = new Map();
+    this.attitudeTasks = new Map();
     //this.showNumGradedTasks = 1;
     this.user = undefined;
   }
