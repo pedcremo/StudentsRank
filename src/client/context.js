@@ -27,6 +27,14 @@ class Context {
       this.user = JSON.parse(getCookie('user'));
     }
   }
+  /** Add student to context previously adding all graded tasks defined. Afterwards we render list*/
+  addStudent(studentInstance) {
+    this.gradedTasks.forEach(function(iGradedTask) {
+      iGradedTask.addStudentMark(studentInstance.getId(),0);
+    });
+    this.students.set(studentInstance.getId(),studentInstance);
+    this.getTemplateRanking();  
+  }
   /** Clear context  */
   clear() {
     this.students = new Map();

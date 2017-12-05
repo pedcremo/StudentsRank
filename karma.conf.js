@@ -2,8 +2,9 @@ module.exports = function(config) {
     config.set({
       basePath: '',
       frameworks: ['jasmine-ajax','jasmine','browserify'],
+      reporters: ['spec'],
       browsers: ['ChromeHeadlessRANK'],
-
+     
       customLaunchers: {
         ChromeHeadlessRANK: {
           base: 'Chrome',
@@ -13,6 +14,7 @@ module.exports = function(config) {
       // Which plugins to enable
       plugins: [
         'karma-chrome-launcher',
+        'karma-spec-reporter',
         'karma-browserify',
         'karma-jasmine',
         'karma-jasmine-ajax'
