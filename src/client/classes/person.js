@@ -80,8 +80,8 @@ class Person {
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
     console.log('HOLA TINKI WINKI');
-    this.attitudeTasks.forEach(function (itemAT) {
-        if (itemAT[0] == taskInstanceId) {
+    this.attitudeTasks.forEach((itemAT) => {
+        if (itemAT.id == taskInstanceId) {
           let index = this.attitudeTasks.indexOf(itemAT);
           if (index > -1) {
             this.attitudeTasks.splice(index, 1);
