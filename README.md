@@ -29,13 +29,28 @@ or
 <pre>gulp</pre> 
 if has been installed globally.
 
-Other interesting gukp tasks
+Other interesting gulp tasks
 
 *vet. For syntax and quality checking
 
 # For production deployment
 Start node server with forever <pre>npm start</pre>
 Stop node server <pre>npm stop</pre>
+
+We should start too with forever src/server/hook.js a special server listening on port 8888 push notifications in github.com on master branch.
+The main goal of this web hook is execute src/server/scripts/deploy.sh to perform the next actions:
+<pre>
+ cd /home/pedcremo/StudentsRank
+git checkout master
+git pull origin master
+npm install
+npm stop
+npm start
+</pre>
+Thanks to this webhook we achieve continuos integration and forget about manual deployments. We should be very carefull on not publish something unstable on master branch.
+We must pass all testings before be tempted to command 'git push origin master'
+
+In order to enable this webhook it is mandatory to proceed with some configurations on github.com project settings. Specifically webhooks section. Add webhook. Set content type to application/json. Check Active. Enable just the push event and put the same shared-secret than in our src/server/hook.js listener. 
 
 # Key points about the development stack  we have chosen for this app
 
@@ -95,11 +110,41 @@ templator branch
 Save docker container into a file -> docker save -o {path_dest_tar} {name_image} 
 Ex. docker save -o /tmp/runking gifted_goldberg
 Load docker container -> docker load -i runking.tar 
-
 READ: getting started with docker blogs.msdn.microsoft.com
 
+== Apache2 + node app living in same server ==
 
-Apache + node
+We want to use a VPS with a preexisting web app running on port 80 in apache2.
+Our server side is built using nodeJS. 
+
+Domain http://moodle.iestacio.com points to preexisting web a moodle with php
+Domain http://runking.bocairent.net  points to a web app with nodeJS running on port 8000
+We use apache module proxy to redirect requests pointing to runking.bocairent.net:80 to localhost:8000 where it is really listening our node app
+
+We enable the next apache modules:
+
 sudo a2enmod proxy.load
 sudo a2enmod proxy_html.load
+sudo a2enmod xml2enc.load
+
 sudo a2ensite runking.conf
+
+runking.conf file content
+<pre>
+NameVirtualHost *:80
+<VirtualHost *:80>
+        ServerName moodle.iestacio.com
+        ServerAdmin webmaster@localhost
+        DocumentRoot "/var/www/moodle"
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+<VirtualHost *:80>
+        ServerName runking.bocairent.net
+        DocumentRoot "/var/www/node"
+        ProxyRequests off
+        ProxyPass  / http://127.0.0.1:8000/
+        ProxyPassReverse / http://127.0.0.1:8000/
+</VirtualHost>
+</pre>
