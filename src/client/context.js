@@ -186,11 +186,15 @@ class Context {
     loadTemplate('templates/settings.html',callback);
   }
   /** Add last action performed to lower information layer in main app */
-  notify(text,title) {
+  notify(text,title,type='success') {
     toastr.options.timeOut = 4500;
     toastr.options.hideDuration = 250;
     toastr.options.showDuration = 250;
-    toastr.success(text, title);   
+    if (type === 'success') {
+      toastr.success(text, title);
+    }else {
+      toastr.error(text, title);
+    }
   }
 }
 export let context = new Context(); //Singleton export

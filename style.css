@@ -13,6 +13,7 @@ tr {
  
 }
 button.xp {
+  white-space:normal !important;
   width:100%;
 }
 

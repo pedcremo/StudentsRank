@@ -32,7 +32,8 @@ class Person {
     this.attitudeTasks = attitudeTasks;
 
     this.attitudeTasks.forEach(function (itemAT) {
-      while (context.attitudeTasks.size <= 0) { };//BAD
+      let cont = 0;
+      while (context.attitudeTasks.size <= 0) {setTimeout(function() {cont++;},1000)}; //BAD
       let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
       this[_totalXPpoints] += parseInt(instanceAT.points);
     }.bind(this));
@@ -72,12 +73,23 @@ class Person {
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
     let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
     this[privateAddTotalPoints](parseInt(attTask.points));
-    context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name);
+    let typeToastr = 'success';
+    if (attTask.points < 0) {typeToastr = 'error';};
+    context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
     console.log('HOLA TINKI WINKI');
+    this.attitudeTasks.forEach(function (itemAT) {
+        if (itemAT[0] == taskInstanceId) {
+          let index = this.attitudeTasks.indexOf(itemAT);
+          if (index > -1) {
+            this.attitudeTasks.splice(index, 1);
+          }
+        }
+      });
   }
+
   /** Get students Marks sliced by showNumGradedTasks from context*/
   getStudentMarks() {
     let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();

@@ -14,7 +14,7 @@
           <div class="row">
               <div class="col-md-12">
                 <div ng-repeat="attitudeItem in TPL_ATTITUDE_TASKS">
-                  <button class="xp btn" idAT="${attitudeItem[1].id}" value="${attitudeItem[1].points}">${attitudeItem[1].points} ${attitudeItem[1].description}</button>
+                  <button class="xp btn btn-${attitudeItem[1].type}" idAT="${attitudeItem[1].id}" value="${attitudeItem[1].points}">${attitudeItem[1].points} ${attitudeItem[1].description}</button>
                 </div>  
               </div>          
               

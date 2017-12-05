@@ -24,6 +24,7 @@ class AttitudeTask extends Task {
     super(name,description,id);
     this.points = points;
     this.hits = hits;
+    this.type = (this.points >= 0) ? 'success' : 'danger';
   }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {
@@ -31,7 +32,7 @@ class AttitudeTask extends Task {
     let callback = function(responseText) {
       let scope = {};
       scope.TPL_ATTITUDE_TASKS = [...context.attitudeTasks.entries()];
-      
+
       let out = template(responseText,scope);
       $('#content').html($('#content').html() + eval('`' + out + '`'));
       $('#XPModal').modal('toggle');
