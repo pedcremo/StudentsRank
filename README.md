@@ -148,3 +148,6 @@ NameVirtualHost *:80
         ProxyPassReverse / http://127.0.0.1:8000/
 </VirtualHost>
 </pre>
+
+== Test workflow ==
+http://busypeoples.github.io/post/testing-workflow-with-es6/

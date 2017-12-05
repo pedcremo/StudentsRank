@@ -10,26 +10,14 @@ var app = express();
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8000;
 var four0four = require('./utils/404')();
 
 var environment = process.env.NODE_ENV;
 
-/*function rawBody(req, res, next) {
-  req.setEncoding('utf8');
-  req.rawBody = '';
-  req.on('data', function(chunk) {
-    req.rawBody += chunk;
-  });
-  req.on('end', function(){
-    next();
-  });
-}*/
-
 app.use(favicon(__dirname + '/favicon.ico'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-//app.use(rawBody);
 app.use(logger('dev'));
 
 //NEW PERE
