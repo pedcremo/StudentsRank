@@ -1,8 +1,8 @@
 module.exports = function(config) {
     config.set({
       basePath: '',
-      frameworks: ['jasmine','browserify'],
-      browsers: ['Chrome','ChromeHeadlessRANK'],
+      frameworks: ['jasmine-ajax','jasmine','browserify'],
+      browsers: ['ChromeHeadlessRANK'],
 
       customLaunchers: {
         ChromeHeadlessRANK: {
@@ -14,7 +14,8 @@ module.exports = function(config) {
       plugins: [
         'karma-chrome-launcher',
         'karma-browserify',
-        'karma-jasmine'
+        'karma-jasmine',
+        'karma-jasmine-ajax'
       ],
       files: [
         'lib/jquery/jquery.min.js',

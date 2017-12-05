@@ -59,6 +59,7 @@
     "karma-browserify": "^5.1.2",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.1",
+    "karma-jasmine-ajax": "^0.1.13",
     "karma-jasmine-jquery": "^0.1.1",
     "mkdirp": "^0.5.1",
     "protractor": "^5.2.0"
