@@ -31,6 +31,7 @@ class AttitudeTask extends Task {
     let callback = function(responseText) {
       let scope = {};
       scope.TPL_ATTITUDE_TASKS = [...context.attitudeTasks.entries()];
+      
       let out = template(responseText,scope);
       $('#content').html($('#content').html() + eval('`' + out + '`'));
       $('#XPModal').modal('toggle');

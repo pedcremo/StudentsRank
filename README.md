@@ -1,5 +1,3 @@
-
-http://blog.karmadust.com/automatic-node-js-deployments-on-a-linux-server-via-github/
 # Introduction 
 The purpose of this project is to program a Students rank mini app using entiterly raw ES6 without the use
 of any third party library. The aim is to learn as much as possible only in javascript.
@@ -52,6 +50,9 @@ We must pass all testings before be tempted to command 'git push origin master'
 
 In order to enable this webhook it is mandatory to proceed with some configurations on github.com project settings. Specifically webhooks section. Add webhook. Set content type to application/json. Check Active. Enable just the push event and put the same shared-secret than in our src/server/hook.js listener. 
 
+RECOMMENDED READING:
+http://blog.karmadust.com/automatic-node-js-deployments-on-a-linux-server-via-github/
+
 # Key points about the development stack  we have chosen for this app
 
 * Gulp as a mechanism to automate all our tasks: transpiling, concatenate, minify js code, pass code quality checkings, testing, launch test server ...
@@ -78,13 +79,13 @@ ES6 template literals
 gradedtasks branch
 ==================
 
-# 2 points context.students conversion and app adaptation from array to Map
-# 2 points basic routing mechanism
-# 2 points CRUD student 
-# 1 points CRUD gradedtasks
-# 1 point jsdoc3 documentation up to date according to changes
-# 1 point worthy css
-# 1 More visible graded tasks feature implemented. A button to show one mode gradedtasks. We are able to see the last one when we create ranking list 
+* 2 points context.students conversion and app adaptation from array to Map
+* 2 points basic routing mechanism
+* 2 points CRUD student 
+* 1 points CRUD gradedtasks
+* 1 point jsdoc3 documentation up to date according to changes
+* 1 point worthy css
+* 1 More visible graded tasks feature implemented. A button to show one mode gradedtasks. We are able to see the last one when we create ranking list 
 
 Optional -> 2 points Remove any createElement present in code (All tag generation templated based) 
 
@@ -93,12 +94,12 @@ SUPER GREAT: Implement a ng-repeat attribute inside basic template system (2 poi
 
 templator branch
 ================
-# 2 points. New settings menu button to fine tune % assigned to XP tasks and % Assigned to graded tasks. Save in localstorage at the moment 
-# 1 point. Sort Students ranking taking into account new finalGrade() method aimed to calculate final grade using GT% and XP%
-# 2 points. Enhance student form adding new field to upload an image profile to server using as name student id 
-# 2 deploy inside docker container our app
-# 1 updated documentation able to generate with jsdoc3
-# 2 points custom css from scratch  
+* 2 points. New settings menu button to fine tune % assigned to XP tasks and % Assigned to graded tasks. Save in localstorage at the moment 
+* 1 point. Sort Students ranking taking into account new finalGrade() method aimed to calculate final grade using GT% and XP%
+* 2 points. Enhance student form adding new field to upload an image profile to server using as name student id 
+* 2 deploy inside docker container our app
+* 1 updated documentation able to generate with jsdoc3
+* 2 points custom css from scratch  
 
 #docker. We want to create a container for our app
 

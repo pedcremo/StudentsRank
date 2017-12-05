@@ -64,7 +64,7 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
     };
     xhttp.open(method, urlTemplate, true);
     if (method === 'POST') {
-      if (urlTemplate === 'api/saveStudents' || urlTemplate === 'api/saveGradedTasks') {
+      if (urlTemplate === 'api/saveStudents' || urlTemplate === 'api/saveGradedTasks' || urlTemplate === 'api/saveAttitudeTasks') {
         xhttp.setRequestHeader('Content-Type', 'application/json');
       }else if (urlTemplate === 'api/uploadImage') {
         console.log('uploading image'); //No special content-type
