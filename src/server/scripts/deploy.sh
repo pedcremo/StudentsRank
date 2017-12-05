@@ -1,7 +1,7 @@
 #!/bin/bash
 cd /home/pedcremo/StudentsRank
-git checkout experimental
-git pull origin experimental
+git checkout master
+git pull origin master
 npm install
 npm stop
 npm start

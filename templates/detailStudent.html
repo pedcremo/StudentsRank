@@ -3,7 +3,9 @@
 <h3>Attitude tasks</h3>
 
 <ul class="list-group">
- <li ng-repeat="atItem in TPL_ATTITUDE_TASKS" class="list-group-item">${atItem.task.points} -> ${atItem.task.description} ->  ${atItem.task.datetime}</li>
+ <div ng-repeat="atItem in TPL_ATTITUDE_TASKS"> 
+ <li  class="list-group-item"><a href="#deleteXP/${TPL_STUDENT.id}/${atItem.id}"><button class='btnS btn btn-danger'><i class='fa fa-trash-o fa-1x'></i></button></a> ${atItem.points} -> ${atItem.description} ->  ${atItem.datetime} </li>
+</div>
 </ul>
 
 <h3>Graded tasks</h3>

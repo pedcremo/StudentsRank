@@ -7,6 +7,10 @@ import AttitudeTask from './classes/attitudetask.js';
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
+    loadTemplate('api/getAttitudeTasks',function(response) {
+                            loadAttitudeTasks(response);
+                          },'GET','',false);
+
     loadTemplate('api/getStudents',function(response) {
                             loadStudents(response);
                             context.getTemplateRanking();
@@ -14,11 +18,6 @@ function updateFromServer() {
 
     loadTemplate('api/getGradedTasks',function(response) {
                           loadGradedTasks(response);
-                          context.getTemplateRanking();
-                        },'GET','',false);
-
-    loadTemplate('api/getAttitudeTasks',function(response) {
-                          loadAttitudeTasks(response);
                           context.getTemplateRanking();
                         },'GET','',false);
   }
@@ -69,10 +68,10 @@ function loadAttitudeTasks(attitudeTasksStr) {
   let attitudeTasks_ = new Map(JSON.parse(attitudeTasksStr));
   attitudeTasks_.forEach(function(value_,key_,attitudeTasks_) {
       attitudeTasks_.set(key_,new AttitudeTask(value_.name,value_.description,value_.points,
-          value_.id));
+        value_.hits,value_.id));
     });
   context.attitudeTasks = attitudeTasks_;
 }
 
 
-export {updateFromServer,saveStudents,saveGradedTasks};
+export {updateFromServer,saveStudents,saveGradedTasks,saveAttitudeTasks};

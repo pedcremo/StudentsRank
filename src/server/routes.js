@@ -12,6 +12,7 @@ var mkdirp = require('mkdirp');
 //===== NEW PERE ===========================================================
 router.get('/getStudents', getStudents);
 router.get('/getGradedTasks', getGradedTasks);
+router.get('/getAttitudeTasks', getAttitudeTasks);
  
 router.post('/uploadImage', uploadImage);
  
@@ -29,7 +30,6 @@ router.post('/saveStudents',function(req, res) {
  
 router.post('/saveGradedTasks',function(req, res) {
   if (req.isAuthenticated()) {
-    //data.saveGradedTasks(req.body);
     fs.writeFile('src/server/data/' + req.user.id + '/gradedtasks.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
@@ -39,7 +39,19 @@ router.post('/saveGradedTasks',function(req, res) {
       res.send('OK');
     }
 });
- 
+
+router.post('/saveAttitudeTasks',function(req, res) {
+  if (req.isAuthenticated()) {
+    fs.writeFile('src/server/data/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file has been saved!');
+    });
+      res.send('OK');
+    }
+});
+
 // route to test if the user is logged in or not
 router.get('/loggedin', function(req, res) {
   console.log('Logged in EXPRESS' + JSON.stringify(req.user));
@@ -187,15 +199,22 @@ function getGradedTasks(req, res, next) {
   }
 }
  
-/*function getPerson(req, res, next) {
-  var id = +req.params.id;
-  var person = data.people.filter(function(p) {
-    return p.id === id;
-  })[0];
- 
-  if (person) {
-    res.status(200).send(person);
-  } else {
-    four0four.send404(req, res, 'person ' + id + ' not found');
+function getAttitudeTasks(req, res, next) {
+  if (fs.existsSync('src/server/data/attitudetasks.json')) {    
+    fs.readFile('src/server/data/attitudetasks.json',function(err, data) {
+            if(err) {
+                console.log(err);
+            }
+            console.log(data);
+            res.status(200).send(data);
+      });
+    }else {
+      fs.writeFile('src/server/data/attitudetasks.json', JSON.stringify([]), 'utf8', (err) => {
+        if (err) {
+          throw err;
+        }
+       res.status(200).send('[]');
+       console.log('The file has been saved empty!');
+    });
   }
-}*/
+}

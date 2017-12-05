@@ -32,7 +32,9 @@ class Person {
     this.attitudeTasks = attitudeTasks;
 
     this.attitudeTasks.forEach(function (itemAT) {
-      this[_totalXPpoints] += parseInt(itemAT['task'].points);
+      while (context.attitudeTasks.size <= 0) { };//BAD
+      let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
+      this[_totalXPpoints] += parseInt(instanceAT.points);
     }.bind(this));
   }
 
@@ -65,10 +67,16 @@ class Person {
     return max;
   }
   /** Add a Attitude task linked to person with its own mark. */
-  addAttitudeTask(taskInstance) {
-    this.attitudeTasks.push({'task':taskInstance});
-    this[privateAddTotalPoints](parseInt(taskInstance.points));
-    context.notify('Added ' + taskInstance.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name);
+  addAttitudeTask(taskInstanceId) {
+    let dateTimeStamp = new Date();//Current time
+    this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
+    let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
+    this[privateAddTotalPoints](parseInt(attTask.points));
+    context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name);
+  }
+  /** Delete XP associated to this person */
+  deleteXP(taskInstanceId) {
+    console.log('HOLA TINKI WINKI');
   }
   /** Get students Marks sliced by showNumGradedTasks from context*/
   getStudentMarks() {
@@ -137,7 +145,12 @@ class Person {
     loadTemplate('templates/detailStudent.html',function(responseText) {
         let TPL_STUDENT = this;
         let scope = {};
-        scope.TPL_ATTITUDE_TASKS = this.attitudeTasks.reverse();
+        scope.TPL_ATTITUDE_TASKS = [];
+        this.attitudeTasks.reverse().forEach(function(atItem) {
+          let itemAT = context.attitudeTasks.get(parseInt(atItem.id));
+          itemAT.datetime = atItem.timestamp;
+          scope.TPL_ATTITUDE_TASKS.push(itemAT);
+        });
         let TPL_GRADED_TASKS = '';
         context.gradedTasks.forEach(function(gtItem) {
           TPL_GRADED_TASKS += '<li class="list-group-item">' + gtItem.getStudentMark(TPL_STUDENT.getId()) + '->' +

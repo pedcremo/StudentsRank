@@ -1,4 +1,4 @@
-  /**
+/*
  * Context class. Devised to control every element involved in the app: students, gradedTasks ...
  *
  * @constructor
