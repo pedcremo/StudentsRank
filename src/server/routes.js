@@ -42,7 +42,7 @@ router.post('/saveGradedTasks',function(req, res) {
 
 router.post('/saveAttitudeTasks',function(req, res) {
   if (req.isAuthenticated()) {
-    fs.writeFile('src/server/data/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+    fs.writeFile('src/server/data/' + req.user.id + '/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -200,21 +200,18 @@ function getGradedTasks(req, res, next) {
 }
  
 function getAttitudeTasks(req, res, next) {
-  if (fs.existsSync('src/server/data/attitudetasks.json')) {    
-    fs.readFile('src/server/data/attitudetasks.json',function(err, data) {
-            if(err) {
-                console.log(err);
-            }
-            console.log(data);
-            res.status(200).send(data);
-      });
-    }else {
-      fs.writeFile('src/server/data/attitudetasks.json', JSON.stringify([]), 'utf8', (err) => {
-        if (err) {
-          throw err;
-        }
-       res.status(200).send('[]');
-       console.log('The file has been saved empty!');
+  if (!fs.existsSync('src/server/data/' + req.user.id + '/attitudetasks.json')) {    
+    mkdirp('src/server/data/' + req.user.id, function (err) {
+      if (err) console.error(err);
+      else console.log('dir created');
     });
+    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/attitudetasks.json'));   
   }
+  fs.readFile('src/server/data/'+ req.user.id + '/attitudetasks.json',function(err, data) {
+    if(err) {
+        console.log(err);
+    }
+    console.log(data);
+    res.status(200).send(data);
+  });
 }

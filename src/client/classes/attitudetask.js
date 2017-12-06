@@ -50,8 +50,12 @@ class AttitudeTask extends Task {
       $('#newAttitudeTask').submit(() => {
         let points = $('#points').val();
         let description = $('#description').val();
-        context.attitudeTasks.set(that.id,new AttitudeTask(description,description,points));
+        let at = new AttitudeTask(description,description,points);
+        context.attitudeTasks.set(at.id,at);
         saveAttitudeTasks(JSON.stringify([...context.attitudeTasks]));
+        $('#XPModal').modal('toggle');
+        $('.modal-backdrop').remove();
+        personInstance.addAttitudeTask(at.id);
       });
     };
     loadTemplate('templates/listAttitudeTasks.2.html',callback);

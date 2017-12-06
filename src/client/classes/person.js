@@ -31,21 +31,21 @@ class Person {
     }
     this.attitudeTasks = attitudeTasks;
 
-    this.attitudeTasks.forEach(function (itemAT) {
-      let cont = 0;
-      while (context.attitudeTasks.size <= 0) {setTimeout(function() {cont++;},1000)}; //BAD
-      let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
-      this[_totalXPpoints] += parseInt(instanceAT.points);
-    }.bind(this));
+    /*this.attitudeTasks.forEach(function (itemAT) {
+      if (context.attitudeTasks.size > 0) {
+        let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
+        this[_totalXPpoints] += parseInt(instanceAT.points);
+      }
+    }.bind(this));*/
   }
 
   /** Add points to person. we should use it carefully . */
-  [privateAddTotalPoints] (points) {
+  /*[privateAddTotalPoints] (points) {
     if (!isNaN(points)) {
       this[_totalXPpoints] += points;
       context.getTemplateRanking();
     }
-  }
+  }*/
 
   /** Get person id  based on a 10 character hash composed by name+surname */
   getId() {
@@ -54,6 +54,14 @@ class Person {
 
   /** Read person _totalXPpoints. A private property only modicable inside person instance */
   getXPtotalPoints() {
+    this[_totalXPpoints] = 0;
+    this.attitudeTasks.forEach(function (itemAT) {
+      if (context.attitudeTasks.size > 0) {
+        let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
+        this[_totalXPpoints] += parseInt(instanceAT.points);
+      }
+    }.bind(this));
+
     return this[_totalXPpoints];
   }
 
@@ -72,14 +80,14 @@ class Person {
     let dateTimeStamp = new Date();//Current time
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
     let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
-    this[privateAddTotalPoints](parseInt(attTask.points));
+    //this[privateAddTotalPoints](parseInt(attTask.points));
     let typeToastr = 'success';
     if (attTask.points < 0) {typeToastr = 'error';};
     context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
-    console.log('HOLA TINKI WINKI');
+    //console.log('HOLA TINKI WINKI');
     this.attitudeTasks.forEach((itemAT) => {
         if (itemAT.id == taskInstanceId) {
           let index = this.attitudeTasks.indexOf(itemAT);

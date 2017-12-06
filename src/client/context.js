@@ -54,7 +54,10 @@ class Context {
       }else {
         //alert('LOGGED IN TRUE');
         this.user = JSON.parse(response);
-        updateFromServer();
+        //Only call server if we not have loaded students 
+        if (this.students.size <= 0) {
+          updateFromServer();
+        }
         this.getTemplateRanking();
         return true;
       }
@@ -190,6 +193,7 @@ class Context {
     toastr.options.timeOut = 4500;
     toastr.options.hideDuration = 250;
     toastr.options.showDuration = 250;
+    toastr.options.onShown = () => {  this.getTemplateRanking(); };
     if (type === 'success') {
       toastr.success(text, title);
     }else {
