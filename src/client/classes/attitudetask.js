@@ -47,7 +47,8 @@ class AttitudeTask extends Task {
         });
       });
 
-      $('#newAttitudeTask').submit(() => {
+      $('#newAttitudeTask').submit((event) => {
+        event.preventDefault();
         let points = $('#points').val();
         let description = $('#description').val();
         let at = new AttitudeTask(description,description,points);
@@ -56,6 +57,7 @@ class AttitudeTask extends Task {
         $('#XPModal').modal('toggle');
         $('.modal-backdrop').remove();
         personInstance.addAttitudeTask(at.id);
+        return false; //Abort submit
       });
     };
     loadTemplate('templates/listAttitudeTasks.2.html',callback);
