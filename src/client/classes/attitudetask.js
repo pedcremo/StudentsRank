@@ -24,7 +24,7 @@ class AttitudeTask extends Task {
     super(name,description,id);
     this.points = points;
     this.hits = hits;
-    this.type = (this.points >= 0) ? 'success' : 'danger';
+    this.type = (this.points >= 0) ? 'success' : 'danger';//Positive or negative attitude
   }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {

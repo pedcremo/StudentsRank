@@ -1,0 +1,8 @@
+{
+    "weightXP" : 75,
+    "weightGT" :25,
+    "default_subject": "default",
+    "default_term":"",
+    "terms":[],
+    "subjects":[]
+}
