@@ -13,13 +13,14 @@ passport.use(new LocalStrategy(
       let user = readSubjectsUser('343242');
       user.id = '343242';
       user.displayName = 'admin';
-      return done(null,JSON.stringify(user));
+      return done(null,user);
     }
     if (username === 'pedcremo' && password === 'hola') { // stupid example
       let user = readSubjectsUser('333342');
       user.id = '333342';
       user.displayName = 'Pere Crespo';
-      return done(null,JSON.stringify(user));
+      //return done(null,JSON.stringify(user));
+      return done(null,user);
     }
 
     return done(null, false, { message: 'Incorrect username.' });
@@ -43,7 +44,6 @@ function readSubjectsUser(idUser) {
     });
     return subjects;
   }
-    
 }
 passport.use(new TwitterStrategy({
     consumerKey: 'O7irwQHhR39bk5oWuYK7KgBK5',

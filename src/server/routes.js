@@ -112,7 +112,9 @@ module.exports = router;
 /*function getPeople(req, res, next) {
   res.status(200).send(data.people);
 }*/
-function getStudents(req, res, next) { 
+function getStudents(req, res, next) {
+  let id = req.user.id;
+  let ds = req.user.defaultSubject;
   if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json')) {
     // Do something
     fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',function(err, data) {
@@ -200,18 +202,24 @@ function getGradedTasks(req, res, next) {
 }
  
 function getAttitudeTasks(req, res, next) {
+  let id = req.user.id;
+  let ds = req.user.defaultSubject;
+  console.log('req.user'+req.user+' id='+id+' ds='+ds);
   if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json')) {    
     mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
       if (err) console.error(err);
       else console.log('dir created');
     });
-    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json'));   
+    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json'));
+    let content = fs.readFileSync('src/server/data/attitudetasks_skeleton.json');
+    res.status(200).send(content);
+  }else {
+    fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json',function(err, data) {
+      if(err) {
+          console.log(err);
+      }
+      console.log(data);
+      res.status(200).send(data);
+    });
   }
-  fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json',function(err, data) {
-    if(err) {
-        console.log(err);
-    }
-    console.log(data);
-    res.status(200).send(data);
-  });
 }

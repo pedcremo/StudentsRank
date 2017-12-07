@@ -8,7 +8,8 @@ function showMenu() {
 }
 /** Hide Menu */
 function hideMenu() {
-  $('navbarNav').hide();
+  let sel = $('#navbarNav');
+  sel.show().hide();
 }
 /** Generate menu options taking into account logged in user */
 function generateMenu() {
@@ -30,7 +31,7 @@ function logout() {
   context.user = '';
   deleteCookie('user');
   deleteCookie('connect.sid');
-
+  hideMenu();
   loadTemplate('api/logout',function(response) {
                 context.clear();
                 context.login();
