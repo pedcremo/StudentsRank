@@ -3,22 +3,48 @@ var LocalStrategy = require('passport-local').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
-
+var fs = require('fs');
+var mkdirp = require('mkdirp');
 //==================================================================
 // Define the strategy to be used by PassportJS
 passport.use(new LocalStrategy(
   function(username, password, done) {
     if (username === 'admin' && password === 'admin') { // stupid example
-      return done(null, {id:'343242',displayName: 'admin'});
+      let user = readSubjectsUser('343242');
+      user.id = '343242';
+      user.displayName = 'admin';
+      return done(null,JSON.stringify(user));
     }
     if (username === 'pedcremo' && password === 'hola') { // stupid example
-      return done(null, {id:'333342',displayName: 'Pere Crespo'});
+      let user = readSubjectsUser('333342');
+      user.id = '333342';
+      user.displayName = 'Pere Crespo';
+      return done(null,JSON.stringify(user));
     }
 
     return done(null, false, { message: 'Incorrect username.' });
   }
 ));
-
+function readSubjectsUser(idUser) {
+  if (fs.existsSync('src/server/data/' + idUser + '/subjects.json')) {
+    let content = fs.readFileSync('src/server/data/' + idUser + '/subjects.json');
+    return JSON.parse(content);
+  }else {
+    mkdirp('src/server/data/' + idUser, function (err) {
+      if (err) console.error(err);
+      else console.log('dir created');
+    });
+    let subjects = {'defaultSubject':'default','subjects':['default']};
+    fs.writeFileSync('src/server/data/' + idUser + '/subjects.json', JSON.stringify(subjects), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file subjects.json has been saved!');
+    });
+    return subjects;
+  }
+    
+}
 passport.use(new TwitterStrategy({
     consumerKey: 'O7irwQHhR39bk5oWuYK7KgBK5',
     consumerSecret: 'brTcGHZI8SQPz1U08HAm5VeSnjatuASLF6EyD1hdpkmlMvk2Me',

@@ -18,7 +18,7 @@ router.post('/uploadImage', uploadImage);
  
 router.post('/saveStudents',function(req, res) {
   if (req.isAuthenticated()) {
-    fs.writeFile('src/server/data/' + req.user.id + '/students.json', JSON.stringify(req.body), 'utf8', (err) => {
+    fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -30,7 +30,7 @@ router.post('/saveStudents',function(req, res) {
  
 router.post('/saveGradedTasks',function(req, res) {
   if (req.isAuthenticated()) {
-    fs.writeFile('src/server/data/' + req.user.id + '/gradedtasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+    fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -42,7 +42,7 @@ router.post('/saveGradedTasks',function(req, res) {
 
 router.post('/saveAttitudeTasks',function(req, res) {
   if (req.isAuthenticated()) {
-    fs.writeFile('src/server/data/' + req.user.id + '/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+    fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -113,9 +113,9 @@ module.exports = router;
   res.status(200).send(data.people);
 }*/
 function getStudents(req, res, next) { 
-  if (fs.existsSync('src/server/data/' + req.user.id + '/students.json')) {
+  if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json')) {
     // Do something
-    fs.readFile('src/server/data/' + req.user.id + '/students.json',function(err, data) {
+    fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',function(err, data) {
       if(err) {
         console.log(err);
       }
@@ -123,11 +123,11 @@ function getStudents(req, res, next) {
       res.status(200).send(data);
     });
   }else{
-    mkdirp('src/server/data/' + req.user.id, function (err) {
+    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
       if (err) console.error(err)
       else console.log('dir created')
      });
-     fs.writeFile('src/server/data/' + req.user.id + '/students.json', JSON.stringify([]), 'utf8', (err) => {
+     fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json', JSON.stringify([]), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -176,8 +176,8 @@ function uploadImage(req, res) {
 }
  
 function getGradedTasks(req, res, next) {
-  if (fs.existsSync('src/server/data/' + req.user.id + '/gradedtasks.json')) {    
-    fs.readFile('src/server/data/' + req.user.id + '/gradedtasks.json',function(err, data) {
+  if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json')) {    
+    fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json',function(err, data) {
             if(err) {
                 console.log(err);
             }
@@ -185,11 +185,11 @@ function getGradedTasks(req, res, next) {
             res.status(200).send(data);
       });
     }else {
-      mkdirp('src/server/data/' + req.user.id, function (err) {
+      mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
         if (err) console.error(err);
         else console.log('dir created');
       });
-      fs.writeFile('src/server/data/' + req.user.id + '/gradedtasks.json', JSON.stringify([]), 'utf8', (err) => {
+      fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json', JSON.stringify([]), 'utf8', (err) => {
         if (err) {
           throw err;
         }
@@ -200,14 +200,14 @@ function getGradedTasks(req, res, next) {
 }
  
 function getAttitudeTasks(req, res, next) {
-  if (!fs.existsSync('src/server/data/' + req.user.id + '/attitudetasks.json')) {    
-    mkdirp('src/server/data/' + req.user.id, function (err) {
+  if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json')) {    
+    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
       if (err) console.error(err);
       else console.log('dir created');
     });
-    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/attitudetasks.json'));   
+    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json'));   
   }
-  fs.readFile('src/server/data/'+ req.user.id + '/attitudetasks.json',function(err, data) {
+  fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json',function(err, data) {
     if(err) {
         console.log(err);
     }
