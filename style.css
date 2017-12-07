@@ -1,4 +1,14 @@
 
+
+/* Important part */
+.modal-dialog{
+  overflow-y: initial !important
+}
+.modal-body{
+  height: 400px;
+  overflow-y: auto;
+}
+
 .navbar-right li a {
     text-align: right;
 }

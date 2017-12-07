@@ -32,6 +32,10 @@ class AttitudeTask extends Task {
     let callback = function(responseText) {
       let scope = {};
       scope.TPL_ATTITUDE_TASKS = [...context.attitudeTasks.entries()];
+      scope.TPL_ATTITUDE_TASKS.sort(function(a,b) {
+        return (b[1].hits - a[1].hits);
+      });
+      context.attitudeTasks = new Map(scope.TPL_ATTITUDE_TASKS);
 
       let out = template(responseText,scope);
       $('#content').html($('#content').html() + eval('`' + out + '`'));
@@ -42,8 +46,6 @@ class AttitudeTask extends Task {
           $('#XPModal').modal('toggle');
           $('.modal-backdrop').remove();
           personInstance.addAttitudeTask($(this).attr('idAT'));
-          //personInstance.addAttitudeTask(new AttitudeTask('XP task',
-          //  $(this).val(),$(this).attr('value'))); //TODO
         });
       });
 

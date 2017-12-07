@@ -13,7 +13,7 @@ import {formatDate,popupwindow,hashcode,loadTemplate} from '../lib/utils.js';
 import {context} from '../context.js';
 import AttitudeTask from './attitudetask.js';
 import GradedTask from './gradedtask.js';
-import {saveStudents} from '../dataservice.js';
+import {saveStudents,saveAttitudeTasks} from '../dataservice.js';
 import {template} from '../lib/templator.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
@@ -30,22 +30,7 @@ class Person {
       this.id = id;
     }
     this.attitudeTasks = attitudeTasks;
-
-    /*this.attitudeTasks.forEach(function (itemAT) {
-      if (context.attitudeTasks.size > 0) {
-        let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
-        this[_totalXPpoints] += parseInt(instanceAT.points);
-      }
-    }.bind(this));*/
   }
-
-  /** Add points to person. we should use it carefully . */
-  /*[privateAddTotalPoints] (points) {
-    if (!isNaN(points)) {
-      this[_totalXPpoints] += points;
-      context.getTemplateRanking();
-    }
-  }*/
 
   /** Get person id  based on a 10 character hash composed by name+surname */
   getId() {
@@ -80,6 +65,8 @@ class Person {
     let dateTimeStamp = new Date();//Current time
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
     let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
+    attTask.hits++;
+    saveAttitudeTasks(JSON.stringify([...context.attitudeTasks]));
     //this[privateAddTotalPoints](parseInt(attTask.points));
     let typeToastr = 'success';
     if (attTask.points < 0) {typeToastr = 'error';};
