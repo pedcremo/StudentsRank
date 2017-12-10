@@ -67,6 +67,7 @@ class Person {
     let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
     attTask.hits++;
     saveAttitudeTasks(JSON.stringify([...context.attitudeTasks]));
+    saveStudents(JSON.stringify([...context.students]));
     //this[privateAddTotalPoints](parseInt(attTask.points));
     let typeToastr = 'success';
     if (attTask.points < 0) {typeToastr = 'error';};
