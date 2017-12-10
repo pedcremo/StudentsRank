@@ -32,6 +32,7 @@ class Context {
       iGradedTask.addStudentMark(studentInstance.getId(),0);
     });
     this.students.set(studentInstance.getId(),studentInstance);
+    saveStudents(JSON.stringify([...this.students]));
     this.getTemplateRanking();
   }
   /** Clear context  */
@@ -112,7 +113,7 @@ class Context {
       });
       this.students = new Map(arrayFromMap);
 
-      saveStudents(JSON.stringify([...this.students]));
+      //saveStudents(JSON.stringify([...this.students]));
       let scope = {};
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {

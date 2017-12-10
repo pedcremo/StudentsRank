@@ -13,7 +13,16 @@ var mkdirp = require('mkdirp');
 router.get('/getStudents', getStudents);
 router.get('/getGradedTasks', getGradedTasks);
 router.get('/getAttitudeTasks', getAttitudeTasks);
- 
+router.get('/changeSubject', changeSubject);
+
+function changeSubject(req, res, next) {
+  if (req.isAuthenticated()) {
+    console.log("changeSubject ->" + req.query.newsubject);
+    req.user.defaultSubject = req.query.newsubject;
+    res.status(200).send("OK");
+  }
+}
+
 router.post('/uploadImage', uploadImage);
  
 router.post('/saveStudents',function(req, res) {
@@ -115,6 +124,7 @@ module.exports = router;
 function getStudents(req, res, next) {
   let id = req.user.id;
   let ds = req.user.defaultSubject;
+  console.log("DEFAULTSUBJECT ->" + req.user.defaultSubject);
   if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json')) {
     // Do something
     fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',function(err, data) {
@@ -222,4 +232,5 @@ function getAttitudeTasks(req, res, next) {
       res.status(200).send(data);
     });
   }
+
 }

@@ -200,11 +200,6 @@ class Person {
               },'POST',formData,'false');
 
               if (context) {
-                /*context.gradedTasks.forEach(function(iGradedTask) {
-                      iGradedTask.addStudentMark(student.getId(),0);
-                    });
-                context.students.set(student.getId(),student);
-                context.getTemplateRanking();*/
                 context.addStudent(student);
                 return false; //Avoid form submit
               }

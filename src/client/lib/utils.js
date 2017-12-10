@@ -62,6 +62,9 @@ function loadTemplate(urlTemplate,callback,method='GET',params='',cached=true) {
         }
       }
     };
+    if (method === 'GET' && params) {
+      urlTemplate += '?' + params;
+    }
     xhttp.open(method, urlTemplate, true);
     if (method === 'POST') {
       if (urlTemplate === 'api/saveStudents' || urlTemplate === 'api/saveGradedTasks' || urlTemplate === 'api/saveAttitudeTasks') {
