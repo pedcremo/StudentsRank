@@ -4,6 +4,7 @@ import {logout} from './menu.js';
 import AttitudeTask from './classes/attitudetask.js';
 import GradedTask from './classes/gradedtask.js';
 import Person from './classes/person.js';
+import {saveStudents} from './dataservice.js';
 
 /** Primitive routing mechanism based on detecting clicks on links and get the URL */
 function initRouter() {
@@ -26,6 +27,7 @@ function initRouter() {
             case /#deleteStudent/.test(isLink.href):
               if (window.confirm('Are you sure?')) {
                 context.students.delete(parseInt(getIdFromURL(isLink.href)));
+                saveStudents(JSON.stringify([...context.students]));
                 context.getTemplateRanking();
               }
               break;
