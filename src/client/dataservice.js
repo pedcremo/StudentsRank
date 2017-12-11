@@ -50,7 +50,7 @@ function saveAttitudeTasks(arrayAT) {
 function saveSettings(settingsJSON) {
   loadTemplate('api/saveSettings',function(response) {
                           console.log('SAVE SETTINGS ' + response);
-                        },'POST',settingsJSON,false);
+                        },'POST',JSON.stringify(settingsJSON),false);
 }
 
 /** Load students from AJAX response and map to Person instances in context */
