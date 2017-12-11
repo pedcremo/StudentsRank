@@ -13,6 +13,7 @@ var mkdirp = require('mkdirp');
 router.get('/getStudents', getStudents);
 router.get('/getGradedTasks', getGradedTasks);
 router.get('/getAttitudeTasks', getAttitudeTasks);
+router.get('/getSettings', getSettings);
 router.get('/changeSubject', changeSubject);
 
 function changeSubject(req, res, next) {
@@ -52,6 +53,18 @@ router.post('/saveGradedTasks',function(req, res) {
 router.post('/saveAttitudeTasks',function(req, res) {
   if (req.isAuthenticated()) {
     fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json', JSON.stringify(req.body), 'utf8', (err) => {
+      if (err) {
+        throw err;
+      }
+      console.log('The file has been saved!');
+    });
+      res.send('OK');
+    }
+});
+
+router.post('/saveSettings',function(req, res) {
+  if (req.isAuthenticated()) {
+    fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json', JSON.stringify(req.body), 'utf8', (err) => {
       if (err) {
         throw err;
       }
@@ -232,5 +245,27 @@ function getAttitudeTasks(req, res, next) {
       res.status(200).send(data);
     });
   }
+}
 
+function getSettings(req, res, next) {
+  let id = req.user.id;
+  let ds = req.user.defaultSubject;
+  console.log('req.user'+req.user+' id='+id+' ds='+ds);
+  if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json')) {    
+    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
+      if (err) console.error(err);
+      else console.log('dir created');
+    });
+    fs.createReadStream('src/server/data/settings_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json'));
+    let content = fs.readFileSync('src/server/data/settings_skeleton.json');
+    res.status(200).send(content);
+  }else {
+    fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/settings.json',function(err, data) {
+      if(err) {
+          console.log(err);
+      }
+      console.log(data);
+      res.status(200).send(data);
+    });
+  }
 }

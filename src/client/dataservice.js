@@ -3,22 +3,27 @@ import {context} from './context.js'; //Singleton
 import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
 import AttitudeTask from './classes/attitudetask.js';
+import Settings from './classes/settings.js';
 
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
     loadTemplate('api/getAttitudeTasks',function(response) {
-                            loadAttitudeTasks(response);
-                          },'GET','',false);
+                          loadAttitudeTasks(response);
+                        },'GET','',false);
 
     loadTemplate('api/getStudents',function(response) {
-                            loadStudents(response);
-                            context.getTemplateRanking();
-                          },'GET','',false);
+                          loadStudents(response);
+                          context.getTemplateRanking();
+                        },'GET','',false);
 
     loadTemplate('api/getGradedTasks',function(response) {
                           loadGradedTasks(response);
                           context.getTemplateRanking();
+                        },'GET','',false);
+    loadTemplate('api/getSettings',function(response) {
+                          loadSettings(response);
+                          //context.getTemplateRanking();
                         },'GET','',false);
   }
 }
@@ -41,6 +46,12 @@ function saveAttitudeTasks(arrayAT) {
   loadTemplate('api/saveAttitudeTasks',function(response) {
                           console.log('SAVE ATTITUDE TASKS ' + response);
                         },'POST',arrayAT,false);
+}
+/** Save settings in server side */
+function saveSettings(settingsJSON) {
+  loadTemplate('api/saveSettings',function(response) {
+                          console.log('SAVE SETTINGS ' + response);
+                        },'POST',settingsJSON,false);
 }
 
 /** Load students from AJAX response and map to Person instances in context */
@@ -73,5 +84,10 @@ function loadAttitudeTasks(attitudeTasksStr) {
   context.attitudeTasks = attitudeTasks_;
 }
 
+/** Load setting from AJAX response and map to settings in context */
+function loadSettings(settingsStr) {
+  let settings_ = new Map(JSON.parse(settingsStr));
+  context.settings = new Settings(settings_.weightXP,settings_.weightGT,settings_.defaultTerm,settings_.terms);
+}
 
 export {updateFromServer,saveStudents,saveGradedTasks,saveAttitudeTasks};
