@@ -66,6 +66,10 @@ class Person {
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
     let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
     attTask.hits++;
+<<<<<<< HEAD
+=======
+    saveAttitudeTasks(JSON.stringify([...context.attitudeTasks]));
+>>>>>>> 5b066c389373abe8ad979a29d794941ac84b1839
     saveStudents(JSON.stringify([...context.students]));
     //this[privateAddTotalPoints](parseInt(attTask.points));
     let typeToastr = 'success';

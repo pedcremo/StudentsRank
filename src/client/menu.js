@@ -56,6 +56,7 @@ function logout() {
   loadTemplate('api/logout',function(response) {
                 context.clear();
                 context.login();
+                document.location.href="/";
               },'GET','',false);
 }
 export {generateMenu,logout,showMenu,hideMenu};

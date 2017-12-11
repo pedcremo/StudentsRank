@@ -1,0 +1,9 @@
+[
+    [2000001,{"name":"AIC","description":"Correctly answer a question in class using English","points":"20","id":"2000001","hits":"0"}],
+    [2000002,{"name":"PSFC","description":"Present your solution in front of class","points":"20","id":"2000002","hits":"0"}],
+    [2000003,{"name":"Finish","description":"Finish a proposed task before class ends","points":"100","id":"2000003","hits":"0"}],
+    [2000004,{"name":"Insightful","description":"Asking insightful questions about the lesson","points":"50","id":"2000004","hits":"0"}],
+    [2000005,{"name":"Late","description":"Arriving late to class","points":"-20","id":"2000005","hits":"0"}],
+    [2000006,{"name":"Not answer english","description":"Not answer in english when you have been asked in english","points":"-30","id":"2000006","hits":"0"}],
+    [2000007,{"name":"Delayed HW","description":"Delayed homework delivery","points":"-100","id":"2000007","hits":"0"}]
+]
