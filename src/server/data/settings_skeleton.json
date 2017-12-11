@@ -1,6 +1,6 @@
 {
-    "weightXP" : 75,
-    "weightGP" :25,    
+    "weightXP" : 25,
+    "weightGP" :75,    
     "defaultTerm":"",
     "terms":[{"name":"1st Term","begin":"","end":""},{"name":"2nd Term","begin":"","end":""},{"name":"3rd Term","begin":"","end":""}]
 }
