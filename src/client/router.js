@@ -51,7 +51,7 @@ function initRouter() {
               Person.addPerson();
               break;
             case /#settings/.test(isLink.href):
-              context.settings();
+              context.getSettings();
               break;
             /** logout */
             case /#logout/.test(isLink.href):

@@ -1,9 +1,10 @@
 import {loadTemplate} from './lib/utils.js';
 import {context} from './context.js'; //Singleton
+import Settings from './classes/settings.js';
 import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
 import AttitudeTask from './classes/attitudetask.js';
-import Settings from './classes/settings.js';
+
 
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
@@ -31,8 +32,7 @@ function updateFromServer() {
 function saveStudents(arrayStudents) {
   loadTemplate('api/saveStudents',function(response) {
                           console.log('SAVE STUDENTS ' + response);
-                      },'POST',arrayStudents,false);
-
+                        },'POST',arrayStudents,false);
 }
 /** Save grades in server side */
 function saveGradedTasks(arrayGT) {
@@ -40,7 +40,6 @@ function saveGradedTasks(arrayGT) {
                           console.log('SAVE GRADED TASKS ' + response);
                         },'POST',arrayGT,false);
 }
-
 /** Save Attitude XP points in server side */
 function saveAttitudeTasks(arrayAT) {
   loadTemplate('api/saveAttitudeTasks',function(response) {
@@ -87,7 +86,8 @@ function loadAttitudeTasks(attitudeTasksStr) {
 /** Load setting from AJAX response and map to settings in context */
 function loadSettings(settingsStr) {
   let settings_ = JSON.parse(settingsStr);
-  context.settings = new Settings(settings_.weightXP,settings_.weightGT,settings_.defaultTerm,settings_.terms);
+  context.settings = new Settings(settings_.weightXP,settings_.weightGP,settings_.defaultTerm,settings_.terms);
+  context.getTemplateRanking();
 }
 
-export {updateFromServer,saveStudents,saveGradedTasks,saveAttitudeTasks};
+export {updateFromServer,saveStudents,saveGradedTasks,saveSettings,saveAttitudeTasks};

@@ -1,15 +1,14 @@
 
-
-
 class Settings {
-  constructor(weightXP,weightGT,defaultTerm,terms) {
+  constructor(weightXP,weightGP,defaultTerm,terms) {
     this.weightXP = weightXP;
-    this.weightGT = weightGT;
-    this.defaultTerm = defaultTerm;
+    this.weightGP = weightGP;
     this.terms = terms;
+    this.defaultTerm = this.getDefaultTerm(defaultTerm);
   }
-  getDefaultTerm() {
-    if (this.defaultTerm) {
+  getDefaultTerm(defaultTerm) {
+    if (defaultTerm) {
+      this.defaultTerm = defaultTerm;
       return this.defaultTerm;
     }else {
       let out = '';
@@ -18,7 +17,7 @@ class Settings {
       }catch (err) {
         out = '1st Term';
       }
-      this.terms.array.forEach(element => {
+      this.terms.forEach(element => {
         let dateFrom = element.begin;
         let dateTo = element.end;
         let d1 = dateFrom.split('/');
@@ -31,7 +30,10 @@ class Settings {
           out = element.name;
         }
       });
+      this.defaultTerm = out;
       return out;
     }
   }
 }
+
+export default Settings;

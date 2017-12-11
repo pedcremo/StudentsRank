@@ -27,7 +27,7 @@ function generateMenu() {
       output += '<option value="' + subjects[i] + '">' + subjects[i] + '</option>';
     }
   }
-  output += '</select><br> 1st Term</li>';
+  output += '</select><br><span id="termMenu">' + context.settings.defaultTerm + '</span></li>';
 
   output += '<li class="nav-item"><a class="nav-link" href="#addStudent"><button class="btn btn-secondary"> + Student</button></a></li>';
   output += '<li class="nav-item"><a class="nav-link" href="#addGradedTask"><button class="btn btn-secondary"> + Graded task</button></a></li>';

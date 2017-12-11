@@ -9,7 +9,7 @@
 
 import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
-import {updateFromServer,saveStudents,saveGradedTasks} from './dataservice.js';
+import {updateFromServer,saveStudents,saveGradedTasks,saveSettings} from './dataservice.js';
 import {hashcode,loadTemplate,setCookie,deleteCookie,getCookie} from './lib/utils.js';
 import {generateMenu,showMenu,hideMenu} from './menu.js';
 import {template} from './lib/templator.js';
@@ -20,8 +20,7 @@ class Context {
     this.students = new Map();
     this.gradedTasks = new Map();
     this.attitudeTasks = new Map();
-    this.weightXP = parseInt(getCookie('weightXP')) || 25;
-    this.weightGP = parseInt(getCookie('weightGP')) || 75;
+    this.settings = {};
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
@@ -121,8 +120,8 @@ class Context {
       }
 
       scope.TPL_PERSONS = arrayFromMap;
-      let TPL_XP_WEIGHT = this.weightXP;
-      let TPL_GT_WEIGHT = this.weightGP;
+      let TPL_XP_WEIGHT = this.settings.weightXP;
+      let TPL_GT_WEIGHT = this.settings.weightGP;
 
       loadTemplate('templates/rankingList.html',function(responseText) {
               let out = template(responseText,scope);
@@ -164,24 +163,25 @@ class Context {
     }
   }
   /** Settings */
-  settings() {
+  getSettings() {
     let thisContext = this;
     let callback = function(responseText) {
       $('#content').html(responseText);
       let itemWeightChanger = $('#weightChanger');
-      itemWeightChanger.val(thisContext.weightXP);
+      itemWeightChanger.val(thisContext.settings.weightXP);
       let labelXPWeight = $('#idXPweight');
-      labelXPWeight.text(thisContext.weightXP + '% XP weight');
+      labelXPWeight.text(thisContext.settings.weightXP + '% XP weight');
       let labelGPWeight = $('#idGPweight');
-      labelGPWeight.text(thisContext.weightGP + '% GP weight');
+      labelGPWeight.text(thisContext.settings.weightGP + '% GP weight');
 
       itemWeightChanger.change(function() {
           $('#idXPweight').text(itemWeightChanger.val() + '% XP weight');
-          thisContext.weightXP = itemWeightChanger.val();
-          setCookie('weightXP',thisContext.weightXP,300);
+          thisContext.settings.weightXP = itemWeightChanger.val();
+          //setCookie('weightXP',thisContext.settings.weightXP,300);
           $('#idGPweight').text((100 - itemWeightChanger.val()) + '% GP weight');
-          thisContext.weightGP = (100 - itemWeightChanger.val());
-          setCookie('weightGP',thisContext.weightGP,300);
+          thisContext.settings.weightGP = (100 - itemWeightChanger.val());
+          saveSettings(thisContext.settings);
+          //setCookie('weightGP',thisContext.settings.weightGP,300);
         });
       console.log('Settings: To implement');
     }.bind(this);

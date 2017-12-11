@@ -99,11 +99,11 @@ class Person {
   /** XP mark relative to highest XP mark and XP weight and GT grade */
   getFinalGrade() {
 
-    let xpGrade = this.getXPtotalPoints() * (context.weightXP) / Person.getMaxXPmark();
+    let xpGrade = this.getXPtotalPoints() * (context.settings.weightXP) / Person.getMaxXPmark();
     if (isNaN(xpGrade)) {
       xpGrade = 0;
     }
-    return Math.round(xpGrade + (this.getGTtotalPoints() * (context.weightGP / 100)));
+    return Math.round(xpGrade + (this.getGTtotalPoints() * (context.settings.weightGP / 100)));
   }
   /** Renders person edit form */
   getHTMLEdit() {
