@@ -68,13 +68,17 @@ class Person {
   addAttitudeTask(taskInstanceId) {
     let dateTimeStamp = new Date();//Current time
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
-    let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
-    attTask.hits++;
-    saveStudents(JSON.stringify([...context.students]));
-    //this[privateAddTotalPoints](parseInt(attTask.points));
-    let typeToastr = 'success';
-    if (attTask.points < 0) {typeToastr = 'error';};
-    context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
+
+    try {
+      let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
+      attTask.hits++;
+      saveStudents(JSON.stringify([...context.students]));    
+      let typeToastr = 'success';
+      if (attTask.points < 0) {typeToastr = 'error';};
+      context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
+    }catch (error) {
+      throw error;
+    }
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
