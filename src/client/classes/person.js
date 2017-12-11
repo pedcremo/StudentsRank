@@ -43,7 +43,11 @@ class Person {
     this.attitudeTasks.forEach(function (itemAT) {
       if (context.attitudeTasks.size > 0) {
         let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
-        this[_totalXPpoints] += parseInt(instanceAT.points);
+        try {
+          this[_totalXPpoints] += parseInt(instanceAT.points);
+        } catch (error) {
+          this[_totalXPpoints] += 0;
+        }
       }
     }.bind(this));
 
