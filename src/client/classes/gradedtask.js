@@ -4,6 +4,7 @@ import Task from './task.js';
 import {loadTemplate,hashcode} from '../lib/utils.js';
 import {saveGradedTasks} from '../dataservice.js';
 import {context} from '../context.js';
+import {template} from '../lib/templator.js';
 
 /**
  * GradedTask class. Create a graded task in order to be evaluated 
@@ -20,10 +21,12 @@ import {context} from '../context.js';
 const STUDENT_MARKS = Symbol('STUDENT_MARKS'); /** To acomplish private property */
 
 class GradedTask extends Task {
-  constructor(name,description,weight,studentsMark,id=null) {
+  constructor(name,description,weight,studentsMark,term,id=null) {
     super(name,description,id);
     this.weight = weight;
     this.studentsMark = studentsMark;
+    if (!term) term = context.settings.defaultTerm;
+    this.term = term;
     this[STUDENT_MARKS] = new Map(studentsMark); //We need a private map to make it easier to access student marks using its id. The problem is that a Map inside other map can be converted to a pair array
   }
   /** Add student mark using his/her person ID   */
@@ -62,9 +65,19 @@ class GradedTask extends Task {
   }
 
   getHTMLEdit() {
-
+    let output = '';
+    for (let i = 0;i < context.settings.terms.length;i++) {
+      if (context.settings.terms[i].name === this.term) { 
+        output += '<option selected value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+      }else {
+        output += '<option value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+      }
+    }
+    let scope = {};
+    scope.TPL_TERMS = output; 
     let callback = function(responseText) {
-      $('#content').html(responseText);
+      let out = template(responseText,scope);
+      $('#content').html(eval('`' + out + '`')); 
       $('#idTaskName').val(this.name);
       $('#idTaskDescription').val(this.description);
       let totalGTweight = GradedTask.getGradedTasksTotalWeight();
@@ -78,7 +91,8 @@ class GradedTask extends Task {
         this.name = $('#idTaskName').val();
         this.description = $('#idTaskDescription').val();
         this.weight = weightInput.val();
-        let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,this.id);
+        let selectedTerm = $('#termTask').children(':selected').val();
+        let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,selectedTerm,this.id);
         context.gradedTasks.set(this.id,gradedTask);
         saveGradedTasks(JSON.stringify([...context.gradedTasks]));
       });
@@ -88,8 +102,20 @@ class GradedTask extends Task {
   }
   /** Create a form to create a GradedTask that will be added to every student */
   static addGradedTask() {
+    let output = '';
+    for (let i = 0;i < context.settings.terms.length;i++) {
+      if (context.settings.terms[i].name === context.settings.defaultTerm) { 
+        output += '<option selected value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+      }else {
+        output += '<option value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+      }
+    }
+    let scope = {};
+    scope.TPL_TERMS = output; 
+
     let callback = function(responseText) {
-            $('#content').html(responseText);
+            let out = template(responseText,scope);
+            $('#content').html(eval('`' + out + '`')); 
             let totalGTweight = GradedTask.getGradedTasksTotalWeight();
             $('#labelWeight').html('Task Weight (0-' + (100 - totalGTweight) + '%)');
             let weightInput = $('#idTaskWeight');
@@ -99,7 +125,8 @@ class GradedTask extends Task {
               let name = $('#idTaskName').val();
               let description = $('#idTaskDescription').val();
               let weight = weightInput.val();
-              let gtask = new GradedTask(name,description,weight,[]);
+              let selectedTerm = $('#termTask').children(':selected').val();
+              let gtask = new GradedTask(name,description,weight,[],selectedTerm);
               let gtaskId = gtask.getId();
               if (context) {
                 context.students.forEach(function(studentItem,studentKey,studentsRef) {

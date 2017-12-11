@@ -7,6 +7,23 @@
   </div>
 </form> 
 
+<form id="existingTerms">
+  DEFAULT TERM:
+  <div class="form-group">
+      <select id="termsItems">
+        ${scope.TPL_DEFAULT_TERM}
+      </select>      
+  </div>
+
+  <div class="form-group" ng-repeat="term in TPL_TERMS">
+    <label for="xp" id="id${term.name}">Term Name:</label><br>
+    <input id="idInput${term.name}" type="text" value="${term.name}">
+    BEGIN<input id="${term.name}beginTerm" type="date" value="${term.begin}">
+    END<input id="${term.name}endTerm" type="date" value="${term.end}">      
+    <input type="submit" class="btn btn-primary" value="Change">
+  </div>
+</form> 
+
 <form id="newTerm">
     <div class="form-group">
       <label for="xp" id="termName">Term name</label><br>

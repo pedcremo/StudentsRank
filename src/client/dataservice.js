@@ -68,7 +68,7 @@ function loadGradedTasks(gradedTasksStr) {
   let gradedTasks_ = new Map(JSON.parse(gradedTasksStr));
   gradedTasks_.forEach(function(value_,key_,gradedTasks_) {
       gradedTasks_.set(key_,new GradedTask(value_.name,value_.description,value_.weight,
-          value_.studentsMark,value_.id));
+          value_.studentsMark,value_.term,value_.id));
     });
   context.gradedTasks = gradedTasks_;
 }

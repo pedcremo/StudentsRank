@@ -102,7 +102,7 @@ class Context {
   /** Draw Students ranking table in descendent order using total points as a criteria */
   getTemplateRanking() {
     generateMenu();
-    showMenu();
+    //showMenu();
 
     if (this.students && this.students.size > 0) {
       /* We sort students descending from max number of points to min */
@@ -117,6 +117,17 @@ class Context {
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
         scope.TPL_GRADED_TASKS = [...this.gradedTasks.entries()].reverse();
+        if (this.settings.defaultTerm !== 'ALL') {
+          scope.TPL_GRADED_TASKS.forEach(function(element) {
+            var index = scope.TPL_GRADED_TASKS.indexOf(element);
+            if (element.term !== context.settings.defaultTerm) {
+              if (index > -1) {
+                scope.TPL_GRADED_TASKS.splice(index, 1);
+              }
+            }
+            console.log(element);
+          });
+        }
       }
 
       scope.TPL_PERSONS = arrayFromMap;
@@ -163,7 +174,7 @@ class Context {
     }
   }
   /** Settings */
-  getSettings() {
+ /*  getSettings() {
     let thisContext = this;
     let callback = function(responseText) {
       $('#content').html(responseText);
@@ -186,7 +197,7 @@ class Context {
       console.log('Settings: To implement');
     }.bind(this);
     loadTemplate('templates/settings.html',callback);
-  }
+  } */
   /** Add last action performed to lower information layer in main app */
   notify(text,title,type='success') {
     toastr.options.timeOut = 4500;

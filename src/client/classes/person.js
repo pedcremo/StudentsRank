@@ -86,9 +86,21 @@ class Person {
     saveStudents(JSON.stringify([...context.students]));
   }
 
-  /** Get students Marks sliced by showNumGradedTasks from context*/
+  /** Get students Marks current term by showNumGradedTasks from context*/
   getStudentMarks() {
     let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
+
+    if (context.settings.defaultTerm !== 'ALL') {
+      gtArray.forEach(function(element) {
+        let index = gtArray.indexOf(element);
+        let gtInstance = context.getGradedTaskById(element[0]);
+        if (gtInstance.term !== context.settings.defaultTerm) {
+          if (index > -1) {
+            gtArray.splice(index, 1);
+          }
+        }
+      });
+    }
     //return gtArray.slice(0,context.showNumGradedTasks);
     return gtArray;
   }

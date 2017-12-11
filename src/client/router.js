@@ -4,6 +4,7 @@ import {logout} from './menu.js';
 import AttitudeTask from './classes/attitudetask.js';
 import GradedTask from './classes/gradedtask.js';
 import Person from './classes/person.js';
+import Settings from './classes/settings.js';
 import {saveStudents} from './dataservice.js';
 
 /** Primitive routing mechanism based on detecting clicks on links and get the URL */
@@ -51,7 +52,8 @@ function initRouter() {
               Person.addPerson();
               break;
             case /#settings/.test(isLink.href):
-              context.getSettings();
+              //context.getSettings();
+              Settings.getSettings();
               break;
             /** logout */
             case /#logout/.test(isLink.href):
