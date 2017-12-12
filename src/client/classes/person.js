@@ -99,17 +99,15 @@ class Person {
     let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
 
     if (context.settings.defaultTerm !== 'ALL') {
-      gtArray.forEach(function(element) {
-        let index = gtArray.indexOf(element);
-        let gtInstance = context.getGradedTaskById(element[0]);
-        if (gtInstance.term !== context.settings.defaultTerm) {
-          if (index > -1) {
-            gtArray.splice(index, 1);
-          }
+      let aux = [];
+      for (let i = 0;i < gtArray.length;i++) {
+        let gtInstance = context.getGradedTaskById(gtArray[i][0]);
+        if (gtInstance.term === context.settings.defaultTerm) {
+          aux.push(gtArray[i]);
         }
-      });
+      }
+      gtArray = aux;
     }
-    //return gtArray.slice(0,context.showNumGradedTasks);
     return gtArray;
   }
   /** Get total points over 100 taking into account different graded tasks weights */

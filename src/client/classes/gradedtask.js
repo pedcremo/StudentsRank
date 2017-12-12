@@ -25,7 +25,9 @@ class GradedTask extends Task {
     super(name,description,id);
     this.weight = weight;
     this.studentsMark = studentsMark;
-    if (!term) term = context.settings.defaultTerm;
+    if (!term) {
+      term = context.settings.defaultTerm || '1st Term';
+    }
     this.term = term;
     this[STUDENT_MARKS] = new Map(studentsMark); //We need a private map to make it easier to access student marks using its id. The problem is that a Map inside other map can be converted to a pair array
   }

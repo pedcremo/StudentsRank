@@ -112,21 +112,18 @@ class Context {
       });
       this.students = new Map(arrayFromMap);
 
-      //saveStudents(JSON.stringify([...this.students]));
       let scope = {};
 
       if (this.gradedTasks && this.gradedTasks.size > 0) {
         scope.TPL_GRADED_TASKS = [...this.gradedTasks.entries()].reverse();
         if (this.settings.defaultTerm !== 'ALL') {
-          scope.TPL_GRADED_TASKS.forEach(function(element) {
-            var index = scope.TPL_GRADED_TASKS.indexOf(element);
-            if (element.term !== context.settings.defaultTerm) {
-              if (index > -1) {
-                scope.TPL_GRADED_TASKS.splice(index, 1);
-              }
+          let aux = [];
+          for (let i = 0;i < scope.TPL_GRADED_TASKS.length;i++) {
+            if (scope.TPL_GRADED_TASKS[i][1].term === context.settings.defaultTerm) {
+              aux.push(scope.TPL_GRADED_TASKS[i]);
             }
-            console.log(element);
-          });
+          }
+          scope.TPL_GRADED_TASKS = aux;
         }
       }
 

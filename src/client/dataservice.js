@@ -9,6 +9,11 @@ import AttitudeTask from './classes/attitudetask.js';
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
+    loadTemplate('api/getSettings',function(response) {
+                          loadSettings(response);
+                          //context.getTemplateRanking();
+                        },'GET','',false);
+
     loadTemplate('api/getAttitudeTasks',function(response) {
                           loadAttitudeTasks(response);
                         },'GET','',false);
@@ -22,10 +27,7 @@ function updateFromServer() {
                           loadGradedTasks(response);
                           context.getTemplateRanking();
                         },'GET','',false);
-    loadTemplate('api/getSettings',function(response) {
-                          loadSettings(response);
-                          //context.getTemplateRanking();
-                        },'GET','',false);
+    
   }
 }
 /** Save students in server side */
