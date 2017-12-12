@@ -47,9 +47,12 @@ class GradedTask extends Task {
   }
   /** Calculate total graded points associated to one student */
   static getStudentGradedTasksPoints(idStudent) {
-    let points = 0;
+    let points = 0;   
+
     context.gradedTasks.forEach(function(itemTask) {
-        points += itemTask[STUDENT_MARKS].get(idStudent) * (itemTask.weight / 100);
+        if (itemTask.term === context.settings.defaultTerm || context.settings.defaultTerm === 'ALL') {
+          points += itemTask[STUDENT_MARKS].get(idStudent) * (itemTask.weight / 100);
+        }
       });
     return Math.round((points * 100) / 100);
   }
@@ -57,8 +60,10 @@ class GradedTask extends Task {
   static getGradedTasksTotalWeight() {
     let points = 0;
     context.gradedTasks.forEach(function(itemTask) {
+      if (itemTask.term === context.settings.defaultTerm) {
         points += parseInt(itemTask.weight);
-      });
+      }
+    });
     return points;
   }
   /** Get student mark by their person ID */
