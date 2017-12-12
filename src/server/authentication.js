@@ -72,16 +72,20 @@ passport.use(new FacebookStrategy({
 passport.use(new GoogleStrategy({
     clientID: '332430709061-iqlrm5kcr4v0qipb43almus8ta66lh9m.apps.googleusercontent.com',
     clientSecret: 'S-caPNjls6bBOP7lIJAskLpN',
-    callbackURL: '/api/auth/google/callback'
+    callbackURL: '/api/auth/google/callback',
+    passReqToCallback:true
   },
   /*function(accessToken, refreshToken, profile, cb) {
-    console.log('PROFILE GOOGLE ' + profile.id)    
-    return cb(null, profile);    
+    //console.log('PROFILE GOOGLE ' + profile.id);
+    return done(null,cb);
   }*/
   function(request, accessToken, refreshToken, profile, done) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
+    //User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      let subjects = readSubjectsUser(profile.id);
+      profile.defaultSubject = subjects.defaultSubject;
+      profile.subjects = subjects.subjects;
+      return done(null, profile);
+    //});
   }
 ));
 
