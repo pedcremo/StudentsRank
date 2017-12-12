@@ -2,7 +2,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var TwitterStrategy = require('passport-twitter').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
-var GoogleStrategy = require('passport-google-oauth20').Strategy;
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 //==================================================================
@@ -70,15 +70,18 @@ passport.use(new FacebookStrategy({
 ));
 
 passport.use(new GoogleStrategy({
-    clientID: '978656105531-8oovnul0pvkjff2covvv2n4s5rc9iktf.apps.googleusercontent.com',
-    clientSecret: '9gN5wl3pvOcXUrwNUDJH1vo6',
+    clientID: '332430709061-iqlrm5kcr4v0qipb43almus8ta66lh9m.apps.googleusercontent.com',
+    clientSecret: 'S-caPNjls6bBOP7lIJAskLpN',
     callbackURL: '/api/auth/google/callback'
   },
-  function(accessToken, refreshToken, profile, cb) {
-    console.log('PROFILE GOOGLE ' + profile.id)
-    //User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    return cb(null, profile);
-    //});
+  /*function(accessToken, refreshToken, profile, cb) {
+    console.log('PROFILE GOOGLE ' + profile.id)    
+    return cb(null, profile);    
+  }*/
+  function(request, accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
   }
 ));
 
