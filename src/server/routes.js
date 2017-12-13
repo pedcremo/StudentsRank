@@ -108,7 +108,10 @@ router.get('/auth/facebook/callback',
   });
  
 router.get('/loginGoogle',
-   passport.authenticate('google', { scope: ['profile'] }));//passport.authenticate('google'));
+   passport.authenticate('google', { 
+     scope: ['profile','email'],
+     hd: 'iestacio.com'
+    }));//passport.authenticate('google'));
  
 router.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),

@@ -81,10 +81,14 @@ passport.use(new GoogleStrategy({
   }*/
   function(request, accessToken, refreshToken, profile, done) {
     //User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      let subjects = readSubjectsUser(profile.id);
-      profile.defaultSubject = subjects.defaultSubject;
-      profile.subjects = subjects.subjects;
-      return done(null, profile);
+      if (profile._json.domain === 'iestacio.com') {
+        let subjects = readSubjectsUser(profile.id);
+        profile.defaultSubject = subjects.defaultSubject;
+        profile.subjects = subjects.subjects;
+        return done(null, profile); 
+      }else {
+        return done(null, false, { message: 'Incorrect username. expected user with domain iestacio.' });
+      }
     //});
   }
 ));
