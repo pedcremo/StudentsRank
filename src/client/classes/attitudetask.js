@@ -15,9 +15,15 @@ import Task from './task.js';
  */
 
 import {popupwindow,loadTemplate} from '../lib/utils.js';
-import {context} from '../context.js';
+//import {context} from '../context.js';
 import {saveAttitudeTasks} from '../dataservice.js';
 import {template} from '../lib/templator.js';
+import {events} from '../lib/eventsPubSubs.js';
+
+let attitudeTasks = new Map();
+events.subscribe('dataservice/getAttitudeTasks',(obj) => {
+  attitudeTasks = obj;
+});
 
 class AttitudeTask extends Task {
   constructor(name,description,points,hits=0,id=null) {
@@ -26,16 +32,19 @@ class AttitudeTask extends Task {
     this.hits = hits;
     this.type = (this.points >= 0) ? 'success' : 'danger';//Positive or negative attitude
   }
+  static getAttitudeTasks() {
+    return attitudeTasks;
+  }
   /** Open window dialog associated to a person instance and let us award him with some XP points */
   static addXP(personInstance) {
     let that = this;
     let callback = function(responseText) {
       let scope = {};
-      scope.TPL_ATTITUDE_TASKS = [...context.attitudeTasks.entries()];
+      scope.TPL_ATTITUDE_TASKS = [...attitudeTasks.entries()];
       scope.TPL_ATTITUDE_TASKS.sort(function(a,b) {
         return (b[1].hits - a[1].hits);
       });
-      context.attitudeTasks = new Map(scope.TPL_ATTITUDE_TASKS);
+      attitudeTasks = new Map(scope.TPL_ATTITUDE_TASKS);
 
       let out = template(responseText,scope);
       $('#content').html($('#content').html() + eval('`' + out + '`'));
@@ -45,7 +54,9 @@ class AttitudeTask extends Task {
         $(this).click(function() {
           $('#XPModal').modal('toggle');
           $('.modal-backdrop').remove();
-          personInstance.addAttitudeTask($(this).attr('idAT'));
+          let at = attitudeTasks.get(parseInt($(this).attr('idat')));
+          at.hits++;
+          personInstance.addAttitudeTask(at);
         });
       });
 
@@ -54,11 +65,12 @@ class AttitudeTask extends Task {
         let points = $('#points').val();
         let description = $('#description').val();
         let at = new AttitudeTask(description,description,points);
-        context.attitudeTasks.set(at.id,at);
-        saveAttitudeTasks(JSON.stringify([...context.attitudeTasks]));
+        attitudeTasks.set(at.id,at);
+        saveAttitudeTasks(JSON.stringify([...attitudeTasks]));
         $('#XPModal').modal('toggle');
         $('.modal-backdrop').remove();
-        personInstance.addAttitudeTask(at.id);
+        at.hits++;
+        personInstance.addAttitudeTask(at);
         return false; //Abort submit
       });
     };

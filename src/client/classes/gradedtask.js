@@ -3,8 +3,9 @@
 import Task from './task.js';
 import {loadTemplate,hashcode} from '../lib/utils.js';
 import {saveGradedTasks} from '../dataservice.js';
-import {context} from '../context.js';
+//import {context} from '../context.js';
 import {template} from '../lib/templator.js';
+import {events} from '../lib/eventsPubSubs.js';
 
 /**
  * GradedTask class. Create a graded task in order to be evaluated 
@@ -18,6 +19,17 @@ import {template} from '../lib/templator.js';
  * @tutorial pointing-criteria
  */
 
+let gradedTasks = new Map(); 
+let settings = {};
+
+events.subscribe('dataservice/getGradedTasks',(obj) => {
+  gradedTasks = obj;
+});
+
+events.subscribe('dataservice/getSettings',(obj) => {
+  settings = obj;
+});
+
 const STUDENT_MARKS = Symbol('STUDENT_MARKS'); /** To acomplish private property */
 
 class GradedTask extends Task {
@@ -26,21 +38,29 @@ class GradedTask extends Task {
     this.weight = weight;
     this.studentsMark = studentsMark;
     if (!term) {
-      term = context.settings.defaultTerm || '1st Term';
+      term = settings.defaultTerm || '1st Term';
     }
     this.term = term;
     this[STUDENT_MARKS] = new Map(studentsMark); //We need a private map to make it easier to access student marks using its id. The problem is that a Map inside other map can be converted to a pair array
+  }
+
+  static getGradedTasks() {
+    return gradedTasks;
+  }
+  /** Get a GradedTask instance by its ID */
+  static getGradedTaskById(idHash) {
+    return gradedTasks.get(parseInt(idHash));
   }
   /** Add student mark using his/her person ID   */
   addStudentMark(idStudent,markPoints) {
     this[STUDENT_MARKS].set(parseInt(idStudent),markPoints);
     this.studentsMark = [...this[STUDENT_MARKS].entries()];
-    saveGradedTasks(JSON.stringify([...context.gradedTasks]));
+    saveGradedTasks(JSON.stringify([...gradedTasks]));
   }
   /** Static method to get list marks associated with one student */
   static getStudentMarks(idStudent) {
     let marks = [];
-    context.gradedTasks.forEach(function(valueGT,keyGT,gradedTasks_) {
+    gradedTasks.forEach(function(valueGT,keyGT,gradedTasks_) {
       marks.push([valueGT.getId(),valueGT[STUDENT_MARKS].get(idStudent)]);
      });
     return marks;
@@ -49,8 +69,8 @@ class GradedTask extends Task {
   static getStudentGradedTasksPoints(idStudent) {
     let points = 0;   
 
-    context.gradedTasks.forEach(function(itemTask) {
-        if (itemTask.term === context.settings.defaultTerm || context.settings.defaultTerm === 'ALL') {
+    gradedTasks.forEach(function(itemTask) {
+        if (itemTask.term === settings.defaultTerm || settings.defaultTerm === 'ALL') {
           points += itemTask[STUDENT_MARKS].get(idStudent) * (itemTask.weight / 100);
         }
       });
@@ -59,8 +79,8 @@ class GradedTask extends Task {
   /** CAlculate total aggregated GT weight */
   static getGradedTasksTotalWeight() {
     let points = 0;
-    context.gradedTasks.forEach(function(itemTask) {
-      if (itemTask.term === context.settings.defaultTerm) {
+    gradedTasks.forEach(function(itemTask) {
+      if (itemTask.term === settings.defaultTerm) {
         points += parseInt(itemTask.weight);
       }
     });
@@ -73,11 +93,11 @@ class GradedTask extends Task {
 
   getHTMLEdit() {
     let output = '';
-    for (let i = 0;i < context.settings.terms.length;i++) {
-      if (context.settings.terms[i].name === this.term) { 
-        output += '<option selected value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+    for (let i = 0;i < settings.terms.length;i++) {
+      if (settings.terms[i].name === this.term) { 
+        output += '<option selected value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }else {
-        output += '<option value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+        output += '<option value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }
     }
     let scope = {};
@@ -100,8 +120,8 @@ class GradedTask extends Task {
         this.weight = weightInput.val();
         let selectedTerm = $('#termTask').children(':selected').val();
         let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,selectedTerm,this.id);
-        context.gradedTasks.set(this.id,gradedTask);
-        saveGradedTasks(JSON.stringify([...context.gradedTasks]));
+        gradedTasks.set(this.id,gradedTask);
+        saveGradedTasks(JSON.stringify([...gradedTasks]));
       });
     }.bind(this);
 
@@ -110,11 +130,11 @@ class GradedTask extends Task {
   /** Create a form to create a GradedTask that will be added to every student */
   static addGradedTask() {
     let output = '';
-    for (let i = 0;i < context.settings.terms.length;i++) {
-      if (context.settings.terms[i].name === context.settings.defaultTerm) { 
-        output += '<option selected value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+    for (let i = 0;i < settings.terms.length;i++) {
+      if (settings.terms[i].name === settings.defaultTerm) { 
+        output += '<option selected value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }else {
-        output += '<option value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+        output += '<option value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }
     }
     let scope = {};
@@ -134,15 +154,9 @@ class GradedTask extends Task {
               let weight = weightInput.val();
               let selectedTerm = $('#termTask').children(':selected').val();
               let gtask = new GradedTask(name,description,weight,[],selectedTerm);
-              let gtaskId = gtask.getId();
-              if (context) {
-                context.students.forEach(function(studentItem,studentKey,studentsRef) {
-                  gtask.addStudentMark(studentKey,0);
-                });
-                context.gradedTasks.set(gtaskId,gtask);
-                saveGradedTasks(JSON.stringify([...context.gradedTasks]));
-                context.getTemplateRanking();
-              }
+              //let gtaskId = gtask.getId();
+              gradedTasks.set(gtask.id,gtask);
+              events.publish('/context/newGradedTask',gtask);              
               return false; //Avoid form submit
             });
           }.bind(this);

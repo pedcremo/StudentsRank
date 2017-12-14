@@ -42,8 +42,8 @@ class Person {
   getXPtotalPoints() {
     this[_totalXPpoints] = 0;
     this.attitudeTasks.forEach(function (itemAT) {
-      if (context.attitudeTasks.size > 0) {
-        let instanceAT = context.attitudeTasks.get(parseInt(itemAT.id));
+      if (AttitudeTask.getAttitudeTasks().size > 0) {
+        let instanceAT = AttitudeTask.getAttitudeTasks().get(parseInt(itemAT.id));
         try {
           this[_totalXPpoints] += parseInt(instanceAT.points);
         } catch (error) {
@@ -66,20 +66,10 @@ class Person {
     return max;
   }
   /** Add a Attitude task linked to person with its own mark. */
-  addAttitudeTask(taskInstanceId) {
+  addAttitudeTask(taskInstance) {
     let dateTimeStamp = new Date();//Current time
-    this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
-    events.publish('/context/addXP',taskInstanceId);
-    /*try {
-      let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
-      attTask.hits++;
-      saveStudents(JSON.stringify([...context.students]));    
-      let typeToastr = 'success';
-      if (attTask.points < 0) {typeToastr = 'error';};
-      context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
-    }catch (error) {
-      throw error;
-    }*/
+    this.attitudeTasks.push({'id':taskInstance.id,'timestamp':dateTimeStamp});
+    events.publish('/context/addXP',{'attitudeTask':taskInstance,'person':this});    
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
@@ -103,7 +93,7 @@ class Person {
     if (context.settings.defaultTerm !== 'ALL') {
       let aux = [];
       for (let i = 0;i < gtArray.length;i++) {
-        let gtInstance = context.getGradedTaskById(gtArray[i][0]);
+        let gtInstance = GradedTask.getGradedTaskById(gtArray[i][0]);
         if (gtInstance.term === context.settings.defaultTerm) {
           aux.push(gtArray[i]);
         }
@@ -176,12 +166,12 @@ class Person {
         let scope = {};
         scope.TPL_ATTITUDE_TASKS = [];
         this.attitudeTasks.reverse().forEach(function(atItem) {
-          let itemAT = context.attitudeTasks.get(parseInt(atItem.id));
+          let itemAT = AttitudeTask.getAttitudeTasks().get(parseInt(atItem.id));
           itemAT.datetime = atItem.timestamp;
           scope.TPL_ATTITUDE_TASKS.push(itemAT);
         });
         let TPL_GRADED_TASKS = '';
-        context.gradedTasks.forEach(function(gtItem) {
+        GradedTask.getGradedTasks().forEach(function(gtItem) {
           TPL_GRADED_TASKS += '<li class="list-group-item">' + gtItem.getStudentMark(TPL_STUDENT.getId()) + '->' +
                         gtItem.name + '->' + formatDate(new Date(gtItem.datetime)) + '</li>';
         });

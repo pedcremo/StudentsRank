@@ -4,14 +4,14 @@ import Settings from './classes/settings.js';
 import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
 import AttitudeTask from './classes/attitudetask.js';
-
+import {events} from './lib/eventsPubSubs.js';
 
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
     let counter = 0; //When 4 all have been loaded from server
     loadTemplate('api/getSettings',function(response) {
-                          loadSettings(response);
+                          events.publish('dataservice/getSettings',loadSettings(response));                          
                           counter++;
                           if (counter === 4) {
                             context.getTemplateRanking();
@@ -19,7 +19,8 @@ function updateFromServer() {
                         },'GET','',false);
 
     loadTemplate('api/getAttitudeTasks',function(response) {
-                          loadAttitudeTasks(response);
+                          events.publish('dataservice/getAttitudeTasks',loadAttitudeTasks(response)); 
+                          //loadAttitudeTasks(response);
                           counter++;
                           if (counter === 4) {
                             context.getTemplateRanking();
@@ -35,7 +36,8 @@ function updateFromServer() {
                         },'GET','',false);
 
     loadTemplate('api/getGradedTasks',function(response) {
-                          loadGradedTasks(response);
+                          events.publish('dataservice/getGradedTasks',loadGradedTasks(response));
+                          //loadGradedTasks(response);
                           counter++;
                           if (counter === 4) {
                             context.getTemplateRanking();
@@ -86,7 +88,8 @@ function loadGradedTasks(gradedTasksStr) {
       gradedTasks_.set(key_,new GradedTask(value_.name,value_.description,value_.weight,
           value_.studentsMark,value_.term,value_.id));
     });
-  context.gradedTasks = gradedTasks_;
+  //context.gradedTasks = gradedTasks_;
+  return gradedTasks_;
 }
 
 /** Load attitude tasks (XP) from AJAX response and map to attitudeTasks instances in context */
@@ -96,14 +99,15 @@ function loadAttitudeTasks(attitudeTasksStr) {
       attitudeTasks_.set(key_,new AttitudeTask(value_.name,value_.description,value_.points,
         value_.hits,value_.id));
     });
-  context.attitudeTasks = attitudeTasks_;
+  //context.attitudeTasks = attitudeTasks_;
+  return attitudeTasks_;
 }
 
 /** Load setting from AJAX response and map to settings in context */
 function loadSettings(settingsStr) {
   let settings_ = JSON.parse(settingsStr);
   context.settings = new Settings(settings_.weightXP,settings_.weightGP,settings_.defaultTerm,settings_.terms);
-  //context.getTemplateRanking();
+  return context.settings;
 }
 
 export {updateFromServer,saveStudents,saveGradedTasks,saveSettings,saveAttitudeTasks};

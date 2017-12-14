@@ -35,26 +35,24 @@ class Context {
     events.subscribe('/context/addStudent', (obj) => {
       this.addStudent(obj);      
     });
-    events.subscribe('/context/addXP', (idAttitudeTask) => {
-      let attTask = this.attitudeTasks.get(parseInt(idAttitudeTask));
-      attTask.hits++;
+    events.subscribe('/context/addXP', (obj) => {
+      /*let attTask = this.attitudeTasks.get(parseInt(idAttitudeTask));
+      attTask.hits++;*/
       saveStudents(JSON.stringify([...this.students]));    
       let typeToastr = 'success';
-      if (attTask.points < 0) {typeToastr = 'error';};
-      this.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
+      if (obj.attitudeTask.points < 0) {typeToastr = 'error';};
+      this.notify('Added ' +  obj.attitudeTask.points + ' ' + obj.attitudeTask.description + ' to ' + obj.person.name + ',' + obj.person.surname, obj.person.surname + ' ,' + obj.person.name,typeToastr);
     });
-    /*try {
-      let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
-      attTask.hits++;
-      saveStudents(JSON.stringify([...context.students]));    
-      let typeToastr = 'success';
-      if (attTask.points < 0) {typeToastr = 'error';};
-      context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
-    }catch (error) {
-      throw error;
-    }*/
-    //context.students.set(student.getId(),student);
-        //saveStudents(JSON.stringify([...context.students]));
+
+    events.subscribe('/context/newGradedTask', (gtask) => {    
+      this.students.forEach(function(studentItem,studentKey,studentsRef) {
+        gtask.addStudentMark(studentKey,0);
+      });
+      //gradedTasks.set(gtask.id,gtask);
+      saveGradedTasks(JSON.stringify([...gradedTasks]));
+      this.getTemplateRanking();
+    });
+    
   }
   /** Add student to context previously adding all graded tasks defined. Afterwards we render list*/
   addStudent(studentInstance) {
@@ -127,9 +125,9 @@ class Context {
     return this.students.get(parseInt(idHash));
   }
   /** Get a GradedTask instance by its ID */
-  getGradedTaskById(idHash) {
+  /*getGradedTaskById(idHash) {
     return this.gradedTasks.get(parseInt(idHash));
-  }
+  }*/
   /** Draw Students ranking table in descendent order using total points as a criteria */
   getTemplateRanking() {
     generateMenu();
@@ -145,8 +143,8 @@ class Context {
 
       let scope = {};
 
-      if (this.gradedTasks && this.gradedTasks.size > 0) {
-        scope.TPL_GRADED_TASKS = [...this.gradedTasks.entries()].reverse();
+      if (GradedTask.getGradedTasks() && GradedTask.getGradedTasks().size > 0) {
+        scope.TPL_GRADED_TASKS = [...GradedTask.getGradedTasks().entries()].reverse();
         if (this.settings.defaultTerm !== 'ALL') {
           let aux = [];
           for (let i = 0;i < scope.TPL_GRADED_TASKS.length;i++) {
@@ -178,7 +176,7 @@ class Context {
                         $(this).change(function() {
                           let idPerson = $(this).attr('idStudent');
                           let idGradedTask = $(this).attr('idGradedTask');
-                          let gt = that.gradedTasks.get(parseInt(idGradedTask));
+                          let gt = GradedTask.getGradedTasks().get(parseInt(idGradedTask));
                           gt.addStudentMark(idPerson,$(this).val());
                           that.getTemplateRanking();
                         });
