@@ -224,8 +224,8 @@ function getGradedTasks(req, res, next) {
         }
        res.status(200).send('[]');
        console.log('The file has been saved empty!');
-    });
-  }
+      });
+    }
 }
  
 function getAttitudeTasks(req, res, next) {
@@ -280,6 +280,17 @@ function addSubject(req, res, next) {
       mkdirp('src/server/data/' + req.user.id + '/' + req.query.newSubject, function (err) {
         if (err) console.error(err);
         else console.log('dir created');
+      });
+      let contents = fs.readFileSync('src/server/data/' + req.user.id + '/subjects.json');
+      // Define to JSON type
+      let jsonSubjects = JSON.parse(contents);
+      jsonSubjects.defaultSubject = req.query.newSubject;
+      jsonSubjects.subjects.push(req.query.newSubject);
+      fs.writeFile('src/server/data/' + req.user.id + '/subjects.json', JSON.stringify(jsonSubjects), 'utf8', (err) => {
+        if (err) {
+          throw err;
+        }
+       console.log('The file subjects.json has been saved !');
       });
       res.status(200).send('OK');
     }else {

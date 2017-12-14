@@ -51,6 +51,7 @@ function generateMenu() {
             updateFromServer();
             context.getTemplateRanking();
           },'GET','newSubject=' + $('#subjectName').val(),false);
+          $('.modal-backdrop').remove();
           return false; //Abort submit
         });
       };
