@@ -47,9 +47,9 @@ function generateMenu() {
         $('#newSubject').submit((event) => {
           event.preventDefault();
           loadTemplate('api/addSubject',function(response) {
-            context.user.defaultSubject = $('#subjectName').val();
-            updateFromServer();
-            context.getTemplateRanking();
+            //context.user.defaultSubject = $('#subjectName').val();
+            context.user.subjects.push($('#subjectName').val());
+            updateFromServer(); 
           },'GET','newSubject=' + $('#subjectName').val(),false);
           $('.modal-backdrop').remove();
           return false; //Abort submit

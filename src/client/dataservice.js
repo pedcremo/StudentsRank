@@ -9,23 +9,37 @@ import AttitudeTask from './classes/attitudetask.js';
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
+    let counter = 0; //When 4 all have been loaded from server
     loadTemplate('api/getSettings',function(response) {
                           loadSettings(response);
-                          //context.getTemplateRanking();
+                          counter++;
+                          if (counter === 4) {
+                            context.getTemplateRanking();
+                          }
                         },'GET','',false);
 
     loadTemplate('api/getAttitudeTasks',function(response) {
                           loadAttitudeTasks(response);
+                          counter++;
+                          if (counter === 4) {
+                            context.getTemplateRanking();
+                          }
                         },'GET','',false);
 
     loadTemplate('api/getStudents',function(response) {
                           loadStudents(response);
-                          context.getTemplateRanking();
+                          counter++;
+                          if (counter === 4) {
+                            context.getTemplateRanking();
+                          }
                         },'GET','',false);
 
     loadTemplate('api/getGradedTasks',function(response) {
                           loadGradedTasks(response);
-                          context.getTemplateRanking();
+                          counter++;
+                          if (counter === 4) {
+                            context.getTemplateRanking();
+                          }
                         },'GET','',false);
     
   }

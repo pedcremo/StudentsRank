@@ -289,7 +289,7 @@ function addSubject(req, res, next) {
       fs.writeFile('src/server/data/' + req.user.id + '/subjects.json', JSON.stringify(jsonSubjects), 'utf8', (err) => {
         if (err) {
           throw err;
-        }
+        }       
        console.log('The file subjects.json has been saved !');
       });
       res.status(200).send('OK');
