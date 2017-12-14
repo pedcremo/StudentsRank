@@ -103,7 +103,7 @@ function loadAttitudeTasks(attitudeTasksStr) {
 function loadSettings(settingsStr) {
   let settings_ = JSON.parse(settingsStr);
   context.settings = new Settings(settings_.weightXP,settings_.weightGP,settings_.defaultTerm,settings_.terms);
-  context.getTemplateRanking();
+  //context.getTemplateRanking();
 }
 
 export {updateFromServer,saveStudents,saveGradedTasks,saveSettings,saveAttitudeTasks};

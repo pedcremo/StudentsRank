@@ -61,7 +61,7 @@ function generateMenu() {
       setCookie('user',JSON.stringify(context.user),7);
       loadTemplate('api/changeSubject',function(response) {
         updateFromServer();
-        context.getTemplateRanking();
+        //context.getTemplateRanking();
       },'GET','newsubject=' + optionSubject,false);
     }
   });

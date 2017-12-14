@@ -15,6 +15,7 @@ import AttitudeTask from './attitudetask.js';
 import GradedTask from './gradedtask.js';
 import {saveStudents,saveAttitudeTasks} from '../dataservice.js';
 import {template} from '../lib/templator.js';
+import {events} from '../lib/eventsPubSubs.js';
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
 const _totalXPpoints = Symbol('TOTAL_XP_POINTS'); /** To acomplish private property */
@@ -91,7 +92,8 @@ class Person {
           }
         }
       });
-    saveStudents(JSON.stringify([...context.students]));
+      events.publish('/context/deleteXP',{});
+    //saveStudents(JSON.stringify([...context.students]));
   }
 
   /** Get students Marks current term by showNumGradedTasks from context*/
@@ -159,8 +161,9 @@ class Person {
           console.log(response);
         },'POST',formData,'false');
 
-        context.students.set(student.getId(),student);
-        saveStudents(JSON.stringify([...context.students]));
+        events.publish('/context/updateStudent',student);
+        //context.students.set(student.getId(),student);
+        //saveStudents(JSON.stringify([...context.students]));
       });
     }.bind(this);
 
@@ -217,11 +220,9 @@ class Person {
               loadTemplate('api/uploadImage',function(response) {
                 console.log(response);
               },'POST',formData,'false');
-
-              if (context) {
-                context.addStudent(student);
-                return false; //Avoid form submit
-              }
+              
+              events.publish('/context/addStudent',student);
+              return false; //Avoid form submit              
             });
           };
 

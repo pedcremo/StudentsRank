@@ -13,6 +13,7 @@ import {updateFromServer,saveStudents,saveGradedTasks,saveSettings} from './data
 import {hashcode,loadTemplate,setCookie,deleteCookie,getCookie} from './lib/utils.js';
 import {generateMenu,showMenu,hideMenu} from './menu.js';
 import {template} from './lib/templator.js';
+import {events} from './lib/eventsPubSubs.js';
 
 class Context {
 
@@ -24,6 +25,18 @@ class Context {
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
+    events.subscribe('/context/deleteXP', (obj) => {
+      saveStudents(JSON.stringify([...this.students]));
+    });
+    events.subscribe('/context/updateStudent', (obj) => {
+      this.students.set(obj.getId(),obj);
+      saveStudents(JSON.stringify([...this.students]));
+    });
+    events.subscribe('/context/addStudent', (obj) => {
+      this.addStudent(obj);      
+    });
+    //context.students.set(student.getId(),student);
+        //saveStudents(JSON.stringify([...context.students]));
   }
   /** Add student to context previously adding all graded tasks defined. Afterwards we render list*/
   addStudent(studentInstance) {
@@ -170,31 +183,7 @@ class Context {
       $('#content').html('NO STUDENTS YET');
     }
   }
-  /** Settings */
- /*  getSettings() {
-    let thisContext = this;
-    let callback = function(responseText) {
-      $('#content').html(responseText);
-      let itemWeightChanger = $('#weightChanger');
-      itemWeightChanger.val(thisContext.settings.weightXP);
-      let labelXPWeight = $('#idXPweight');
-      labelXPWeight.text(thisContext.settings.weightXP + '% XP weight');
-      let labelGPWeight = $('#idGPweight');
-      labelGPWeight.text(thisContext.settings.weightGP + '% GP weight');
-
-      itemWeightChanger.change(function() {
-          $('#idXPweight').text(itemWeightChanger.val() + '% XP weight');
-          thisContext.settings.weightXP = itemWeightChanger.val();
-          //setCookie('weightXP',thisContext.settings.weightXP,300);
-          $('#idGPweight').text((100 - itemWeightChanger.val()) + '% GP weight');
-          thisContext.settings.weightGP = (100 - itemWeightChanger.val());
-          saveSettings(thisContext.settings);
-          //setCookie('weightGP',thisContext.settings.weightGP,300);
-        });
-      console.log('Settings: To implement');
-    }.bind(this);
-    loadTemplate('templates/settings.html',callback);
-  } */
+ 
   /** Add last action performed to lower information layer in main app */
   notify(text,title,type='success') {
     toastr.options.timeOut = 4500;
