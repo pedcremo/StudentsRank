@@ -62,7 +62,7 @@ class AttitudeTask extends Task {
         return false; //Abort submit
       });
     };
-    loadTemplate('templates/listAttitudeTasks.2.html',callback);
+    loadTemplate('templates/listAttitudeTasks.html',callback);
   }
 }
 

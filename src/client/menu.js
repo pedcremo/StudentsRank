@@ -27,6 +27,7 @@ function generateMenu() {
       output += '<option value="' + subjects[i] + '">' + subjects[i] + '</option>';
     }
   }
+  output += '<option value="NEW subject">NEW subject</option>';
   output += '</select><br><span id="termMenu">' + context.settings.defaultTerm + '</span></li>';
 
   output += '<li class="nav-item"><a class="nav-link" href="#addStudent"><button class="btn btn-secondary"> + Student</button></a></li>';
@@ -39,12 +40,29 @@ function generateMenu() {
   $('#menuButtons').html(output);
   $('#subjectsItems').change(function() {
     let optionSubject = $(this).children(':selected').val();
-    context.user.defaultSubject = optionSubject;
-    setCookie('user',JSON.stringify(context.user),7);
-    loadTemplate('api/changeSubject',function(response) {
-      updateFromServer();
-      context.getTemplateRanking();
-    },'GET','newsubject=' + optionSubject,false);
+    if (optionSubject === 'NEW subject') {
+      let callback = function(responseText) {
+        $('#content').html($('#content').html() + responseText);
+        $('#SubjectModal').modal('toggle');
+        $('#newSubject').submit((event) => {
+          event.preventDefault();
+          loadTemplate('api/addSubject',function(response) {
+            context.user.defaultSubject = $('#subjectName').val();
+            updateFromServer();
+            context.getTemplateRanking();
+          },'GET','newSubject=' + $('#subjectName').val(),false);
+          return false; //Abort submit
+        });
+      };
+      loadTemplate('templates/addSubject.html',callback);
+    }else {
+      context.user.defaultSubject = optionSubject;
+      setCookie('user',JSON.stringify(context.user),7);
+      loadTemplate('api/changeSubject',function(response) {
+        updateFromServer();
+        context.getTemplateRanking();
+      },'GET','newsubject=' + optionSubject,false);
+    }
   });
 }
 /** Logout. Delete session in server side and credentials in client side */

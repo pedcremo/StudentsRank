@@ -15,6 +15,7 @@ router.get('/getGradedTasks', getGradedTasks);
 router.get('/getAttitudeTasks', getAttitudeTasks);
 router.get('/getSettings', getSettings);
 router.get('/changeSubject', changeSubject);
+router.get('/addSubject',addSubject);
 
 function changeSubject(req, res, next) {
   if (req.isAuthenticated()) {
@@ -270,5 +271,21 @@ function getSettings(req, res, next) {
       console.log(data);
       res.status(200).send(data);
     });
+  }
+}
+
+function addSubject(req, res, next) {
+  if (req.isAuthenticated()) {
+    if (req.query.newSubject) {
+      mkdirp('src/server/data/' + req.user.id + '/' + req.query.newSubject, function (err) {
+        if (err) console.error(err);
+        else console.log('dir created');
+      });
+      res.status(200).send('OK');
+    }else {
+      res.status(401).send("Empty new subject");
+    }
+  }else {
+    res.status(401).send("Not authorized");
   }
 }
