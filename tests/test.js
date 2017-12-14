@@ -41,7 +41,7 @@ describe('runKING tests using jasmine', function () {
     });
     it('3. Test Person getXPpoints works properly', () => {         
         let person1= new Person('test','surnames',[]);
-        spyOn(context, "notify");
+        //spyOn(context, "notify");
         let atExample = new AttitudeTask('prova','test',10);
         let atExample2 = new AttitudeTask('prova2','test2',-20);
         let atExample3 = new AttitudeTask('prova3','test3',100);

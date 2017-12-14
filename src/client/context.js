@@ -35,6 +35,24 @@ class Context {
     events.subscribe('/context/addStudent', (obj) => {
       this.addStudent(obj);      
     });
+    events.subscribe('/context/addXP', (idAttitudeTask) => {
+      let attTask = this.attitudeTasks.get(parseInt(idAttitudeTask));
+      attTask.hits++;
+      saveStudents(JSON.stringify([...this.students]));    
+      let typeToastr = 'success';
+      if (attTask.points < 0) {typeToastr = 'error';};
+      this.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
+    });
+    /*try {
+      let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
+      attTask.hits++;
+      saveStudents(JSON.stringify([...context.students]));    
+      let typeToastr = 'success';
+      if (attTask.points < 0) {typeToastr = 'error';};
+      context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
+    }catch (error) {
+      throw error;
+    }*/
     //context.students.set(student.getId(),student);
         //saveStudents(JSON.stringify([...context.students]));
   }

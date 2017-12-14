@@ -69,8 +69,8 @@ class Person {
   addAttitudeTask(taskInstanceId) {
     let dateTimeStamp = new Date();//Current time
     this.attitudeTasks.push({'id':taskInstanceId,'timestamp':dateTimeStamp});
-
-    try {
+    events.publish('/context/addXP',taskInstanceId);
+    /*try {
       let attTask = context.attitudeTasks.get(parseInt(taskInstanceId));
       attTask.hits++;
       saveStudents(JSON.stringify([...context.students]));    
@@ -79,7 +79,7 @@ class Person {
       context.notify('Added ' +  attTask.points + ' ' + attTask.description + ' to ' + this.name + ',' + this.surname, this.surname + ' ,' + this.name,typeToastr);
     }catch (error) {
       throw error;
-    }
+    }*/
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
