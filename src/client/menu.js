@@ -41,21 +41,7 @@ function generateMenu() {
   $('#subjectsItems').change(function() {
     let optionSubject = $(this).children(':selected').val();
     if (optionSubject === 'NEW subject') {
-      let callback = function(responseText) {
-        $('#content').html($('#content').html() + responseText);
-        $('#SubjectModal').modal('toggle');
-        $('#newSubject').submit((event) => {
-          event.preventDefault();
-          loadTemplate('api/addSubject',function(response) {
-            //context.user.defaultSubject = $('#subjectName').val();
-            context.user.subjects.push($('#subjectName').val());
-            updateFromServer(); 
-          },'GET','newSubject=' + $('#subjectName').val(),false);
-          $('.modal-backdrop').remove();
-          return false; //Abort submit
-        });
-      };
-      loadTemplate('templates/addSubject.html',callback);
+      addSubject();
     }else {
       context.user.defaultSubject = optionSubject;
       setCookie('user',JSON.stringify(context.user),7);
@@ -78,4 +64,22 @@ function logout() {
                 document.location.href="/";
               },'GET','',false);
 }
-export {generateMenu,logout,showMenu,hideMenu};
+
+function addSubject() {
+  let callback = function(responseText) {
+    $('#content').html($('#content').html() + responseText);
+    $('#SubjectModal').modal('toggle');
+    $('#newSubject').submit((event) => {
+      event.preventDefault();
+      loadTemplate('api/addSubject',function(response) {
+        //context.user.defaultSubject = $('#subjectName').val();
+        context.user.subjects.push($('#subjectName').val());
+        updateFromServer(); 
+      },'GET','newSubject=' + $('#subjectName').val(),false);
+      $('.modal-backdrop').remove();
+      return false; //Abort submit
+    });
+  };
+  loadTemplate('templates/addSubject.html',callback);
+}
+export {generateMenu,addSubject,logout,showMenu,hideMenu};

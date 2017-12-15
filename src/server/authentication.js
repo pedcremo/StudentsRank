@@ -31,16 +31,19 @@ function readSubjectsUser(idUser) {
     let content = fs.readFileSync('src/server/data/' + idUser + '/subjects.json');
     return JSON.parse(content);
   }else {
+    let subjects = {'defaultSubject':'default','subjects':[]};
     mkdirp('src/server/data/' + idUser, function (err) {
-      if (err) console.error(err);
-      else console.log('dir created');
-    });
-    let subjects = {'defaultSubject':'default','subjects':['default']};
-    fs.writeFileSync('src/server/data/' + idUser + '/subjects.json', JSON.stringify(subjects), 'utf8', (err) => {
       if (err) {
-        throw err;
+        console.error(err);
+      }else {
+        fs.writeFileSync('src/server/data/' + idUser + '/subjects.json', JSON.stringify(subjects), 'utf8', (err) => {
+          if (err) {
+            throw err;
+          }
+          console.log('The file subjects.json has been saved!');
+        });
+        console.log('dir created');
       }
-      console.log('The file subjects.json has been saved!');
     });
     return subjects;
   }

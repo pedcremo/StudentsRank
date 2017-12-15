@@ -7,8 +7,25 @@ var passport = require('passport');
 var fs = require('fs');
 var formidable = require('formidable');
 var mkdirp = require('mkdirp');
+const FileAsync = require('lowdb/adapters/FileAsync');
 //var path = require('path');
- 
+// Create database instance and start server
+const low = require('lowdb');
+const adapter = new FileAsync('src/server/data/shares.json');
+let dbase;
+low(adapter)
+.then((db) => {
+  db.defaults({ shares: [] }).write();
+  return db;
+})
+.then((db) => {
+  dbase = db;
+  //next();
+});
+
+//db.defaults({'shares': [] })
+//  .write();
+
 //===== NEW PERE ===========================================================
 router.get('/getStudents', getStudents);
 router.get('/getGradedTasks', getGradedTasks);
@@ -16,6 +33,7 @@ router.get('/getAttitudeTasks', getAttitudeTasks);
 router.get('/getSettings', getSettings);
 router.get('/changeSubject', changeSubject);
 router.get('/addSubject',addSubject);
+router.get('/getSharedGroups',getSharedGroups);
 
 function changeSubject(req, res, next) {
   if (req.isAuthenticated()) {
@@ -34,6 +52,11 @@ router.post('/saveStudents',function(req, res) {
         throw err;
       }
       console.log('The file has been saved!');
+      // Data is automatically saved to localStorage
+      let numStudents = req.body.length;
+      dbase.get('shares')
+        .push([req.user.defaultSubject,'src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',numStudents])
+        .write();
     });
       res.send('OK');
     }
@@ -271,6 +294,16 @@ function getSettings(req, res, next) {
       console.log(data);
       res.status(200).send(data);
     });
+  }
+}
+
+function getSharedGroups(req, res, next) {
+  if (req.isAuthenticated()) {
+    let shares = dbase.get('shares')
+                .value();
+    res.status(200).send(shares);
+  }else {
+    res.status(401).send("Not authorized");
   }
 }
 

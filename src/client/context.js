@@ -11,7 +11,7 @@ import Person from './classes/person.js';
 import GradedTask from './classes/gradedtask.js';
 import {updateFromServer,saveStudents,saveGradedTasks,saveSettings} from './dataservice.js';
 import {hashcode,loadTemplate,setCookie,deleteCookie,getCookie} from './lib/utils.js';
-import {generateMenu,showMenu,hideMenu} from './menu.js';
+import {generateMenu,showMenu,hideMenu,addSubject} from './menu.js';
 import {template} from './lib/templator.js';
 import {events} from './lib/eventsPubSubs.js';
 
@@ -33,18 +33,18 @@ class Context {
       saveStudents(JSON.stringify([...this.students]));
     });
     events.subscribe('/context/addStudent', (obj) => {
-      this.addStudent(obj);      
+      this.addStudent(obj);
     });
     events.subscribe('/context/addXP', (obj) => {
       /*let attTask = this.attitudeTasks.get(parseInt(idAttitudeTask));
       attTask.hits++;*/
-      saveStudents(JSON.stringify([...this.students]));    
+      saveStudents(JSON.stringify([...this.students]));
       let typeToastr = 'success';
       if (obj.attitudeTask.points < 0) {typeToastr = 'error';};
       this.notify('Added ' +  obj.attitudeTask.points + ' ' + obj.attitudeTask.description + ' to ' + obj.person.name + ',' + obj.person.surname, obj.person.surname + ' ,' + obj.person.name,typeToastr);
     });
 
-    events.subscribe('/context/newGradedTask', (gtask) => {    
+    events.subscribe('/context/newGradedTask', (gtask) => {
       this.students.forEach(function(studentItem,studentKey,studentsRef) {
         gtask.addStudentMark(studentKey,0);
       });
@@ -108,9 +108,18 @@ class Context {
           let password = $('input[name=password]').val();
           loadTemplate('api/login',function(userData) {
             that.user = JSON.parse(userData);
-            setCookie('user',userData,7);
-            updateFromServer();
-            that.getTemplateRanking();
+            //First time we log in
+            if (that.user.defaultSubject === 'default') {
+              updateFromServer(function() {
+                that.getTemplateRanking();
+                addSubject();
+              });
+            //We are veteran users
+            }else {
+              setCookie('user',userData,7);
+              updateFromServer(that.getTemplateRanking);
+              //that.getTemplateRanking();
+            }
           },'POST','username=' + username + '&password=' + password,false);
           return false; //Avoid form submit
         });

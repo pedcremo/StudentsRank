@@ -26,6 +26,7 @@
     "github-webhook-handler": "^0.7.0",
     "install": "^0.10.2",
     "jquery": "^3.2.1",
+    "lowdb": "^1.0.0",
     "morgan": "^1.1.1",
     "npm": "^5.6.0",
     "passport": "*",
