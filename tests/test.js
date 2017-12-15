@@ -2,6 +2,7 @@
 import {context} from '../src/client/context.js';
 import Person from '../src/client/classes/person.js';
 import AttitudeTask from '../src/client/classes/attitudetask.js';
+import {events} from '../src/client/lib/eventsPubSubs.js';
 
 describe('runKING tests using jasmine', function () {
 
@@ -41,22 +42,22 @@ describe('runKING tests using jasmine', function () {
     });
     it('3. Test Person getXPpoints works properly', () => {         
         let person1= new Person('test','surnames',[]);
-        spyOn(events, "publish");
+        
         let atExample = new AttitudeTask('prova','test',10);
         let atExample2 = new AttitudeTask('prova2','test2',-20);
         let atExample3 = new AttitudeTask('prova3','test3',100);
         let atExample4 = new AttitudeTask('prova4','test4',100);
+        let mapa = new Map([[atExample.id,atExample],[atExample2.id,atExample2],[atExample3.id,atExample3],[atExample4.id,atExample4]]);
+        events.publish('dataservice/getAttitudeTasks',mapa);
+        spyOn(events, "publish");
         expect(person1.getXPtotalPoints()).toEqual(0);
-        context.attitudeTasks.set(atExample.id,atExample);
-        context.attitudeTasks.set(atExample2.id,atExample2);
-        context.attitudeTasks.set(atExample3.id,atExample3);
-        person1.addAttitudeTask(atExample.id);
+        person1.addAttitudeTask(atExample);
         expect(person1.getXPtotalPoints()).toEqual(10);
-        person1.addAttitudeTask(atExample2.id);
+        person1.addAttitudeTask(atExample2);
         expect(person1.getXPtotalPoints()).toEqual(-10);
-        person1.addAttitudeTask(atExample3.id);
+        person1.addAttitudeTask(atExample3);
         expect(person1.getXPtotalPoints()).toEqual(90);
-        person1.addAttitudeTask(atExample4.id);
-        expect(person1.getXPtotalPoints()).toEqual(90);
+        person1.addAttitudeTask(atExample4);
+        expect(person1.getXPtotalPoints()).toEqual(190);
     });
 });
