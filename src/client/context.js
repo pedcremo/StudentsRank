@@ -112,7 +112,7 @@ class Context {
             if (that.user.defaultSubject === 'default') {
               updateFromServer(function() {
                 that.getTemplateRanking();
-                addSubject();
+                addSubject(function(){document.location.href="/";});
               });
             //We are veteran users
             }else {

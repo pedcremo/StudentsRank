@@ -65,7 +65,7 @@ function logout() {
               },'GET','',false);
 }
 
-function addSubject() {
+function addSubject(funcCallback) {
   let callback = function(responseText) {
     $('#content').html($('#content').html() + responseText);
     $('#SubjectModal').modal('toggle');
@@ -74,7 +74,9 @@ function addSubject() {
       loadTemplate('api/addSubject',function(response) {
         //context.user.defaultSubject = $('#subjectName').val();
         context.user.subjects.push($('#subjectName').val());
-        updateFromServer(); 
+        updateFromServer();
+        if (funcCallback) funcCallback();
+         
       },'GET','newSubject=' + $('#subjectName').val(),false);
       $('.modal-backdrop').remove();
       return false; //Abort submit
