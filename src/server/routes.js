@@ -65,9 +65,17 @@ router.post('/saveStudents',function(req, res) {
       console.log('The file has been saved!');
       // Data is automatically saved to localStorage
       let numStudents = req.body.length;
-      dbase.get('shares')
-        .push([req.user.defaultSubject,'src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',numStudents])
+      if (!dbase.get('shares').find({'defaultSubject': req.user.defaultSubject}).value()) {
+        dbase.get('shares')
+        .push({'defaultSubject':req.user.defaultSubject,'src':'src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json','hits':numStudents})
         .write();
+      }else{
+        dbase.get('shares')
+        .find({'defaultSubject':req.user.defaultSubject})
+        .assign({'hits':numStudents})
+        .write();
+      }
+      
     });
       res.send('OK');
     }
@@ -341,6 +349,13 @@ function addSubject(req, res, next) {
         if (err) console.error(err);
         else console.log('dir created');
       });
+      if (req.query.sharedGroup) {
+        let item = dbase.get('shares')
+        .find({'defaultSubject':req.query.sharedGroup})
+        .value();
+        fs.createReadStream(item.src).pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.query.newSubject + '/students.json'));
+      
+      }
       let contents = fs.readFileSync('src/server/data/' + req.user.id + '/subjects.json');
       req.user.defaultSubject = req.query.newSubject;
       req.user.subjects.push(req.query.newSubject);

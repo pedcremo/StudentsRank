@@ -68,6 +68,17 @@ function logout() {
 function addSubject(funcCallback) {
   let callback = function(responseText) {
     $('#content').html($('#content').html() + responseText);
+    
+    loadTemplate('api/getSharedGroups',function(response) {
+      let sharedGroups = JSON.parse(response);
+      let option = '';
+      option += '<option selected value=""></option>';
+      for (let i=0;i<sharedGroups.length;i++){
+        option += '<option value="'+ sharedGroups[i].defaultSubject + '">' + sharedGroups[i].defaultSubject+ ' - ' + sharedGroups[i].hits + ' students</option>';
+      }
+      $('#sharedGroups').append(option);
+    },'GET','',false);
+
     $('#SubjectModal').modal('toggle');
     $('#newSubject').submit((event) => {
       event.preventDefault();
@@ -80,7 +91,8 @@ function addSubject(funcCallback) {
         $('.modal-backdrop').remove();
         document.location.href = '/';
         if (funcCallback) funcCallback();
-      },'GET','newSubject=' + $('#subjectName').val(),false);
+        
+      },'GET','newSubject=' + $('#subjectName').val() + '&sharedGroup=' + $('select[name=sharedGroups]').val(),false);
       return false; //Abort submit
     });
   };
