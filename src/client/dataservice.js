@@ -7,15 +7,14 @@ import AttitudeTask from './classes/attitudetask.js';
 import {events} from './lib/eventsPubSubs.js';
 
 /** Get students and grades from server and maintains a local copy in localstorage */
-function updateFromServer(callback) {
+function updateFromServer() {
   if (context.user.id) {
     let counter = 0; //When 4 all have been loaded from server
     loadTemplate('api/getSettings',function(response) {
                           events.publish('dataservice/getSettings',loadSettings(response));                          
                           counter++;
                           if (counter === 4) {
-                            callback();
-                            //context.getTemplateRanking();
+                            context.getTemplateRanking();
                           }
                         },'GET','',false);
 
@@ -24,7 +23,7 @@ function updateFromServer(callback) {
                           //loadAttitudeTasks(response);
                           counter++;
                           if (counter === 4) {
-                            callback();
+                            context.getTemplateRanking();
                           }
                         },'GET','',false);
 
@@ -32,7 +31,7 @@ function updateFromServer(callback) {
                           loadStudents(response);
                           counter++;
                           if (counter === 4) {
-                            callback();
+                            context.getTemplateRanking();
                           }
                         },'GET','',false);
 
@@ -41,7 +40,7 @@ function updateFromServer(callback) {
                           //loadGradedTasks(response);
                           counter++;
                           if (counter === 4) {
-                            callback();
+                            context.getTemplateRanking();
                           }
                         },'GET','',false);
     

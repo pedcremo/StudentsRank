@@ -39,6 +39,17 @@ function changeSubject(req, res, next) {
   if (req.isAuthenticated()) {
     console.log("changeSubject ->" + req.query.newsubject);
     req.user.defaultSubject = req.query.newsubject;
+    //req.user.subjects.push(req.query.newsubject);
+    let jsonSubjects = {};
+    jsonSubjects.defaultSubject = req.query.newsubject;
+    jsonSubjects.subjects = req.user.subjects;
+    fs.writeFile('src/server/data/' + req.user.id + '/subjects.json', JSON.stringify(jsonSubjects), 'utf8', (err) => {
+        if (err) {
+          throw err;
+        }       
+       console.log('The file subjects.json has been saved !');
+    });
+    //passport.serializeUser
     res.status(200).send("OK");
   }
 }
@@ -165,28 +176,32 @@ function getStudents(req, res, next) {
   let id = req.user.id;
   let ds = req.user.defaultSubject;
   console.log("DEFAULTSUBJECT ->" + req.user.defaultSubject);
-  if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json')) {
-    // Do something
-    fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',function(err, data) {
-      if(err) {
-        console.log(err);
-      }
-      console.log(data);
-      res.status(200).send(data);
-    });
-  }else{
-    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
-      if (err) console.error(err)
-      else console.log('dir created')
-     });
-     fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json', JSON.stringify([]), 'utf8', (err) => {
-      if (err) {
-        throw err;
-      }
-      res.status(200).send('[]');
-      console.log('The file has been saved empty!');
-    });
-  }  
+  if (req.user.defaultSubject !== 'default') {
+    if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json')) {
+      // Do something
+      fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json',function(err, data) {
+        if(err) {
+          console.log(err);
+        }
+        console.log(data);
+        res.status(200).send(data);
+      });
+    }else{
+      mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
+        if (err) console.error(err)
+        else console.log('dir created')
+      });
+      fs.writeFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/students.json', JSON.stringify([]), 'utf8', (err) => {
+        if (err) {
+          throw err;
+        }
+        res.status(200).send('[]');
+        console.log('The file has been saved empty!');
+      });
+    }
+  }else {
+    res.status(200).send('[]');
+  }
  
 }
  
@@ -228,14 +243,15 @@ function uploadImage(req, res) {
 }
  
 function getGradedTasks(req, res, next) {
-  if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json')) {    
-    fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json',function(err, data) {
-            if(err) {
-                console.log(err);
-            }
-            console.log(data);
-            res.status(200).send(data);
-      });
+  if (req.user.defaultSubject !== 'default') {
+    if (fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json')) {
+      fs.readFile('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/gradedtasks.json',function(err, data) {
+              if(err) {
+                  console.log(err);
+              }
+              console.log(data);
+              res.status(200).send(data);
+        });
     }else {
       mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
         if (err) console.error(err);
@@ -245,32 +261,39 @@ function getGradedTasks(req, res, next) {
         if (err) {
           throw err;
         }
-       res.status(200).send('[]');
-       console.log('The file has been saved empty!');
+        res.status(200).send('[]');
+        console.log('The file has been saved empty!');
       });
     }
+  }else {
+    res.status(200).send('[]');
+  }
 }
  
 function getAttitudeTasks(req, res, next) {
   let id = req.user.id;
   let ds = req.user.defaultSubject;
   console.log('req.user'+req.user+' id='+id+' ds='+ds);
-  if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json')) {    
-    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
-      if (err) console.error(err);
-      else console.log('dir created');
-    });
-    fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json'));
-    let content = fs.readFileSync('src/server/data/attitudetasks_skeleton.json');
-    res.status(200).send(content);
+  if (req.user.defaultSubject !== 'default') {
+    if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json')) {    
+      mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
+        if (err) console.error(err);
+        else console.log('dir created');
+      });
+      fs.createReadStream('src/server/data/attitudetasks_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json'));
+      let content = fs.readFileSync('src/server/data/attitudetasks_skeleton.json');
+      res.status(200).send(content);
+    }else {
+      fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json',function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        console.log(data);
+        res.status(200).send(data);
+      });
+    }
   }else {
-    fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/attitudetasks.json',function(err, data) {
-      if(err) {
-          console.log(err);
-      }
-      console.log(data);
-      res.status(200).send(data);
-    });
+    res.status(200).send('[]');
   }
 }
 
@@ -278,22 +301,26 @@ function getSettings(req, res, next) {
   let id = req.user.id;
   let ds = req.user.defaultSubject;
   console.log('req.user'+req.user+' id='+id+' ds='+ds);
-  if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json')) {    
-    mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
-      if (err) console.error(err);
-      else console.log('dir created');
-    });
-    fs.createReadStream('src/server/data/settings_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json'));
-    let content = fs.readFileSync('src/server/data/settings_skeleton.json');
-    res.status(200).send(content);
+  if (req.user.defaultSubject !== 'default') {
+    if (!fs.existsSync('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json')) {    
+      mkdirp('src/server/data/' + req.user.id + '/' + req.user.defaultSubject, function (err) {
+        if (err) console.error(err);
+        else console.log('dir created');
+      });
+      fs.createReadStream('src/server/data/settings_skeleton.json').pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.user.defaultSubject + '/settings.json'));
+      let content = fs.readFileSync('src/server/data/settings_skeleton.json');
+      res.status(200).send(content);
+    }else {
+      fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/settings.json',function(err, data) {
+        if(err) {
+            console.log(err);
+        }
+        console.log(data);
+        res.status(200).send(data);
+      });
+    }
   }else {
-    fs.readFile('src/server/data/'+ req.user.id + '/' + req.user.defaultSubject + '/settings.json',function(err, data) {
-      if(err) {
-          console.log(err);
-      }
-      console.log(data);
-      res.status(200).send(data);
-    });
+    res.status(200).send({});
   }
 }
 
@@ -315,6 +342,8 @@ function addSubject(req, res, next) {
         else console.log('dir created');
       });
       let contents = fs.readFileSync('src/server/data/' + req.user.id + '/subjects.json');
+      req.user.defaultSubject = req.query.newSubject;
+      req.user.subjects.push(req.query.newSubject);
       // Define to JSON type
       let jsonSubjects = JSON.parse(contents);
       jsonSubjects.defaultSubject = req.query.newSubject;

@@ -61,7 +61,7 @@ function logout() {
   loadTemplate('api/logout',function(response) {
                 context.clear();
                 context.login();
-                document.location.href="/";
+                document.location.href = '/';
               },'GET','',false);
 }
 
@@ -72,13 +72,15 @@ function addSubject(funcCallback) {
     $('#newSubject').submit((event) => {
       event.preventDefault();
       loadTemplate('api/addSubject',function(response) {
-        //context.user.defaultSubject = $('#subjectName').val();
+        context.user.defaultSubject = $('#subjectName').val();
         context.user.subjects.push($('#subjectName').val());
-        updateFromServer();
+        //updateFromServer();
+        //updateFromServer();
+        $('#SubjectModal').modal('toggle');
+        $('.modal-backdrop').remove();
+        document.location.href = '/';
         if (funcCallback) funcCallback();
-         
       },'GET','newSubject=' + $('#subjectName').val(),false);
-      $('.modal-backdrop').remove();
       return false; //Abort submit
     });
   };

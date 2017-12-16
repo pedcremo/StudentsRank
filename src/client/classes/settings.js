@@ -18,30 +18,30 @@ class Settings {
       let out = '';
       try {
         out = this.terms[0].name;
+        this.terms.forEach(element => {
+          let dateFrom = element.begin;
+          let dateTo = element.end;
+          let d1 = dateFrom.split('/');
+          let d2 = dateTo.split('/');
+
+          let from = new Date(d1[2], parseInt(d1[1]) - 1, d1[0]);  // -1 because months are from 0 to 11
+          let to   = new Date(d2[2], parseInt(d2[1]) - 1, d2[0]);
+          let currentDate = new Date();
+          if (currentDate > from && currentDate < to) {
+            out = element.name;
+          }
+        });
       }catch (err) {
         out = '1st Term';
       }
-      this.terms.forEach(element => {
-        let dateFrom = element.begin;
-        let dateTo = element.end;
-        let d1 = dateFrom.split('/');
-        let d2 = dateTo.split('/');
-
-        let from = new Date(d1[2], parseInt(d1[1]) - 1, d1[0]);  // -1 because months are from 0 to 11
-        let to   = new Date(d2[2], parseInt(d2[1]) - 1, d2[0]);
-        let currentDate = new Date();
-        if (currentDate > from && currentDate < to) {
-          out = element.name;
-        }
-      });
       this.defaultTerm = out;
       return out;
     }
   }
 
-  static getSettings() {    
-    let scope={};
-    let output='';
+  static getSettings() {
+    let scope = {};
+    let output = '';
     scope.TPL_TERMS = context.settings.terms;
 
     for (let i = 0;i < context.settings.terms.length;i++) {
@@ -56,11 +56,11 @@ class Settings {
     }else {
       output += '<option value="ALL">ALL</option>';
     }
-    scope.TPL_DEFAULT_TERM = output;     
+    scope.TPL_DEFAULT_TERM = output;
 
     let callback = function(responseText) {
       let out = template(responseText,scope);
-      $('#content').html(eval('`' + out + '`'));      
+      $('#content').html(eval('`' + out + '`'));
       let itemWeightChanger = $('#weightChanger');
       itemWeightChanger.val(context.settings.weightXP);
       let labelXPWeight = $('#idXPweight');
@@ -75,10 +75,10 @@ class Settings {
 
       itemWeightChanger.change(function() {
           $('#idXPweight').text(itemWeightChanger.val() + '% XP weight');
-          context.settings.weightXP = itemWeightChanger.val();          
+          context.settings.weightXP = itemWeightChanger.val();
           $('#idGPweight').text((100 - itemWeightChanger.val()) + '% GP weight');
           context.settings.weightGP = (100 - itemWeightChanger.val());
-          saveSettings(context.settings);          
+          saveSettings(context.settings);
         });
       console.log('Settings: To implement');
     };

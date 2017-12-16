@@ -36,8 +36,6 @@ class Context {
       this.addStudent(obj);
     });
     events.subscribe('/context/addXP', (obj) => {
-      /*let attTask = this.attitudeTasks.get(parseInt(idAttitudeTask));
-      attTask.hits++;*/
       saveStudents(JSON.stringify([...this.students]));
       let typeToastr = 'success';
       if (obj.attitudeTask.points < 0) {typeToastr = 'error';};
@@ -85,7 +83,7 @@ class Context {
         if (this.students.size <= 0) {
           updateFromServer();
         }
-        this.getTemplateRanking();
+        //this.getTemplateRanking();
         return true;
       }
     }.bind(this),'GET','',false);
@@ -110,14 +108,12 @@ class Context {
             that.user = JSON.parse(userData);
             //First time we log in
             if (that.user.defaultSubject === 'default') {
-              updateFromServer(function() {
-                that.getTemplateRanking();
-                addSubject(function(){document.location.href="/";});
-              });
+              updateFromServer();
+              addSubject();
             //We are veteran users
             }else {
               setCookie('user',userData,7);
-              updateFromServer(that.getTemplateRanking);
+              updateFromServer();
               //that.getTemplateRanking();
             }
           },'POST','username=' + username + '&password=' + password,false);
