@@ -82,9 +82,10 @@ class Context {
         //Only call server if we not have loaded students 
         if (this.students.size <= 0) {
           updateFromServer();
+        }else {
+         this.getTemplateRanking();
         }
-        //this.getTemplateRanking();
-        return true;
+         return true;
       }
     }.bind(this),'GET','',false);
   }
