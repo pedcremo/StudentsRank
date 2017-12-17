@@ -353,8 +353,18 @@ function addSubject(req, res, next) {
         let item = dbase.get('shares')
         .find({'defaultSubject':req.query.sharedGroup})
         .value();
-        fs.createReadStream(item.src).pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.query.newSubject + '/students.json'));
-      
+        let students = JSON.parse(fs.readFileSync(item.src));
+        /* We proceed to remove previos attitude tasks from the students */
+        students.forEach(function(itemStudent){
+          itemStudent[1].attitudeTasks = [];
+        });
+        //fs.createReadStream(item.src).pipe(fs.createWriteStream('src/server/data/' + req.user.id + '/' + req.query.newSubject + '/students.json'));
+        fs.writeFile('src/server/data/' + req.user.id + '/' + req.query.newSubject + '/students.json', JSON.stringify(students), 'utf8', (err) => {
+          if (err) {
+            throw err;
+          }       
+         console.log('The file students.json has been copied from a share !');
+        });
       }
       let contents = fs.readFileSync('src/server/data/' + req.user.id + '/subjects.json');
       req.user.defaultSubject = req.query.newSubject;
