@@ -46,13 +46,11 @@ class Context {
       this.students.forEach(function(studentItem,studentKey,studentsRef) {
         gtask.addStudentMark(studentKey,0);
       });
-      //gradedTasks.set(gtask.id,gtask);
       saveGradedTasks(JSON.stringify([...gradedTasks]));
       this.getTemplateRanking();
     });
-    
   }
-  /** Add student to context previously adding all graded tasks defined. Afterwards we render list*/
+  /** Add student to context previously adding all graded tasks defined. Afterwards we render list */
   addStudent(studentInstance) {
     this.gradedTasks.forEach(function(iGradedTask) {
       iGradedTask.addStudentMark(studentInstance.getId(),0);
@@ -68,24 +66,24 @@ class Context {
     this.attitudeTasks = new Map();
     this.user = undefined;
   }
-  /** Check if user is logged */
+  /* Check on server if user is logged */
   isLogged() {
     loadTemplate('api/loggedin',function(response) {
+      /* Not logged */
       if (response === '0') {
-        //alert('LOGGED IN 0');
         this.clear();
         this.login();
         return false;
+      /* Login and getting user credential */
       }else {
-        //alert('LOGGED IN TRUE');
         this.user = JSON.parse(response);
-        //Only call server if we not have loaded students 
+        /* Only call server if we not have loaded students */
         if (this.students.size <= 0) {
           updateFromServer();
         }else {
-         this.getTemplateRanking();
+          this.getTemplateRanking();
         }
-         return true;
+        return true;
       }
     }.bind(this),'GET','',false);
   }
@@ -107,15 +105,14 @@ class Context {
           let password = $('input[name=password]').val();
           loadTemplate('api/login',function(userData) {
             that.user = JSON.parse(userData);
-            //First time we log in
+            /* First time we log in */
             if (that.user.defaultSubject === 'default') {
               updateFromServer();
               addSubject();
-            //We are veteran users
+            /* We are veteran/recurrent users */
             }else {
               setCookie('user',userData,7);
               updateFromServer();
-              //that.getTemplateRanking();
             }
           },'POST','username=' + username + '&password=' + password,false);
           return false; //Avoid form submit
@@ -130,17 +127,12 @@ class Context {
   getPersonById(idHash) {
     return this.students.get(parseInt(idHash));
   }
-  /** Get a GradedTask instance by its ID */
-  /*getGradedTaskById(idHash) {
-    return this.gradedTasks.get(parseInt(idHash));
-  }*/
   /** Draw Students ranking table in descendent order using total points as a criteria */
   getTemplateRanking() {
     generateMenu();
-    //showMenu();
 
     if (this.students && this.students.size > 0) {
-      /* We sort students descending from max number of points to min */
+      /* We sort students in descending order from max number of points to min */
       let arrayFromMap = [...this.students.entries()];
       arrayFromMap.sort(function(a,b) {
         return (b[1].getFinalGrade() - a[1].getFinalGrade());
@@ -201,11 +193,9 @@ class Context {
               callback();
             }.bind(this));
     }else {
-      //alert('NO STUDENTS');
       $('#content').html('NO STUDENTS YET');
     }
   }
- 
   /** Add last action performed to lower information layer in main app */
   notify(text,title,type='success') {
     toastr.options.timeOut = 4500;
