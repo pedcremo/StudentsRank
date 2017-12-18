@@ -4,7 +4,7 @@ import Person from '../src/client/classes/person.js';
 import AttitudeTask from '../src/client/classes/attitudetask.js';
 import {events} from '../src/client/lib/eventsPubSubs.js';
 
-describe('runKING tests using jasmine', function () {
+describe('runKING tests on Person class', function () {
 
     beforeEach(() => {
         jasmine.Ajax.install();
@@ -58,6 +58,6 @@ describe('runKING tests using jasmine', function () {
         person1.addAttitudeTask(atExample3);
         expect(person1.getXPtotalPoints()).toEqual(90);
         person1.addAttitudeTask(atExample4);
-        expect(person1.getXPtotalPoints()).toEqual(190);
+        expect(person1.getXPtotalPoints()).toEqual(190)
     });
 });

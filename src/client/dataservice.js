@@ -6,6 +6,11 @@ import GradedTask from './classes/gradedtask.js';
 import AttitudeTask from './classes/attitudetask.js';
 import {events} from './lib/eventsPubSubs.js';
 
+
+events.subscribe('dataservice/saveAttitudeTasks',(attitudeTasksJSON) => {
+  saveAttitudeTasks(attitudeTasksJSON);
+});    
+
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {
   if (context.user.id) {
@@ -59,10 +64,10 @@ function saveGradedTasks(arrayGT) {
                         },'POST',arrayGT,false);
 }
 /** Save Attitude XP points in server side */
-function saveAttitudeTasks(arrayAT) {
+function saveAttitudeTasks(arrayATstr) {
   loadTemplate('api/saveAttitudeTasks',function(response) {
                           console.log('SAVE ATTITUDE TASKS ' + response);
-                        },'POST',arrayAT,false);
+                        },'POST',arrayATstr,false);
 }
 /** Save settings in server side */
 function saveSettings(settingsJSON) {

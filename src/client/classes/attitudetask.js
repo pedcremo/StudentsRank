@@ -15,8 +15,6 @@ import Task from './task.js';
  */
 
 import {popupwindow,loadTemplate} from '../lib/utils.js';
-//import {context} from '../context.js';
-import {saveAttitudeTasks} from '../dataservice.js';
 import {template} from '../lib/templator.js';
 import {events} from '../lib/eventsPubSubs.js';
 
@@ -66,7 +64,9 @@ class AttitudeTask extends Task {
         let description = $('#description').val();
         let at = new AttitudeTask(description,description,points);
         attitudeTasks.set(at.id,at);
-        saveAttitudeTasks(JSON.stringify([...attitudeTasks]));
+        
+        events.publish('dataservice/saveAttitudeTasks',JSON.stringify([...attitudeTasks]));    
+        
         $('#XPModal').modal('toggle');
         $('.modal-backdrop').remove();
         at.hits++;
@@ -76,14 +76,6 @@ class AttitudeTask extends Task {
     };
     loadTemplate('templates/listAttitudeTasks.html',callback);
   }
-}
-
-/** TODO */
-function addTask() {
-}
-
-function addTaskToPerson() {
-
 }
 
 export default AttitudeTask;
