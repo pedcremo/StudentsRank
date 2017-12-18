@@ -76,7 +76,7 @@ function initRouter() {
               GradedTask.addGradedTask();
               break;
             case /#detailGradedTask/.test(isLink.href):
-              let gtInstance = context.getGradedTaskById(getIdFromURL(isLink.href));
+              let gtInstance = GradedTask.getGradedTaskById(getIdFromURL(isLink.href));
               gtInstance.getHTMLEdit();
               break;
             default:
