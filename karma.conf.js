@@ -3,7 +3,8 @@ module.exports = function(config) {
       basePath: '',
       frameworks: ['jasmine-ajax','jasmine','browserify'],
       reporters: ['spec'],
-      browsers: ['ChromeHeadlessRANK'],
+      //browsers: ['ChromeHeadlessRANK'],
+      browsers: ['Chrome'],
      
       customLaunchers: {
         ChromeHeadlessRANK: {

@@ -19,8 +19,8 @@ class Context {
 
   constructor() {
     this.students = new Map();
-    this.gradedTasks = new Map();
-    this.attitudeTasks = new Map();
+    //this.gradedTasks = new Map();
+    //this.attitudeTasks = new Map();
     this.settings = {};
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));

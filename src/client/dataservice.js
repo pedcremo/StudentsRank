@@ -9,7 +9,10 @@ import {events} from './lib/eventsPubSubs.js';
 
 events.subscribe('dataservice/saveAttitudeTasks',(attitudeTasksJSON) => {
   saveAttitudeTasks(attitudeTasksJSON);
-});    
+});
+events.subscribe('dataservice/saveGradedTasks',(gradedTasksJSON) => {
+  saveGradedTasks(gradedTasksJSON);
+});
 
 /** Get students and grades from server and maintains a local copy in localstorage */
 function updateFromServer() {

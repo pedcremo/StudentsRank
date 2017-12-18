@@ -1,9 +1,7 @@
 'use strict';
 
 import Task from './task.js';
-import {loadTemplate,hashcode} from '../lib/utils.js';
-import {saveGradedTasks} from '../dataservice.js';
-//import {context} from '../context.js';
+import {loadTemplate} from '../lib/utils.js';
 import {template} from '../lib/templator.js';
 import {events} from '../lib/eventsPubSubs.js';
 
@@ -19,7 +17,7 @@ import {events} from '../lib/eventsPubSubs.js';
  * @tutorial pointing-criteria
  */
 
-let gradedTasks = new Map(); 
+let gradedTasks = new Map();
 let settings = {};
 
 events.subscribe('dataservice/getGradedTasks',(obj) => {
@@ -55,7 +53,8 @@ class GradedTask extends Task {
   addStudentMark(idStudent,markPoints) {
     this[STUDENT_MARKS].set(parseInt(idStudent),markPoints);
     this.studentsMark = [...this[STUDENT_MARKS].entries()];
-    saveGradedTasks(JSON.stringify([...gradedTasks]));
+    events.publish('dataservice/saveGradedTasks',JSON.stringify([...gradedTasks]));
+    //saveGradedTasks(JSON.stringify([...gradedTasks]));
   }
   /** Static method to get list marks associated with one student */
   static getStudentMarks(idStudent) {
@@ -67,7 +66,7 @@ class GradedTask extends Task {
   }
   /** Calculate total graded points associated to one student */
   static getStudentGradedTasksPoints(idStudent) {
-    let points = 0;   
+    let points = 0;
 
     gradedTasks.forEach(function(itemTask) {
         if (itemTask.term === settings.defaultTerm || settings.defaultTerm === 'ALL') {
@@ -121,7 +120,8 @@ class GradedTask extends Task {
         let selectedTerm = $('#termTask').children(':selected').val();
         let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,selectedTerm,this.id);
         gradedTasks.set(this.id,gradedTask);
-        saveGradedTasks(JSON.stringify([...gradedTasks]));
+        events.publish('dataservice/saveGradedTasks',JSON.stringify([...gradedTasks]));
+        //saveGradedTasks(JSON.stringify([...gradedTasks]));
       });
     }.bind(this);
 
