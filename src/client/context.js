@@ -78,7 +78,9 @@ class Context {
       }else {
         this.user = JSON.parse(response);
         /* Only call server if we not have loaded students */
-        if (this.students.size <= 0) {
+        if (this.user.defaultSubject === 'default') {
+          addSubject();
+        }else if (this.students.size <= 0) {
           updateFromServer();
         }else {
           this.getTemplateRanking();
