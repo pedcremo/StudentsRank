@@ -21,14 +21,25 @@ let gradedTasks = new Map();
 let settings = {};
 
 events.subscribe('dataservice/getGradedTasks',(obj) => {
-  gradedTasks = obj;
+  let gradedTasks_ = new Map(JSON.parse(obj));
+  gradedTasks_.forEach(function(value_,key_,gradedTasks_) {
+      gradedTasks_.set(key_,new GradedTask(value_.name,value_.description,value_.weight,
+          value_.studentsMark,value_.term,value_.id));
+    });
+
+  gradedTasks = gradedTasks_;
+  events.publish('gradedTask/change',gradedTasks);
 });
 
-events.subscribe('dataservice/getSettings',(obj) => {
+events.subscribe('settings/ready',(obj) => {
   settings = obj;
 });
 
-const STUDENT_MARKS = Symbol('STUDENT_MARKS'); /** To acomplish private property */
+events.subscribe('students/new',(obj) => {
+  gradedTasks.forEach(function(iGradedTask) {
+    iGradedTask.addStudentMark(obj.getId(),0);
+  });
+});
 
 class GradedTask extends Task {
   constructor(name,description,weight,studentsMark,term,id=null) {
@@ -39,7 +50,7 @@ class GradedTask extends Task {
       term = settings.defaultTerm || '1st Term';
     }
     this.term = term;
-    this[STUDENT_MARKS] = new Map(studentsMark); //We need a private map to make it easier to access student marks using its id. The problem is that a Map inside other map can be converted to a pair array
+    this.studentsMarkMAP = new Map(studentsMark);
   }
 
   static getGradedTasks() {
@@ -51,30 +62,11 @@ class GradedTask extends Task {
   }
   /** Add student mark using his/her person ID   */
   addStudentMark(idStudent,markPoints) {
-    this[STUDENT_MARKS].set(parseInt(idStudent),markPoints);
-    this.studentsMark = [...this[STUDENT_MARKS].entries()];
+    this.studentsMarkMAP.set(parseInt(idStudent),markPoints);
+    this.studentsMark = [...this.studentsMarkMAP.entries()];
     events.publish('dataservice/saveGradedTasks',JSON.stringify([...gradedTasks]));
-    //saveGradedTasks(JSON.stringify([...gradedTasks]));
-  }
-  /** Static method to get list marks associated with one student */
-  static getStudentMarks(idStudent) {
-    let marks = [];
-    gradedTasks.forEach(function(valueGT,keyGT,gradedTasks_) {
-      marks.push([valueGT.getId(),valueGT[STUDENT_MARKS].get(idStudent)]);
-     });
-    return marks;
-  }
-  /** Calculate total graded points associated to one student */
-  static getStudentGradedTasksPoints(idStudent) {
-    let points = 0;
-
-    gradedTasks.forEach(function(itemTask) {
-        if (itemTask.term === settings.defaultTerm || settings.defaultTerm === 'ALL') {
-          points += itemTask[STUDENT_MARKS].get(idStudent) * (itemTask.weight / 100);
-        }
-      });
-    return Math.round((points * 100) / 100);
-  }
+    events.publish('gradedTask/change',gradedTasks);
+  } 
   /** CAlculate total aggregated GT weight */
   static getGradedTasksTotalWeight() {
     let points = 0;
@@ -87,7 +79,7 @@ class GradedTask extends Task {
   }
   /** Get student mark by their person ID */
   getStudentMark(idStudent) {
-    return this[STUDENT_MARKS].get(idStudent);
+    return this.studentsMarkMAP.get(idStudent);
   }
 
   getHTMLEdit() {
@@ -121,7 +113,7 @@ class GradedTask extends Task {
         let gradedTask = new GradedTask(this.name,this.description,this.weight,this.studentsMark,selectedTerm,this.id);
         gradedTasks.set(this.id,gradedTask);
         events.publish('dataservice/saveGradedTasks',JSON.stringify([...gradedTasks]));
-        //saveGradedTasks(JSON.stringify([...gradedTasks]));
+        events.publish('gradedTask/change',gradedTasks);
       });
     }.bind(this);
 
@@ -154,9 +146,10 @@ class GradedTask extends Task {
               let weight = weightInput.val();
               let selectedTerm = $('#termTask').children(':selected').val();
               let gtask = new GradedTask(name,description,weight,[],selectedTerm);
-              //let gtaskId = gtask.getId();
               gradedTasks.set(gtask.id,gtask);
-              events.publish('/context/newGradedTask',gtask);              
+              events.publish('/context/newGradedTask',gtask);
+              events.publish('dataservice/saveGradedTasks',JSON.stringify([...gradedTasks]));      
+              events.publish('gradedTask/change',gradedTasks);
               return false; //Avoid form submit
             });
           }.bind(this);

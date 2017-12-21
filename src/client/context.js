@@ -18,52 +18,21 @@ import {events} from './lib/eventsPubSubs.js';
 class Context {
 
   constructor() {
-    this.students = new Map();
-    //this.gradedTasks = new Map();
-    //this.attitudeTasks = new Map();
-    this.settings = {};
     if (getCookie('user')) {
       this.user = JSON.parse(getCookie('user'));
     }
-    events.subscribe('/context/deleteXP', (obj) => {
-      saveStudents(JSON.stringify([...this.students]));
-    });
-    events.subscribe('/context/updateStudent', (obj) => {
-      this.students.set(obj.getId(),obj);
-      saveStudents(JSON.stringify([...this.students]));
-    });
-    events.subscribe('/context/addStudent', (obj) => {
-      this.addStudent(obj);
-    });
-    events.subscribe('/context/addXP', (obj) => {
-      saveStudents(JSON.stringify([...this.students]));
+    events.subscribe('/context/addXP', (obj) => { 
       let typeToastr = 'success';
       if (obj.attitudeTask.points < 0) {typeToastr = 'error';};
       this.notify('Added ' +  obj.attitudeTask.points + ' ' + obj.attitudeTask.description + ' to ' + obj.person.name + ',' + obj.person.surname, obj.person.surname + ' ,' + obj.person.name,typeToastr);
     });
 
     events.subscribe('/context/newGradedTask', (gtask) => {
-      this.students.forEach(function(studentItem,studentKey,studentsRef) {
-        gtask.addStudentMark(studentKey,0);
-      });
-      saveGradedTasks(JSON.stringify([...gradedTasks]));
       this.getTemplateRanking();
     });
   }
-  /** Add student to context previously adding all graded tasks defined. Afterwards we render list */
-  addStudent(studentInstance) {
-    this.gradedTasks.forEach(function(iGradedTask) {
-      iGradedTask.addStudentMark(studentInstance.getId(),0);
-    });
-    this.students.set(studentInstance.getId(),studentInstance);
-    saveStudents(JSON.stringify([...this.students]));
-    this.getTemplateRanking();
-  }
   /** Clear context  */
   clear() {
-    this.students = new Map();
-    this.gradedTasks = new Map();
-    this.attitudeTasks = new Map();
     this.user = undefined;
   }
   /* Check on server if user is logged */
@@ -80,7 +49,7 @@ class Context {
         /* Only call server if we not have loaded students */
         if (this.user.defaultSubject === 'default') {
           addSubject();
-        }else if (this.students.size <= 0) {
+        }else if (Person.getStudentsSize() <= 0) {
           updateFromServer();
         }else {
           this.getTemplateRanking();
@@ -125,78 +94,11 @@ class Context {
       that.getTemplateRanking();
     }
   }
-  /** Get a Person instance by its ID */
-  getPersonById(idHash) {
-    return this.students.get(parseInt(idHash));
-  }
+
   /** Draw Students ranking table in descendent order using total points as a criteria */
   getTemplateRanking() {
     generateMenu();
-
-    if (this.students && this.students.size > 0) {
-      /* We sort students in descending order from max number of points to min */
-      let arrayFromMap = [...this.students.entries()];
-      arrayFromMap.sort(function(a,b) {
-        return (b[1].getFinalGrade() - a[1].getFinalGrade());
-      });
-      this.students = new Map(arrayFromMap);
-
-      let scope = {};
-
-      if (GradedTask.getGradedTasks() && GradedTask.getGradedTasks().size > 0) {
-        scope.TPL_GRADED_TASKS = [...GradedTask.getGradedTasks().entries()].reverse();
-        if (this.settings.defaultTerm !== 'ALL') {
-          let aux = [];
-          for (let i = 0;i < scope.TPL_GRADED_TASKS.length;i++) {
-            if (scope.TPL_GRADED_TASKS[i][1].term === context.settings.defaultTerm) {
-              aux.push(scope.TPL_GRADED_TASKS[i]);
-            }
-          }
-          scope.TPL_GRADED_TASKS = aux;
-        }
-      }
-
-      scope.TPL_PERSONS = arrayFromMap;
-      let TPL_XP_WEIGHT = this.settings.weightXP;
-      let TPL_GT_WEIGHT = this.settings.weightGP;
-
-      loadTemplate('templates/rankingList.html',function(responseText) {
-              let out = template(responseText,scope);
-              $('#content').html(eval('`' + out + '`'));
-              if (getCookie('expandedView') === 'visible') {
-                $('.tableGradedTasks').show();
-                $('.fa-hand-o-right').addClass('fa-hand-o-down').removeClass('fa-hand-o-right');
-              }else {
-                $('.tableGradedTasks').hide();
-                $('.fa-hand-o-down').addClass('fa-hand-o-right').removeClass('fa-hand-o-down');
-              }
-              let that = this;
-              let callback = function() {
-                  $('.gradedTaskInput').each(function(index) {
-                        $(this).change(function() {
-                          let idPerson = $(this).attr('idStudent');
-                          let idGradedTask = $(this).attr('idGradedTask');
-                          let gt = GradedTask.getGradedTasks().get(parseInt(idGradedTask));
-                          gt.addStudentMark(idPerson,$(this).val());
-                          that.getTemplateRanking();
-                        });
-                      });
-                  $('.profile').each(function(index) {
-                    $(this).mouseenter(function() { //TEST
-                      $(this).removeAttr('width'); //TEST
-                      $(this).removeAttr('height'); //TEST
-                    });
-                    $(this).mouseout(function() { //TEST
-                      $(this).attr('width',48); //TEST
-                      $(this).attr('height',60); //TEST
-                    });
-                  });
-                };
-              callback();
-            }.bind(this));
-    }else {
-      $('#content').html('NO STUDENTS YET');
-    }
+    Person.getRankingTable();
   }
   /** Add last action performed to lower information layer in main app */
   notify(text,title,type='success') {

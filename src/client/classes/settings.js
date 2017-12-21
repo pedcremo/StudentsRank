@@ -1,7 +1,16 @@
-import {context} from '../context.js'; //Singleton
-import {saveSettings} from '../dataservice.js';
+//import {context} from '../context.js'; //Singleton
+//import {saveSettings} from '../dataservice.js';
 import {loadTemplate} from '../lib/utils.js';
 import {template} from '../lib/templator.js';
+import {events} from '../lib/eventsPubSubs.js';
+
+let settings = {};
+
+events.subscribe('dataservice/getSettings',(obj) => {
+  let settings_ = JSON.parse(obj);
+  settings = new Settings(settings_.weightXP,settings_.weightGP,settings_.defaultTerm,settings_.terms);
+  events.publish('settings/change',settings);
+});
 
 class Settings {
   constructor(weightXP,weightGP,defaultTerm,terms) {
@@ -42,16 +51,16 @@ class Settings {
   static getSettings() {
     let scope = {};
     let output = '';
-    scope.TPL_TERMS = context.settings.terms;
+    scope.TPL_TERMS = settings.terms;
 
-    for (let i = 0;i < context.settings.terms.length;i++) {
-      if (context.settings.terms[i].name === context.settings.defaultTerm) { 
-        output += '<option selected value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+    for (let i = 0;i < settings.terms.length;i++) {
+      if (settings.terms[i].name === settings.defaultTerm) { 
+        output += '<option selected value="' + settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
       }else {
-        output += '<option value="' + context.settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+        output += '<option value="' + settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
       }
     }
-    if ('ALL' === context.settings.defaultTerm) {
+    if ('ALL' === settings.defaultTerm) {
       output += '<option selected value="ALL">ALL</option>';
     }else {
       output += '<option value="ALL">ALL</option>';
@@ -62,23 +71,27 @@ class Settings {
       let out = template(responseText,scope);
       $('#content').html(eval('`' + out + '`'));
       let itemWeightChanger = $('#weightChanger');
-      itemWeightChanger.val(context.settings.weightXP);
+      itemWeightChanger.val(settings.weightXP);
       let labelXPWeight = $('#idXPweight');
-      labelXPWeight.text(context.settings.weightXP + '% XP weight');
+      labelXPWeight.text(settings.weightXP + '% XP weight');
       let labelGPWeight = $('#idGPweight');
-      labelGPWeight.text(context.settings.weightGP + '% GP weight');
+      labelGPWeight.text(settings.weightGP + '% GP weight');
       $('#termsItems').change(function() {
         let optionTerm = $(this).children(':selected').val();
-        context.settings.defaultTerm = optionTerm;
-        saveSettings(context.settings);  
+        settings.defaultTerm = optionTerm;
+        events.publish('dataservice/saveSettings',settings);
+        //saveSettings(settings);
+        events.publish('settings/change',settings);
       });
 
       itemWeightChanger.change(function() {
           $('#idXPweight').text(itemWeightChanger.val() + '% XP weight');
-          context.settings.weightXP = itemWeightChanger.val();
+          settings.weightXP = itemWeightChanger.val();
           $('#idGPweight').text((100 - itemWeightChanger.val()) + '% GP weight');
-          context.settings.weightGP = (100 - itemWeightChanger.val());
-          saveSettings(context.settings);
+          settings.weightGP = (100 - itemWeightChanger.val());
+          //saveSettings(settings);
+          events.publish('dataservice/saveSettings',settings);
+          events.publish('settings/change',settings);
         });
       console.log('Settings: To implement');
     };

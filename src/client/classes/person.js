@@ -9,13 +9,42 @@
  * @tutorial pointing-criteria
  */
 
-import {formatDate,popupwindow,hashcode,loadTemplate} from '../lib/utils.js';
-import {context} from '../context.js';
-import AttitudeTask from './attitudetask.js';
-import GradedTask from './gradedtask.js';
-import {saveStudents,saveAttitudeTasks} from '../dataservice.js';
+import {formatDate,popupwindow,hashcode,loadTemplate,getCookie} from '../lib/utils.js';
 import {template} from '../lib/templator.js';
 import {events} from '../lib/eventsPubSubs.js';
+
+let students = new Map();
+let settings = {};
+let attitudeMAP = new Map();
+let gradedtaskMAP = new Map();
+
+events.subscribe('attitudeTask/change',(obj) => {
+  attitudeMAP = obj;
+});
+
+events.subscribe('gradedTask/change',(obj) => {
+  gradedtaskMAP = obj;
+});
+
+events.subscribe('dataservice/getStudents',(obj) => {
+  let students_ = new Map(JSON.parse(obj));
+  students_.forEach(function(value_,key_,students_) {
+      students_.set(key_,new Person(value_.name,value_.surname,
+          value_.attitudeTasks,value_.id));
+    });
+  students = students_;
+});
+
+events.subscribe('settings/change',(obj) => {
+  settings = obj;
+});
+
+events.subscribe('/context/newGradedTask',(gtask) => {
+  students.forEach(function(studentItem,studentKey,studentsRef) {
+    gtask.addStudentMark(studentKey,0);
+  });
+});
+
 
 const privateAddTotalPoints = Symbol('privateAddTotalPoints'); /** To accomplish private method */
 const _totalXPpoints = Symbol('TOTAL_XP_POINTS'); /** To acomplish private property */
@@ -41,16 +70,20 @@ class Person {
   /** Read person _totalXPpoints. A private property only modicable inside person instance */
   getXPtotalPoints() {
     this[_totalXPpoints] = 0;
-    this.attitudeTasks.forEach(function (itemAT) {
-      if (AttitudeTask.getAttitudeTasks().size > 0) {
-        let instanceAT = AttitudeTask.getAttitudeTasks().get(parseInt(itemAT.id));
-        try {
-          this[_totalXPpoints] += parseInt(instanceAT.points);
-        } catch (error) {
-          this[_totalXPpoints] += 0;
+    try {
+      this.attitudeTasks.forEach(function (itemAT) {
+        if (attitudeMAP.size > 0) {
+          let instanceAT = attitudeMAP.get(parseInt(itemAT.id));
+          try {
+            this[_totalXPpoints] += parseInt(instanceAT.points);
+          } catch (error) {
+            this[_totalXPpoints] += 0;
+          }
         }
-      }
-    }.bind(this));
+      }.bind(this));
+    }catch (err) {
+      console.log('ERROR:' + err);
+    }
 
     return this[_totalXPpoints];
   }
@@ -58,7 +91,7 @@ class Person {
   /** returns max XP grade used to calculate XP mark for each student */
   static getMaxXPmark() {
     let max = 0;
-    context.students.forEach(function(studentItem,studentKey,studentsRef) {
+    students.forEach(function(studentItem,studentKey,studentsRef) {
       if (studentItem.getXPtotalPoints() > max) {
         max = studentItem.getXPtotalPoints();
       }
@@ -69,7 +102,9 @@ class Person {
   addAttitudeTask(taskInstance) {
     let dateTimeStamp = new Date();//Current time
     this.attitudeTasks.push({'id':taskInstance.id,'timestamp':dateTimeStamp});
-    events.publish('/context/addXP',{'attitudeTask':taskInstance,'person':this});    
+    events.publish('/context/addXP',{'attitudeTask':taskInstance,'person':this});
+    events.publish('dataservice/saveStudents',JSON.stringify([...students]));
+
   }
   /** Delete XP associated to this person */
   deleteXP(taskInstanceId) {
@@ -82,38 +117,57 @@ class Person {
           }
         }
       });
-      events.publish('/context/deleteXP',{});
-    //saveStudents(JSON.stringify([...context.students]));
+      events.publish('dataservice/saveStudents',JSON.stringify([...students]));
   }
 
-  /** Get students Marks current term by showNumGradedTasks from context*/
+  /** Get students Marks in current term from context*/
   getStudentMarks() {
-    let gtArray = GradedTask.getStudentMarks(this.getId()).reverse();
+    let gtArray = [];
+    try {
+      //gradedtaskMAP.forEach(function(valueGT) {
+      gradedtaskMAP.forEach((valueGT) => {
+        console.log('MERDA ' + valueGT.id + 'Person id ' + this.id);
+        gtArray.push([valueGT.id,valueGT.studentsMarkMAP.get(this.id)]);
+      });
 
-    if (context.settings.defaultTerm !== 'ALL') {
-      let aux = [];
-      for (let i = 0;i < gtArray.length;i++) {
-        let gtInstance = GradedTask.getGradedTaskById(gtArray[i][0]);
-        if (gtInstance.term === context.settings.defaultTerm) {
-          aux.push(gtArray[i]);
+      if (settings.defaultTerm !== 'ALL') {
+        let aux = [];
+        for (let i = 0;i < gtArray.length;i++) {
+          let gtInstance = gradedtaskMAP.get(gtArray[i][0]);
+          if (gtInstance.term === settings.defaultTerm) {
+            aux.push(gtArray[i]);
+          }
         }
+        gtArray = aux;
       }
-      gtArray = aux;
+    }catch (err) {
+      console.log('ERROR' + err);
     }
     return gtArray;
   }
   /** Get total points over 100 taking into account different graded tasks weights */
   getGTtotalPoints() {
-    return GradedTask.getStudentGradedTasksPoints(this.getId());
+    let points = 0;
+    try {
+      gradedtaskMAP.forEach((itemTask) => {
+        if (itemTask.term === settings.defaultTerm || settings.defaultTerm === 'ALL') {
+          points += itemTask.studentsMarkMAP.get(this.id) * (itemTask.weight / 100);
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return Math.round((points * 100) / 100);
+    //return GradedTask.getStudentGradedTasksPoints(this.getId());
   }
   /** XP mark relative to highest XP mark and XP weight and GT grade */
   getFinalGrade() {
 
-    let xpGrade = this.getXPtotalPoints() * (context.settings.weightXP) / Person.getMaxXPmark();
+    let xpGrade = this.getXPtotalPoints() * (settings.weightXP) / Person.getMaxXPmark();
     if (isNaN(xpGrade)) {
       xpGrade = 0;
     }
-    return Math.round(xpGrade + (this.getGTtotalPoints() * (context.settings.weightGP / 100)));
+    return Math.round(xpGrade + (this.getGTtotalPoints() * (settings.weightGP / 100)));
   }
   /** Renders person edit form */
   getHTMLEdit() {
@@ -150,10 +204,8 @@ class Person {
         loadTemplate('api/uploadImage',function(response) {
           console.log(response);
         },'POST',formData,'false');
-
-        events.publish('/context/updateStudent',student);
-        //context.students.set(student.getId(),student);
-        //saveStudents(JSON.stringify([...context.students]));
+        students.set(student.getId(),student);
+        events.publish('dataservice/saveStudents',JSON.stringify([...students]));        
       });
     }.bind(this);
 
@@ -166,12 +218,12 @@ class Person {
         let scope = {};
         scope.TPL_ATTITUDE_TASKS = [];
         this.attitudeTasks.reverse().forEach(function(atItem) {
-          let itemAT = AttitudeTask.getAttitudeTasks().get(parseInt(atItem.id));
+          let itemAT = attitudeMAP.get(parseInt(atItem.id));
           itemAT.datetime = atItem.timestamp;
           scope.TPL_ATTITUDE_TASKS.push(itemAT);
         });
         let TPL_GRADED_TASKS = '';
-        GradedTask.getGradedTasks().forEach(function(gtItem) {
+        gradedtaskMAP.forEach(function(gtItem) {
           TPL_GRADED_TASKS += '<li class="list-group-item">' + gtItem.getStudentMark(TPL_STUDENT.getId()) + '->' +
                         gtItem.name + '->' + formatDate(new Date(gtItem.datetime)) + '</li>';
         });
@@ -210,13 +262,96 @@ class Person {
               loadTemplate('api/uploadImage',function(response) {
                 console.log(response);
               },'POST',formData,'false');
-              
-              events.publish('/context/addStudent',student);
+
+              Person.addStudent(student);
               return false; //Avoid form submit              
             });
           };
 
     loadTemplate('templates/addStudent.html',callback);
+  }
+  static getPersonById(idHash) {
+    return students.get(parseInt(idHash));
+  }
+  static getRankingTable() {
+    if (students && students.size > 0) {
+      /* We sort students in descending order from max number of points to min */
+      let arrayFromMap = [...students.entries()];
+      arrayFromMap.sort(function(a,b) {
+        return (b[1].getFinalGrade() - a[1].getFinalGrade());
+      });
+      students = new Map(arrayFromMap);
+
+      let scope = {};
+
+      if (gradedtaskMAP && gradedtaskMAP.size > 0) {
+        scope.TPL_GRADED_TASKS = [...gradedtaskMAP.entries()].reverse();
+        if (settings.defaultTerm !== 'ALL') {
+          let aux = [];
+          for (let i = 0;i < scope.TPL_GRADED_TASKS.length;i++) {
+            if (scope.TPL_GRADED_TASKS[i][1].term === settings.defaultTerm) {
+              aux.push(scope.TPL_GRADED_TASKS[i]);
+            }
+          }
+          scope.TPL_GRADED_TASKS = aux;
+        }
+      }
+
+      scope.TPL_PERSONS = arrayFromMap;
+      let TPL_XP_WEIGHT = settings.weightXP;
+      let TPL_GT_WEIGHT = settings.weightGP;
+
+      loadTemplate('templates/rankingList.html',function(responseText) {
+              let out = template(responseText,scope);
+              $('#content').html(eval('`' + out + '`'));
+              if (getCookie('expandedView') === 'visible') {
+                $('.tableGradedTasks').show();
+                $('.fa-hand-o-right').addClass('fa-hand-o-down').removeClass('fa-hand-o-right');
+              }else {
+                $('.tableGradedTasks').hide();
+                $('.fa-hand-o-down').addClass('fa-hand-o-right').removeClass('fa-hand-o-down');
+              }
+              //let that = this;
+              let callback = function() {
+                  $('.gradedTaskInput').each(function(index) {
+                        $(this).change(function() {
+                          let idPerson = $(this).attr('idStudent');
+                          let idGradedTask = $(this).attr('idGradedTask');
+                          let gt = gradedtaskMAP.get(parseInt(idGradedTask));
+                          gt.addStudentMark(idPerson,$(this).val());
+                          Person.getRankingTable();
+                          //that.getTemplateRanking();
+                        });
+                      });
+                  $('.profile').each(function(index) {
+                    $(this).mouseenter(function() { //TEST
+                      $(this).removeAttr('width'); //TEST
+                      $(this).removeAttr('height'); //TEST
+                    });
+                    $(this).mouseout(function() { //TEST
+                      $(this).attr('width',48); //TEST
+                      $(this).attr('height',60); //TEST
+                    });
+                  });
+                };
+              callback();
+            });
+    }else {
+      $('#content').html('NO STUDENTS YET');
+    }
+  }
+  static addStudent(studentInstance) {
+    events.publish('student/new',studentInstance);
+    students.set(studentInstance.getId(),studentInstance);
+    events.publish('dataservice/saveStudents',JSON.stringify([...students]));    
+    Person.getRankingTable();
+  }
+  static getStudentsSize() {
+    return students.size;
+  }
+  static deleteById(idPerson) {
+    students.delete(idPerson);
+    events.publish('dataservice/saveStudents',JSON.stringify([...students]));
   }
 }
 

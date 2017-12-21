@@ -19,8 +19,15 @@ import {template} from '../lib/templator.js';
 import {events} from '../lib/eventsPubSubs.js';
 
 let attitudeTasks = new Map();
+
 events.subscribe('dataservice/getAttitudeTasks',(obj) => {
-  attitudeTasks = obj;
+  let attitudeTasks_ = new Map(JSON.parse(obj));
+  attitudeTasks_.forEach(function(value_,key_,attitudeTasks_) {
+      attitudeTasks_.set(key_,new AttitudeTask(value_.name,value_.description,value_.points,
+        value_.hits,value_.id));
+    });
+  attitudeTasks = attitudeTasks_;
+  events.publish('attitudeTask/change',attitudeTasks);
 });
 
 class AttitudeTask extends Task {
@@ -64,9 +71,9 @@ class AttitudeTask extends Task {
         let description = $('#description').val();
         let at = new AttitudeTask(description,description,points);
         attitudeTasks.set(at.id,at);
-        
+
         events.publish('dataservice/saveAttitudeTasks',JSON.stringify([...attitudeTasks]));    
-        
+        events.publish('attitudeTask/change',attitudeTasks);
         $('#XPModal').modal('toggle');
         $('.modal-backdrop').remove();
         at.hits++;
@@ -75,6 +82,9 @@ class AttitudeTask extends Task {
       });
     };
     loadTemplate('templates/listAttitudeTasks.html',callback);
+  }
+  static getAttitudeById(idTask) {
+    return attitudeTasks.get(idTask);
   }
 }
 

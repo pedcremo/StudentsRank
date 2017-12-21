@@ -2,7 +2,12 @@
 import {context} from './context.js';
 import {deleteCookie,setCookie,loadTemplate} from './lib/utils.js';
 import {updateFromServer} from './dataservice.js';
+import {events} from './lib/eventsPubSubs.js';
 
+let settings = {};
+events.subscribe('settings/change',(obj) => {
+  settings = obj;
+});
 /** Show Menu  */
 function showMenu() {
   $('#navbarNav').show();
@@ -28,7 +33,7 @@ function generateMenu() {
     }
   }
   output += '<option value="NEW subject">NEW subject</option>';
-  output += '</select><br><span id="termMenu">' + context.settings.defaultTerm + '</span></li>';
+  output += '</select><br><span id="termMenu">' + settings.defaultTerm + '</span></li>';
 
   output += '<li class="nav-item"><a class="nav-link" href="#addStudent"><button class="btn btn-secondary"> + Student</button></a></li>';
   output += '<li class="nav-item"><a class="nav-link" href="#addGradedTask"><button class="btn btn-secondary"> + Graded task</button></a></li>';

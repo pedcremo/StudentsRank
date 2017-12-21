@@ -7,11 +7,19 @@ import AttitudeTask from './classes/attitudetask.js';
 import {events} from './lib/eventsPubSubs.js';
 
 
+
+events.subscribe('dataservice/saveSettings',(settingsJSON) => {
+  saveSettings(settingsJSON);
+});
+
 events.subscribe('dataservice/saveAttitudeTasks',(attitudeTasksJSON) => {
   saveAttitudeTasks(attitudeTasksJSON);
 });
 events.subscribe('dataservice/saveGradedTasks',(gradedTasksJSON) => {
   saveGradedTasks(gradedTasksJSON);
+});
+events.subscribe('dataservice/saveStudents',(studentsJSON) => {
+  saveStudents(studentsJSON);
 });
 
 /** Get students and grades from server and maintains a local copy in localstorage */
@@ -19,7 +27,7 @@ function updateFromServer() {
   if (context.user.id) {
     let counter = 0; //When 4 all have been loaded from server
     loadTemplate('api/getSettings',function(response) {
-                          events.publish('dataservice/getSettings',loadSettings(response));                          
+                          events.publish('dataservice/getSettings',response);
                           counter++;
                           if (counter === 4) {
                             context.getTemplateRanking();
@@ -27,7 +35,7 @@ function updateFromServer() {
                         },'GET','',false);
 
     loadTemplate('api/getAttitudeTasks',function(response) {
-                          events.publish('dataservice/getAttitudeTasks',loadAttitudeTasks(response)); 
+                          events.publish('dataservice/getAttitudeTasks',response);
                           //loadAttitudeTasks(response);
                           counter++;
                           if (counter === 4) {
@@ -36,7 +44,8 @@ function updateFromServer() {
                         },'GET','',false);
 
     loadTemplate('api/getStudents',function(response) {
-                          loadStudents(response);
+                            events.publish('dataservice/getStudents',response);
+                          //loadStudents(response);
                           counter++;
                           if (counter === 4) {
                             context.getTemplateRanking();
@@ -44,7 +53,7 @@ function updateFromServer() {
                         },'GET','',false);
 
     loadTemplate('api/getGradedTasks',function(response) {
-                          events.publish('dataservice/getGradedTasks',loadGradedTasks(response));
+                          events.publish('dataservice/getGradedTasks',response);
                           //loadGradedTasks(response);
                           counter++;
                           if (counter === 4) {
@@ -80,17 +89,18 @@ function saveSettings(settingsJSON) {
 }
 
 /** Load students from AJAX response and map to Person instances in context */
-function loadStudents(studentsStr) {
+/*function loadStudents(studentsStr) {
   let students_ = new Map(JSON.parse(studentsStr));
   students_.forEach(function(value_,key_,students_) {
       students_.set(key_,new Person(value_.name,value_.surname,
           value_.attitudeTasks,value_.id));
     });
-  context.students = students_;
-}
+  
+  return students_;
+}*/
 
 /** Load graded tasks from AJAX response and map to GradedTasks instances in context */
-function loadGradedTasks(gradedTasksStr) {
+/*function loadGradedTasks(gradedTasksStr) {
   let gradedTasks_ = new Map(JSON.parse(gradedTasksStr));
   gradedTasks_.forEach(function(value_,key_,gradedTasks_) {
       gradedTasks_.set(key_,new GradedTask(value_.name,value_.description,value_.weight,
@@ -98,10 +108,10 @@ function loadGradedTasks(gradedTasksStr) {
     });
   //context.gradedTasks = gradedTasks_;
   return gradedTasks_;
-}
+}*/
 
 /** Load attitude tasks (XP) from AJAX response and map to attitudeTasks instances in context */
-function loadAttitudeTasks(attitudeTasksStr) {
+/*function loadAttitudeTasks(attitudeTasksStr) {
   let attitudeTasks_ = new Map(JSON.parse(attitudeTasksStr));
   attitudeTasks_.forEach(function(value_,key_,attitudeTasks_) {
       attitudeTasks_.set(key_,new AttitudeTask(value_.name,value_.description,value_.points,
@@ -109,13 +119,13 @@ function loadAttitudeTasks(attitudeTasksStr) {
     });
   //context.attitudeTasks = attitudeTasks_;
   return attitudeTasks_;
-}
+}*/
 
 /** Load setting from AJAX response and map to settings in context */
-function loadSettings(settingsStr) {
+/*function loadSettings(settingsStr) {
   let settings_ = JSON.parse(settingsStr);
   context.settings = new Settings(settings_.weightXP,settings_.weightGP,settings_.defaultTerm,settings_.terms);
   return context.settings;
-}
+}*/
 
 export {updateFromServer,saveStudents,saveGradedTasks,saveSettings,saveAttitudeTasks};

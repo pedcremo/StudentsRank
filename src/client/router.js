@@ -16,19 +16,20 @@ function initRouter() {
           switch (true) {
             /** View Student information detail */
             case /#student/.test(isLink.href):
-              let personInstance = context.getPersonById(getIdFromURL(isLink.href));
+              let personInstance = Person.getPersonById(getIdFromURL(isLink.href));
               personInstance.getHTMLDetail();
               break;
             /** Modify student information */
             case /#editStudent/.test(isLink.href):
-              personInstance = context.getPersonById(getIdFromURL(isLink.href));
+              personInstance = Person.getPersonById(getIdFromURL(isLink.href));
               personInstance.getHTMLEdit();
               break;
             /** Delete student with confirmation */
             case /#deleteStudent/.test(isLink.href):
               if (window.confirm('Are you sure?')) {
-                context.students.delete(parseInt(getIdFromURL(isLink.href)));
-                saveStudents(JSON.stringify([...context.students]));
+                Person.deleteById(parseInt(getIdFromURL(isLink.href)));
+                //context.students.delete(parseInt(getIdFromURL(isLink.href)));
+                //saveStudents(JSON.stringify([...context.students]));
                 context.getTemplateRanking();
               }
               break;
@@ -37,14 +38,14 @@ function initRouter() {
               if (window.confirm('Are you sure?')) {
                 var reg = /\/{1}([0-9,-]+)\//;
                 var matchResults = isLink.href.match(reg);
-                personInstance = context.getPersonById(matchResults[1]);
+                personInstance = Person.getPersonById(matchResults[1]);
                 personInstance.deleteXP(parseInt(getIdFromURL(isLink.href)));
                 personInstance.getHTMLDetail();
               }
               break;
             /** Show popup associated to an student in order to assign XP points  */
             case /#addXP/.test(isLink.href):
-              personInstance = context.getPersonById(getIdFromURL(isLink.href));
+              personInstance = Person.getPersonById(getIdFromURL(isLink.href));
               AttitudeTask.addXP(personInstance);
               break;
             /** Add new student form */

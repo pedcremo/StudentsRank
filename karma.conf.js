@@ -1,11 +1,10 @@
 module.exports = function(config) {
     config.set({
       basePath: '',
-      frameworks: ['jasmine-ajax','jasmine','browserify'],
+      frameworks: ['jasmine-jquery','jasmine-ajax','jasmine','browserify'],
       reporters: ['spec'],
-      //browsers: ['ChromeHeadlessRANK'],
-      browsers: ['Chrome'],
-     
+      browsers: ['ChromeHeadlessRANK'],
+      //browsers: ['Chrome'],
       customLaunchers: {
         ChromeHeadlessRANK: {
           base: 'Chrome',
@@ -18,6 +17,7 @@ module.exports = function(config) {
         'karma-spec-reporter',
         'karma-browserify',
         'karma-jasmine',
+        'karma-jasmine-jquery',
         'karma-jasmine-ajax'
       ],
       files: [
