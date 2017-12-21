@@ -31,7 +31,7 @@ events.subscribe('dataservice/getGradedTasks',(obj) => {
   events.publish('gradedTask/change',gradedTasks);
 });
 
-events.subscribe('settings/ready',(obj) => {
+events.subscribe('settings/change',(obj) => {
   settings = obj;
 });
 

@@ -55,9 +55,9 @@ class Settings {
 
     for (let i = 0;i < settings.terms.length;i++) {
       if (settings.terms[i].name === settings.defaultTerm) { 
-        output += '<option selected value="' + settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+        output += '<option selected value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }else {
-        output += '<option value="' + settings.terms[i].name + '">' + context.settings.terms[i].name + '</option>';
+        output += '<option value="' + settings.terms[i].name + '">' + settings.terms[i].name + '</option>';
       }
     }
     if ('ALL' === settings.defaultTerm) {
