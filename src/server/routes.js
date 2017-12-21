@@ -8,7 +8,6 @@ var fs = require('fs');
 var formidable = require('formidable');
 var mkdirp = require('mkdirp');
 const FileAsync = require('lowdb/adapters/FileAsync');
-//var path = require('path');
 // Create database instance and start server
 const low = require('lowdb');
 const adapter = new FileAsync('src/server/data/shares.json');

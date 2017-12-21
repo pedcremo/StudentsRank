@@ -21,6 +21,7 @@ module.exports = function(config) {
         'karma-jasmine-ajax'
       ],
       files: [
+        {pattern: 'templates/*.html', included: false},
         'lib/jquery/jquery.min.js',
         'src/client/**/*.js',
         'tests/**/*.js'
