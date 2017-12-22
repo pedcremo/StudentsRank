@@ -117,14 +117,13 @@ class Person {
           }
         }
       });
-      events.publish('dataservice/saveStudents',JSON.stringify([...students]));
+    events.publish('dataservice/saveStudents',JSON.stringify([...students]));
   }
 
-  /** Get students Marks in current term from context*/
+  /** Get students Marks in current term from context from newer to older */
   getStudentMarks() {
     let gtArray = [];
-    try {
-      //gradedtaskMAP.forEach(function(valueGT) {
+    try {     
       gradedtaskMAP.forEach((valueGT) => {
         console.log('MERDA ' + valueGT.id + 'Person id ' + this.id);
         gtArray.push([valueGT.id,valueGT.studentsMarkMAP.get(this.id)]);
@@ -143,7 +142,7 @@ class Person {
     }catch (err) {
       console.log('ERROR' + err);
     }
-    return gtArray;
+    return gtArray.reverse();
   }
   /** Get total points over 100 taking into account different graded tasks weights */
   getGTtotalPoints() {
@@ -275,11 +274,14 @@ class Person {
   }
   static getRankingTable() {
     if (students && students.size > 0) {
-      /* We sort students in descending order from max number of points to min */
+      /* We sort students in descending order from max number of points to min when we are in not expanded view */
       let arrayFromMap = [...students.entries()];
-      arrayFromMap.sort(function(a,b) {
-        return (b[1].getFinalGrade() - a[1].getFinalGrade());
-      });
+
+      if ($('.tableGradedTasks').is(':hidden')) {
+        arrayFromMap.sort(function(a,b) {
+          return (b[1].getFinalGrade() - a[1].getFinalGrade());
+        });
+      }
       students = new Map(arrayFromMap);
 
       let scope = {};
