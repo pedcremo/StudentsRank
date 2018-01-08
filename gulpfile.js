@@ -7,13 +7,21 @@ var $ = require('gulp-load-plugins')({ lazy: true });
 var jsdoc = require('gulp-jsdoc3');
 var Server = require('karma').Server;
 var babel = require('gulp-babel');
+var protractor = require("gulp-protractor").protractor;
 //var jshint = require('gulp-jshint');
 
 if (!fs.existsSync('dist')){
   fs.mkdirSync('dist');
 }
 
-
+gulp.task("protractor",function () {
+  return gulp.src([])
+      .pipe(protractor({
+          configFile: "./tests_e2e/conf.js"
+      }))
+      .on('error', function(e) { throw e })
+}
+);
 /**
  * $ gulp
  * description: Launch tests once
