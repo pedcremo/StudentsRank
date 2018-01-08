@@ -27,6 +27,7 @@ describe('Login app', () => {
                         });
                     }else{
                         addStudent('Paco','ElMaco');
+                        addStudent('Juanito','Reina');
                         deleteStudent('480131812');
                     }
                 });
