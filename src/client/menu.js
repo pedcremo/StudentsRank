@@ -85,7 +85,8 @@ function addSubject(funcCallback) {
     },'GET','',false);
 
     $('#SubjectModal').modal('toggle');
-    $('#newSubject').submit((event) => {
+    let prova = $('#newSubject');
+    prova.on("submit",(event) => {
       event.preventDefault();
       loadTemplate('api/addSubject',function(response) {
         context.user.defaultSubject = $('#subjectName').val();
@@ -94,7 +95,7 @@ function addSubject(funcCallback) {
         //updateFromServer();
         $('#SubjectModal').modal('toggle');
         $('.modal-backdrop').remove();
-        document.location.href = '/';
+        //document.location.href = '/';
         if (funcCallback) funcCallback();
         
       },'GET','newSubject=' + $('#subjectName').val() + '&sharedGroup=' + $('select[name=sharedGroups]').val(),false);

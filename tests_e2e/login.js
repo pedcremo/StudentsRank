@@ -30,18 +30,7 @@ describe('Login app', () => {
                         addStudent('Juanito','Reina');
                         deleteStudent('480131812');
                     }
-                });
-                /*addStudent('Paco','El Maco');
-                var deleteStudentLink = $('[href*="#deleteStudent/1957027836"]');
-                deleteStudentLink.click();
-                browser.sleep(2000);
-                browser.switchTo().alert().then(function (alert) {
-                    
-                            alert.accept();
-                            return browser.get('/');
-                    
-                });
-                browser.sleep(2000);*/
+                });              
                 
               });
       });
