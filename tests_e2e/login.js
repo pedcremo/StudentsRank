@@ -20,10 +20,13 @@ describe('Login app', () => {
                         console.log('JJJJJJJJJJ');
                         var subjectname = element(by.id('subjectName'));
                         subjectname.sendKeys('prova');
-                        var newSubject = element(by.id('newSubject'));
+                        var newSubject = element(by.id('newSubjectInput'));
                         newSubject.click().then(function(){
                             browser.sleep(2000);
                             console.log('CLICK CLICK CLICK');
+                            addStudent('Paco','ElMaco');
+                            addStudent('Juanito','Reina');
+                            deleteStudent('480131812');
                         });
                     }else{
                         addStudent('Paco','ElMaco');

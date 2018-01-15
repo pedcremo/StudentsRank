@@ -47,9 +47,11 @@ class Context {
       }else {
         this.user = JSON.parse(response);
         /* Only call server if we not have loaded students */
-        if (this.user.defaultSubject === 'default') {
+        /*if (this.user.defaultSubject === 'default') {
+          console.log("addSubject in isLogged");
           addSubject();
-        }else if (Person.getStudentsSize() <= 0) {
+        }else*/ 
+        if (Person.getStudentsSize() <= 0) {
           updateFromServer();
         }else {
           this.getTemplateRanking();
@@ -79,6 +81,7 @@ class Context {
             /* First time we log in */
             if (that.user.defaultSubject === 'default') {
               updateFromServer();
+              console.log("addSubject in login");
               addSubject();
             /* We are veteran/recurrent users */
             }else {

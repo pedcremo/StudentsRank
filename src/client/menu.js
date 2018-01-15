@@ -46,6 +46,7 @@ function generateMenu() {
   $('#subjectsItems').change(function() {
     let optionSubject = $(this).children(':selected').val();
     if (optionSubject === 'NEW subject') {
+      console.log("addSubject in menu NEW subject selected");
       addSubject();
     }else {
       context.user.defaultSubject = optionSubject;
@@ -95,7 +96,7 @@ function addSubject(funcCallback) {
         //updateFromServer();
         $('#SubjectModal').modal('toggle');
         $('.modal-backdrop').remove();
-        //document.location.href = '/';
+        document.location.href = '/';
         if (funcCallback) funcCallback();
         
       },'GET','newSubject=' + $('#subjectName').val() + '&sharedGroup=' + $('select[name=sharedGroups]').val(),false);
