@@ -12,18 +12,19 @@ describe('Login app', () => {
         username.sendKeys('admin');
         password.sendKeys('admin');
         loginbutton.click().then(function() {
-                browser.sleep(2000);           
+                browser.sleep(2000);
                 
-                element(by.id('subjectName')).isPresent().then(function(result) {
+                element(by.id('newSubject')).isPresent().then(function(result) {
                     if ( result ) {
                         //Whatever if it is true (displayed)
                         console.log('JJJJJJJJJJ');
                         var subjectname = element(by.id('subjectName'));
                         subjectname.sendKeys('prova');
                         var newSubject = element(by.id('newSubjectInput'));
+                        
                         newSubject.click().then(function(){
                             browser.sleep(2000);
-                            console.log('CLICK CLICK CLICK');
+                            console.log('PLICK CLICK CLICK');
                             addStudent('Paco','ElMaco');
                             addStudent('Juanito','Reina');
                             deleteStudent('480131812');

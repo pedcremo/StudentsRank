@@ -80,9 +80,9 @@ class Context {
             that.user = JSON.parse(userData);
             /* First time we log in */
             if (that.user.defaultSubject === 'default') {
-              updateFromServer();
               console.log("addSubject in login");
-              addSubject();
+              addSubject(updateFromServer);
+              //updateFromServer();
             /* We are veteran/recurrent users */
             }else {
               setCookie('user',userData,7);

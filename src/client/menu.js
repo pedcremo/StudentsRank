@@ -74,7 +74,9 @@ function logout() {
 function addSubject(funcCallback) {
   let callback = function(responseText) {
     $('#content').html($('#content').html() + responseText);
-    
+    //$('#content').html(responseText);
+    //alert("epqoe");
+    console.log('XIXI 0');
     loadTemplate('api/getSharedGroups',function(response) {
       let sharedGroups = JSON.parse(response);
       let option = '';
@@ -82,12 +84,20 @@ function addSubject(funcCallback) {
       for (let i=0;i<sharedGroups.length;i++){
         option += '<option value="'+ sharedGroups[i].defaultSubject + '">' + sharedGroups[i].defaultSubject+ ' - ' + sharedGroups[i].hits + ' students</option>';
       }
+      console.log('XIXI 1');
       $('#sharedGroups').append(option);
     },'GET','',false);
 
     $('#SubjectModal').modal('toggle');
     let prova = $('#newSubject');
+    if (!prova.length) {
+      console.log('MACHO #newSubject dont select');
+    }else{
+      console.log('XIXI 2');
+    }
+    
     prova.on("submit",(event) => {
+      //alert("SUBMIT newSubject");
       event.preventDefault();
       loadTemplate('api/addSubject',function(response) {
         context.user.defaultSubject = $('#subjectName').val();
@@ -96,11 +106,12 @@ function addSubject(funcCallback) {
         //updateFromServer();
         $('#SubjectModal').modal('toggle');
         $('.modal-backdrop').remove();
-        document.location.href = '/';
+        //document.location.href = '/';
+        events.publish('/context/newGradedTask',null);
         if (funcCallback) funcCallback();
         
       },'GET','newSubject=' + $('#subjectName').val() + '&sharedGroup=' + $('select[name=sharedGroups]').val(),false);
-      return false; //Abort submit
+      //return false; //Abort submit
     });
   };
   loadTemplate('templates/addSubject.html',callback);
