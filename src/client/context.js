@@ -47,11 +47,10 @@ class Context {
       }else {
         this.user = JSON.parse(response);
         /* Only call server if we not have loaded students */
-        /*if (this.user.defaultSubject === 'default') {
+        if (this.user.defaultSubject === 'default') {
           console.log("addSubject in isLogged");
-          addSubject();
-        }else*/ 
-        if (Person.getStudentsSize() <= 0) {
+          addSubject(updateFromServer);
+        }else if (Person.getStudentsSize() <= 0) {
           updateFromServer();
         }else {
           this.getTemplateRanking();
