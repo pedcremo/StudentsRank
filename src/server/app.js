@@ -51,8 +51,8 @@ switch (environment) {
     //app.use('/*', express.static('./build/index.html'));
     console.log('WARNING: OPEN BROWSER WITH HTTPS');
     https.createServer({
-      key: fs.readFileSync('privkey1.pem'),
-      cert: fs.readFileSync('cert1.pem')
+      key: fs.readFileSync('privkey.pem'),
+      cert: fs.readFileSync('cert.pem')
     }, app).listen(port);
 
     app.use(forceSSL); //MODULE USED TO FORCE REDIRECTION
@@ -60,7 +60,7 @@ switch (environment) {
                 'CHECK IF ANY OTHER SERVER IS LISTENING ON SAME PORT (APACHE...)' +
                 'WE WANT TO FORCE HTTP TO HTTPS REDIRECTION ALWAYS');
 
-    http.createServer(app).listen(80);
+    //http.createServer(app).listen(80);
     break;
   default:
     console.log('** DEV **');
