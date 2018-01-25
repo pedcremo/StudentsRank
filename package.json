@@ -5,7 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "karma start --single-run --browsers ChromeHeadless karma.conf.js",
-    "start": "forever start src/server/app.js",
+    "start": "forever NODE_ENV='build' start src/server/app.js",
     "stop": "forever stop src/server/app.js",
     "restart": "forever restart src/server/app.js",
     "postinstall": "./node_modules/.bin/frontend-dependencies && node_modules/gulp/bin/gulp.js browserify"
