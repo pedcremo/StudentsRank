@@ -113,12 +113,13 @@ Ex. docker save -o /tmp/runking gifted_goldberg
 Load docker container -> docker load -i runking.tar 
 READ: getting started with docker blogs.msdn.microsoft.com
 
-== Apache2 + node app living in same server ==
+== Apache2 + node app living in same server serving https ==
 
 We want to use a VPS with a preexisting web app running on port 80 in apache2.
-Our server side is built using nodeJS. 
+Our server side is built using nodeJS and we want to serve the web app via https.
 
-Domain http://moodle.iestacio.com points to preexisting web a moodle with php
+Domain http://moodle.iestacio.com points to preexisting web a moodle system with php
+
 Domain http://runking.bocairent.net  points to a web app with nodeJS running on port 8000
 We use apache module proxy to redirect requests pointing to runking.bocairent.net:80 to localhost:8000 where it is really listening our node app
 
@@ -127,27 +128,42 @@ We enable the next apache modules:
 sudo a2enmod proxy.load
 sudo a2enmod proxy_html.load
 sudo a2enmod xml2enc.load
+sudo a2enmod ssl.load
 
 sudo a2ensite runking.conf
+
+NOTE: Be sure to add in https.conf  Listen 443. Otherwise apache service will not open the port to serve https web pages.
+
+We should generate our valid certificate and keys using Let's encrypt service a project from Linux foundation (https://letsencrypt.org/)
+
+READ CAREFULLY HOW TO GENERATE CERTIFICATES: https://certbot.eff.org/#ubuntuxenial-apache
+
+Try to do it from a server with a public IP an a domain name pointing to it. The domain name is mandatory for building the certificate.
 
 runking.conf file content
 <pre>
 NameVirtualHost *:80
 <VirtualHost *:80>
-        ServerName moodle.iestacio.com
-        ServerAdmin webmaster@localhost
-        DocumentRoot "/var/www/moodle"
-
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-<VirtualHost *:80>
-        ServerName runking.bocairent.net
+	ServerName runking.bocairent.net
         DocumentRoot "/var/www/node"
-        ProxyRequests off
-        ProxyPass  / http://127.0.0.1:8000/
-        ProxyPassReverse / http://127.0.0.1:8000/
+        Redirect / https://runking.bocairent.net
+        #ProxyRequests off
+        #ProxyPass  / https://127.0.0.1:8000/
+        #ProxyPassReverse / https://127.0.0.1:8000/
 </VirtualHost>
+<VirtualHost *:443>
+	ServerName runking.bocairent.net
+        DocumentRoot "/var/www/node"
+	SSLEngine on
+	SSLCertificateFile /etc/letsencrypt/live/runking.bocairent.net/cert.pem
+	SSLCertificateKeyFile /etc/letsencrypt/live/runking.bocairent.net/privkey.pem
+	SSLCertificateChainFile /etc/letsencrypt/live/runking.bocairent.net/fullchain.pem
+        SSLProxyEngine on 
+	ProxyRequests off
+        ProxyPass  / https://runking.bocairent.net:8000/
+        ProxyPassReverse / https://runking.bocairent.net:8000/
+</VirtualHost>
+
 </pre>
 
 == Test workflow ==
